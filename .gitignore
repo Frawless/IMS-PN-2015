@@ -1,0 +1,6 @@
+#GitIgnore for IMS project
+
+*.o
+PN-simulator
+Makefile
+nbproject/
