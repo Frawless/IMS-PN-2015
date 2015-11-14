@@ -1,24 +1,15 @@
-/************************************************
-*                                               *
-*   Autoři:			Jakub Stejskal <xstejs24>	*
+/*************************************************
+*		  Projekt: 	Projekt do předmětu IMS     * 
+* 					Simulátor petriho sítí		*
+*		   Autoři:	Jakub Stejskal <xstejs24>	*
 *		   			Petr Staněk <xstane34>      *
-*   Nazev souboru: 	model.h 	            	*
-*   Projekt: 		projek do předmětu IMS      * 
-* 					Simulátor petriho síťí		*
-* 	Datum:   		2015/2016					*
-*                                               *
+*   Nazev souboru: 	model.h						*
+*			Datum:  14. 11. 2015				*
+*			Verze:	1.0							*
 ************************************************/
 
 #ifndef MODEL_H
 #define MODEL_H
-
-#include <string>
-#include <vector>
-#include <map>
-#include <stdlib.h>
-#include <iostream>
-#include <fstream>
-#include <sstream>
 
 #include "place-transition.h"
 #include "token.h"
@@ -30,25 +21,22 @@ class Transition;
 class Token;
 
 /**
- * 
+ * Třída reprezentující model Petriho sítě.
  */
 class Model
 {
-public:
-	Model();			//konstruktor	
-	~Model();			//destruktor
-	void addPlace(std::string name, int capacity);
-	void addPlace(std::string name);
-	void addTransition(std::string name, int value, Transition::Type type);
-	void addTransition(std::string name);
-	void addLink(std::string inputName, std::string outputName, int capacity);
-	void addToken(std::string placeName);  
-	void addToken(std::string placeName, int count); 
-	
-	void printModel();
-private:
-							//seznam značek v místech
-	
+	public:
+		Model(); // konstruktor	
+		~Model(); // destruktor
+		void addPlace(std::string name); // přidání místa
+		void addPlace(std::string name, int capacity); // přidání místa
+		void addTransition(std::string name); // přidání přechodu
+		void addTransition(std::string name, int value, Transition::Type type); // přidání přechodu
+		void addLink(std::string inputName, std::string outputName, int capacity); // přidání hrany
+		void addToken(std::string placeName); // přidání tokenu do místa 
+		void addToken(std::string placeName, int count); // přidání tokenu do místa 
+		void printModel(); // vytisknutí modelu
+	private:
 };
 
 #endif

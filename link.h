@@ -1,12 +1,11 @@
-/************************************************
-*                                               *
-*   Autoři:			Jakub Stejskal <xstejs24>	*
+/*************************************************
+*		  Projekt: 	Projekt do předmětu IMS     * 
+* 					Simulátor petriho sítí		*
+*		   Autoři:	Jakub Stejskal <xstejs24>	*
 *		   			Petr Staněk <xstane34>      *
-*   Nazev souboru: 	link.h 		            	*
-*   Projekt: 		projek do předmětu IMS      * 
-* 					Simulátor petriho síťí		*
-* 	Datum:   		2015/2016					*
-*                                               *
+*   Nazev souboru: 	link.h				     	*
+*			Datum:  14. 11. 2015				*
+*			Verze:	1.0							*
 ************************************************/
 
 #ifndef LINK_H
@@ -19,19 +18,18 @@ class PlaceTransition;
 
 class Link
 {
-public:
-	Link(PlaceTransition *input, PlaceTransition *output, int capacity);			//konstruktor
-        static std::vector <Link *> getLinks();
-	PlaceTransition *getInput();
-	PlaceTransition *getOutput();
-	int getCapacity();
-  
-private:
-	static std::vector <Link *> listOfLinks;
-        PlaceTransition *input;			//ukazatel na vstup místa/přechodu
-	PlaceTransition *output;		//ukazatel na výstup místa/přechodu
-	int capacity;					//kapacity hrany
-};
+	public:
+		Link(PlaceTransition *input, PlaceTransition *output, int capacity); //konstruktor hrany
+		static std::vector <Link *>* getLinks(); // získání ukazatele na pole hran
+		PlaceTransition *getInput(); // získání místa/přechodu na vstupu hrany
+		PlaceTransition *getOutput(); // získání místa/přechodu na výstupu hrany
+		int getCapacity(); // získání kapacity
 
+	private:
+		static std::vector <Link *> listOfLinks; // pole hran
+		PlaceTransition *input;	// ukazatel na místo/přechod na vstupu hrany
+		PlaceTransition *output; // ukazatel na místo/přechod na výstupu hrany
+		int capacity; // kapacita hrany
+	};
 
 #endif

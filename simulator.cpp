@@ -1,35 +1,28 @@
-/************************************************
-*                                               *
-*   Autoři:			Jakub Stejskal <xstejs24>	*
+/*************************************************
+*		  Projekt: 	Projekt do předmětu IMS     * 
+* 					Simulátor petriho sítí		*
+*		   Autoři:	Jakub Stejskal <xstejs24>	*
 *		   			Petr Staněk <xstane34>      *
 *   Nazev souboru: 	simulator.cpp             	*
-*   Projekt: 		projek do předmětu IMS      * 
-* 					Simulátor petriho síťí		*
-* 	Datum:   		2015/2016					*
-*                                               *
+*			Datum:  14. 11. 2015				*
+*			Verze:	1.0							*
 ************************************************/
 
-
-#include <cstdlib>
-#include <iostream>
-#include <fstream>
-#include <sstream>
-#include <string>
-
 #include "simulator.h"
-#include "model.h"
-#include "link.h"
-#include "calendar.h"
-#include "token.h"
-#include "place-transition.h"
 
-using namespace std;    // Or using std::string
+using namespace std; 
 
+/**
+ * Konstruktor simulátoru
+ */
 Simulator::Simulator()
 {
 	this->model = new Model();
 }
 
+/**
+ * Vytvoření modelu Petriho sítě
+ */
 void Simulator::createModel()
 {
 	model->addPlace("místo_1");
@@ -39,42 +32,52 @@ void Simulator::createModel()
 	model->addTransition("přechod_1");
 	model->addTransition("přechod_2");
 	
-	model->addLink("místo_3","přechod_1",0);
-	model->addLink("přechod_1","místo_1",0);
-	model->addLink("místo_1","přechod_2",0);
-	model->addLink("přechod_2","místo_2",0);
-  
+	model->addLink("místo_3","přechod_1", 0);
+	model->addLink("přechod_1","místo_1", 0);
+	model->addLink("místo_1","přechod_2", 0);
+	model->addLink("přechod_2","místo_2", 0);
 }
 
+/**
+ * Vrácení ukazatele na model
+ * @return ukazatel na model
+ */
 Model *Simulator::getModel()
 {
 	return this->model;
 }
 
-void Simulator::printFullModel()
+/**
+ * Vytisknutí modelu
+ */
+void Simulator::printModel()
 {
 	this->model->printModel();
 }
 
 int main()
 {
+	// vytvoření instance simulátoru
 	Simulator *simulator = new Simulator();
 	
-	try{
-		simulator->createModel();
-		std::cerr<<"Model vytvořen"<<std::endl;
-		simulator->printFullModel();
-		//simulator->model->printModel();
-	}
-	catch(int e)
+	try
 	{
-	  switch(e)
-	  {
-		case 1:
-			std::cerr<<"Error :)"<<std::endl;
-	  }
+		simulator->createModel(); // vytvoření modelu
+		std::cerr<<"Model vytvořen"<<std::endl;
+		simulator->printModel(); // vytisknutí modelu
 	}
 	
-	exit(0);
+	// ošetření výjimek
+	catch(int e)
+	{
+	  
+		switch(e)
+		{
+			case 1:
+				std::cerr<<"Error"<<std::endl;
+		}
+	}
+	
+	exit(EXIT_SUCCESS);
   
 }

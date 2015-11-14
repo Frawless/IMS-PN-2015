@@ -1,12 +1,11 @@
-/************************************************
-*                                               *
-*   Autoři:			Jakub Stejskal <xstejs24>	*
+/*************************************************
+*		  Projekt: 	Projekt do předmětu IMS     * 
+* 					Simulátor petriho sítí		*
+*		   Autoři:	Jakub Stejskal <xstejs24>	*
 *		   			Petr Staněk <xstane34>      *
-*   Nazev souboru: 	place-transition.h	 	    *
-*   Projekt: 		projek do předmětu IMS      * 
-* 					Simulátor petriho síťí		*
-* 	Datum:   		2015/2016					*
-*                                               *
+*   Nazev souboru: 	place-transition.h       	*
+*			Datum:  14. 11. 2015				*
+*			Verze:	1.0							*
 ************************************************/
 
 #ifndef PLACE_H
@@ -23,60 +22,59 @@ class Link;
 class Token;
 
 /**
- * 
+ * Třída obsahující společné vlastnosti tříd Place a Transition a na základě
+ * ní jsou vytvořeny třídy Place a Transition (zděděno).
  */
 class PlaceTransition
 {
-public:
-	//enum Type{PLACE, TRANSITION};		//enumerace typu objektu
-	
-	void addInputLink(Link *link);
-	void addOutputLink(Link *link);
-	std::string getName();
-  
-protected:
-	//Type type;							//typ objektu
-	std::string name;					//jméno objektu
-	std::vector<Link *> inputLinks;		//pole vstupních hran
-	std::vector<Link *> outputLinks;	//pole výstupních hran
+	public:
+		void addInputLink(Link *link); // přidání vstupu hrany k místu/přechodu
+		void addOutputLink(Link *link); // přidání výstupu hrany k místu/přechodu
+		std::string getName(); // získání názvu hrany/přechodu
+
+	protected:
+		std::string name; // jméno místa/přechodu
+		std::vector<Link *> inputLinks; // pole vstupních hran vázaných k místu/přechodu
+		std::vector<Link *> outputLinks; // pole výstupních hran vázaných k místu/přechoduan
 };
 
-
 /**
- * 
+ * Třída reprezentující místo modelu.
  */
 class Place: public PlaceTransition
 {
-public:
-    Place(std::string name);
-    Place(std::string name, int capacity);
-    static std::map<std::string, Place *> getPlaces();
-    void addToken(Token* token);
-  
-private:
-    static std::map<std::string, Place *> listOfPlaces;
-    std::vector<Token *> listOfTokens; 
-    int capacity;
-    unsigned int min;
-    unsigned int max;
+	public:
+		Place(std::string name); // konstruktor místa na základě místa
+		Place(std::string name, int capacity); // konstruktor místa na základě místa a kapacity
+		static std::map<std::string, Place *>* getPlaces(); // získání ukazatele na pole míst
+		void addToken(Token* token); // přidání tokenu do místa
+		static Place* getPlace(std::string name); // získání ukazatele na místo dle jeho jména
+
+	private:
+		static std::map<std::string, Place *> listOfPlaces; // pole míst
+		std::vector<Token *> listOfTokens;  // pole tokenů v místě
+		int capacity; // kapacita místa
+		unsigned int min; // ???
+		unsigned int max; // ???
 };
 
 /**
- * 
+ * Třída reprezentující přechod modelu
  */
 class Transition: public PlaceTransition
 {
-public:
-	enum Type{TIMED_EXP, TIMED_CONST, PRIORITY, STOCHASTIC /*???*/};
-  
-	Transition(std::string name);
-	Transition(std::string name, int value, Transition::Type type);
-        static std::map<std::string, Transition *> getTransitions();
-  
-private:
-    static std::map<std::string, Transition *> listOfTransitions;
-    Type type;						//typ přechodu
-    unsigned int value;				//hodnota přechodu - čas/priorita/pravděpodobnost
+	public:
+		enum Type{TIMED_EXP, TIMED_CONST, STOCHASTIC, PRIORITY /*???*/};
+
+		Transition(std::string name);
+		Transition(std::string name, int value, Transition::Type type);
+		static std::map<std::string, Transition *>* getTransitions();
+		static Transition* getTransition(std::string name);
+
+	private:
+		static std::map<std::string, Transition *> listOfTransitions; // pole přechodů
+		Type type; // typ přechodu
+		unsigned int value;	// hodnota typu přechodu - čas/priorita/pravděpodobnost
 };
 
 #endif
