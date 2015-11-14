@@ -12,6 +12,9 @@
 
 #include "link.h"
 
+std::vector <Link *> Link::listOfLinks;
+
+
 /**
  * Konstruktor
  * @param
@@ -23,8 +26,13 @@ Link::Link(PlaceTransition *input, PlaceTransition *output, int capacity)
 	this->input = input;
 	this->output = output;
 	this->capacity = capacity;
+	listOfLinks.push_back(this);
 }
 
+std::vector <Link *> Link::getLinks()
+{
+	return listOfLinks;
+}
 
 PlaceTransition* Link::getInput()
 {

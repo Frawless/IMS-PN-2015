@@ -50,14 +50,12 @@ void Model::addPlace(std::string name, int capacity)
 	/*
 	 * kontrola
 	 */
-	Place* p = new Place(name, capacity);
-	this->listOfPlaces.insert(std::pair<std::string, Place*>(name, p));
+	new Place(name, capacity);
 }
 
 void Model::addTransition(std::string name, int value, Transition::Type type)
 {
-	Transition* t = new Transition(name, value, type);
-	this->listOfTransitions.insert(std::pair<std::string, Transition*>(name, t));
+	new Transition(name, value, type);
 }
 
 void Model::addTransition(std::string name)
@@ -67,6 +65,11 @@ void Model::addTransition(std::string name)
 
 void Model::addLink(std::string inputName, std::string outputName, int capacity)
 {
+	std::map<std::string, Place *> places = Place::getPlaces();
+	std::map<std::string, Transition *> transitions = Transition::getTransitions();
+	std::vector <Link *> links = Link::getLinks();
+
+	
 	// vytvoření interátorů pro vyhledávání v asociativních polích míst a přechodů
 	std::map<std::string, Place *>::iterator iterInputPlace;
 	std::map<std::string, Place *>::iterator iterOutputPlace;
@@ -74,12 +77,12 @@ void Model::addLink(std::string inputName, std::string outputName, int capacity)
 	std::map<std::string, Transition *>::iterator iterOutputTransition;
 
 	// vyhledání místa a přechodu v asociativním poli dle jeho názvu
-	iterInputPlace = this->listOfPlaces.find(inputName);
-	iterOutputPlace = this->listOfPlaces.find(outputName);
-	iterInputTransition = this->listOfTransitions.find(inputName);
-	iterOutputTransition = this->listOfTransitions.find(outputName);
+	iterInputPlace = places.find(inputName);
+	iterOutputPlace = places.find(outputName);
+	iterInputTransition = transitions.find(inputName);
+	iterOutputTransition = transitions.find(outputName);
 	
-	if ((iterInputTransition != this->listOfTransitions.end()) && (iterOutputPlace != this->listOfPlaces.end()))
+	if ((iterInputTransition != transitions.end()) && (iterOutputPlace != places.end()))
 	{
 		Place *p = iterOutputPlace->second;
 		Transition *t = iterInputTransition->second;
@@ -87,9 +90,8 @@ void Model::addLink(std::string inputName, std::string outputName, int capacity)
 		
 		p->addOutputLink(l);
 		t->addInputLink(l);
-		this->listOfLinks.push_back(l);
 	}
-	else if((iterInputPlace != this->listOfPlaces.end()) && (iterOutputTransition != this->listOfTransitions.end()))
+	else if((iterInputPlace != places.end()) && (iterOutputTransition != transitions.end()))
 	{
 		Place *p = iterInputPlace->second;
 		Transition *t = iterOutputTransition->second;
@@ -97,21 +99,19 @@ void Model::addLink(std::string inputName, std::string outputName, int capacity)
 		
 		p->addInputLink(l);
 		t->addOutputLink(l);
-		this->listOfLinks.push_back(l);
 	}
 	else
 		std::cerr<<"nejde to"<<std::endl;
 	
-	/*Link* l = new Link("jakub)
-	this->listOfLinks.insert();*/
 }
 
 void Model::addToken(std::string placeName, int count)
 {
+	std::map<std::string, Place *> places = Place::getPlaces();
 	std::map<std::string, Place *>::iterator iterPlace;
 	
-	iterPlace = this->listOfPlaces.find(placeName);
-	if(iterPlace == this->listOfPlaces.end())
+	iterPlace = places.find(placeName);
+	if(iterPlace == places.end())
 	{
 		std::cerr<<"Značka v neznámém místě!"<<std::endl;
 		throw 1;
@@ -120,7 +120,7 @@ void Model::addToken(std::string placeName, int count)
 	for(int i = 0; i < count; i++)
 	{
 		Token *token = new Token(iterPlace->second);
-		this->listOfTokens.push_back(token);
+		Token::getTokens().push_back(token);
 		iterPlace->second->addToken(token);  
 	}
 }
@@ -132,25 +132,29 @@ void Model::addToken(std::string placeName)
 
 void Model::printModel()
 {
+	std::map<std::string, Place *> places = Place::getPlaces();
+	std::map<std::string, Transition *> transitions = Transition::getTransitions();
+	std::vector <Link *> links = Link::getLinks();
+	
 	std::map<std::string, Place *>::iterator modelPlace;
 	std::map<std::string, Transition *>::iterator modelTransition;
 	std::vector<Link *>::iterator modelLink;
 	
-	for(modelPlace = listOfPlaces.begin(); modelPlace != listOfPlaces.end(); modelPlace++)
+	for(modelPlace = places.begin(); modelPlace != places.end(); modelPlace++)
 	{
 		std::cerr<<"Místo: "<<modelPlace->second->getName()<<std::endl;
 	}
 	
-	for(modelTransition = listOfTransitions.begin(); modelTransition != listOfTransitions.end(); modelTransition++)
+	for(modelTransition = transitions.begin(); modelTransition != transitions.end(); modelTransition++)
 	{
 		std::cerr<<"Přechod: "<<modelTransition->second->getName()<<std::endl;
 	}	
-	//std::vector<int>::iterator it = myvector.begin() ; it != myvector.end(); ++it
-	//for(listOfLinks = listOfLinks.begin(); listOfLinks != listOfLinks.end(); listOfLinks)
-	for(modelLink = listOfLinks.begin(); modelLink != listOfLinks.end(); modelLink++)
+
+	
+	for(modelLink = links.begin(); modelLink != links.end(); modelLink++)
 	{
 		
 		std::cerr<<"Linka z: "<<(*modelLink)->getInput()->getName()<<" do: "<<(*modelLink)->getOutput()->getName()<<std::endl;
-		//listOfLinks->second->
+		//links->second->
 	}	
 }

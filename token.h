@@ -12,6 +12,8 @@
 #ifndef TOKEN_H
 #define TOKEN_H
 
+#include <vector>
+
 class Place;
 
 /**
@@ -20,11 +22,13 @@ class Place;
 class Token
 {
 public:
-	Token(Place *place);				//konstruktor
-        Place* getPlace();
+    Token(Place *place);				//konstruktor
+    static std::vector <Token *> getTokens();
+    Place* getPlace();
   
 private:
-	Place * placePtr;			//ukazatel na místo
+    static std::vector <Token *> listOfTokens;
+    Place * placePtr;			//ukazatel na místo
 		
   
 };

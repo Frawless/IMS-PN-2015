@@ -32,7 +32,6 @@ public:
 	
 	void addInputLink(Link *link);
 	void addOutputLink(Link *link);
-	
 	std::string getName();
   
 protected:
@@ -51,9 +50,11 @@ class Place: public PlaceTransition
 public:
     Place(std::string name);
     Place(std::string name, int capacity);
+    static std::map<std::string, Place *> getPlaces();
     void addToken(Token* token);
   
 private:
+    static std::map<std::string, Place *> listOfPlaces;
     std::vector<Token *> listOfTokens; 
     int capacity;
     unsigned int min;
@@ -70,11 +71,10 @@ public:
   
 	Transition(std::string name);
 	Transition(std::string name, int value, Transition::Type type);
-        static std::map<std::string, Transition *> getTransitions(){return listOfTransitions;};
+        static std::map<std::string, Transition *> getTransitions();
   
 private:
     static std::map<std::string, Transition *> listOfTransitions;
-    static int var;
     Type type;						//typ přechodu
     unsigned int value;				//hodnota přechodu - čas/priorita/pravděpodobnost
 };

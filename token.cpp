@@ -12,6 +12,8 @@
 
 #include "token.h"
 
+std::vector <Token *> Token::listOfTokens;
+
 /**
  * 
  */
@@ -19,6 +21,12 @@ Token::Token(Place * place)
 {
 	this->placePtr = place;
 }
+
+std::vector <Token *> Token::getTokens()
+{
+	return listOfTokens;
+}
+
 Place* Token::getPlace()
 {
 	return this->placePtr;

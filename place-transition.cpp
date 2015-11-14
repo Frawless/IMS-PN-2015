@@ -12,6 +12,9 @@
 
 #include "place-transition.h"
 
+std::map<std::string, Transition *> Transition::listOfTransitions;
+std::map<std::string, Place *> Place::listOfPlaces;
+
 /**
  * 
  */
@@ -34,6 +37,12 @@ Place::Place(std::string name, int capacity)
 	this->capacity = capacity;
 	this->min = 0;
 	this->max = 0;
+	listOfPlaces.insert(std::pair<std::string, Place*>(name, this));
+}
+
+std::map<std::string, Place *> Place::getPlaces()
+{
+	return listOfPlaces;
 }
 
 Transition::Transition(std::string name)
@@ -46,12 +55,13 @@ Transition::Transition(std::string name, int value, Transition::Type type)
 	this->name = name;
 	this->value = value;
 	this->type = type;
+	listOfTransitions.insert(std::pair<std::string, Transition*>(name, this));
 }
 
-/*std::map<std::string, Transition *> Transition::getTransitions()
+std::map<std::string, Transition *> Transition::getTransitions()
 {
 	return listOfTransitions;
-}*/
+} 
 
 void PlaceTransition::addInputLink(Link *link)
 {

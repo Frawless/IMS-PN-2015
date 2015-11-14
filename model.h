@@ -47,10 +47,7 @@ public:
 	
 	void printModel();
 private:
-	std::map<std::string, Transition *> listOfTransitions;	//asociativní pole přechodů
-	std::map<std::string, Place *> listOfPlaces;			//asociativní pole míst
-	std::vector <Link *> listOfLinks;						//seznam hran
-	std::vector <Token *> listOfTokens;						//seznam značek v místech
+							//seznam značek v místech
 	
 };
 
