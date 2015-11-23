@@ -64,7 +64,7 @@ int main()
 	{
 		simulator->createModel(); // vytvoření modelu
 		std::cerr<<"Model vytvořen"<<std::endl;
-		simulator->printModel(); // vytisknutí modelu
+		simulator->getModel()->printModel(); // vytisknutí modelu
 	}
 	
 	// ošetření výjimek
