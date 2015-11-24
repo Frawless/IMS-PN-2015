@@ -24,13 +24,19 @@ class Transition;
 class Event
 {
 	public:
+		Event(double time, double wait, Transition *transition); //konstruktor
 		double getTime(); // získání času události
+		double getWait(); // získání zpoždění události
+		//přidání/odebrání tokenu dos eznamu tokenu nalezici udalosti ???
+		bool isEmpty(); // je seznam tokenů prázdný?
+		Transition *getTransition(); // vrátí ukazatel na přechod
+		
 
 	private:
 		double time; // čas události
-		double wait; // ???
+		double wait; // ??? doba čekání
 		Transition *trainsition; // ukazatel na přechod
-		std::vector<Token *> listOfTokens; // pole tokenů
+		std::vector<Token *> listOfTokens; // pole tokenů události
 	};
 
 	/**
@@ -53,7 +59,13 @@ class Calendar
 	public:
 		Calendar(); // konstruktor kalendáře
 		~Calendar(); // destruktor kalendáře
-
+		
+		bool isEmpty(); //je kalendář prádzný?
+		void addEvent(Event *event); //přidání události 
+		Event* getEvent(); //funkce pro získání následující události
+		//delete first
+		void printCalendar(); //vytisknutí kalendáře		
+		std::multiset<Event *, EventSort>* getEvents();
 	private:
 		std::multiset<Event *, EventSort> listOfEvents; // multimnožina záznamů v kalendáři
 

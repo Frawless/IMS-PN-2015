@@ -194,6 +194,7 @@ void Model::modelValidate()
 	std::map<std::string, Place *>::iterator iterPlace;
 	std::map<std::string, Transition *>::iterator iterTransition;
 	std::vector<Link *> ::iterator iterOutputLink;
+	std::vector<Link *> ::iterator iterOutputLink_2;
 	
 	// získání seznamu míst a přechodů
 	std::map<std::string, Place *> *listOfPlaces =  Place::getPlaces();
@@ -227,6 +228,7 @@ void Model::modelValidate()
 	// postupné procházení jednotlivých míst 
 	for (iterPlace = listOfPlaces->begin(); iterPlace != listOfPlaces->end(); iterPlace++)
 	{
+		std::cerr<<"Test validace"<<std::endl;
 		// získání dílčího místa
 		place = (*iterPlace).second;
 		
@@ -260,18 +262,16 @@ void Model::modelValidate()
 			// postupné procházení hran vedoucích z právě zpracovávaného místa
 			for(iterOutputLink = outputLinks->begin(); iterOutputLink != outputLinks->end(); iterOutputLink++ )
 			{
+				//std::cerr<<(Transition *)((*iterOutputLink)->getOutput())<<std::endl;
 				// právě procházená hrana
 				link = *iterOutputLink;
-				
 				// přiřazení přechodu na konci procházené hrany
-				transition = ((Transition *)(link->getOutput()));
-
-				std::cerr<<"    Prechod: "<<link->getOutput()->getName()<<std::endl;
+				transition = ((Transition *)((*iterOutputLink)->getOutput()));
 
 				// pokud je typ právě procházeného přechodu STOCHASTIC
 				if (transition->getTransitionType() == Transition::STOCHASTIC) 
 				{
-					
+
 					// pokud již byl nalezen časovaný nebo priotiní typ přechodu připojený na dané místo
 					if (isFirstPriorityOrDelay == true)
 						std::cerr<<"Místo \""<< place->getName() <<"\" kombinuje časovaný nebo prioritní přechod s pravděpodobnostním!"<<std::endl;				
@@ -283,24 +283,23 @@ void Model::modelValidate()
 					// pokud na vstupu pravděpodobnostního přechodu není hrana s impilicitní kapacitou
 					if(transition->getInputLinks()->front()->getCapacity() != 1)
 						std::cerr<<"Na vstupu pravděpodobnostního přechodu \""<< transition->getName() <<"\" nesmí být hrana s kapacitou!"<<std::endl;				
-					
+
 					// pokud existují výstupní hrany
 					if(transition->getOutputLinkCount() > 0)
 					{
 						// naplnění pole linek výstupními linkami přechodu
 						std::vector<Link *> *outputLinksTransition = transition->getOutputLinks();
-						
+
 						// procházení výstupních linek přechodu a ověřování kapacity míst
-						for (iterOutputLink = outputLinksTransition->begin(); iterOutputLink != outputLinksTransition->end(); iterOutputLink++)
+						for (iterOutputLink_2 = outputLinksTransition->begin(); iterOutputLink_2 != outputLinksTransition->end(); iterOutputLink_2++)
 						{
-							link = *iterOutputLink;
+							link = *iterOutputLink_2;
 							if(((Place*)(link->getOutput()))->getCapacity() > 0)
 								std::cerr<<"Na výstupu pravděpodobnostního přechodu \""<< transition->getName() <<"\" nesmí být místo s kapacitou!"<<std::endl;				
 
-						}			
+						}	
 					}
-					stochasticValueCnt += transition->getValue();
-					
+					stochasticValueCnt += transition->getValue();					
 				}
 				// pokud je typ právě procházeného přechodu TIMED_EXP, TIMED_CONST nebo PRIORITY
 				else
