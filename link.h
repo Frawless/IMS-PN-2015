@@ -12,14 +12,19 @@
 #define LINK_H
 
 #include <vector>
+#include <iostream>
+
+#include "place-transition.h"
 
 class PlaceTransition;
+class Transition;
+class Place;
 
 
 class Link
 {
 	public:
-		Link(PlaceTransition *input, PlaceTransition *output, int capacity); //konstruktor hrany
+		Link(std::string inputName, std::string outputName, int capacity); //konstruktor hrany
 		static std::vector <Link *>* getLinks(); // získání ukazatele na pole hran
 		PlaceTransition *getInput(); // získání místa/přechodu na vstupu hrany
 		PlaceTransition *getOutput(); // získání místa/přechodu na výstupu hrany

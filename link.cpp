@@ -18,10 +18,50 @@ std::vector <Link *> Link::listOfLinks;
  * @param output místo/přechod na výstupu hrany
  * @param capacity kapacita přechodu
  */
-Link::Link(PlaceTransition *input, PlaceTransition *output, int capacity)
+Link::Link(std::string inputName, std::string outputName, int capacity)
 {
-	this->input = input;
-	this->output = output;
+	Transition* t; // ukazatel na přechod
+	Place* p; // ukazatel na místo
+	
+	// pokud je hrana mezi přechodem a neexistujícím místem
+	if (Place::getPlace(inputName) != NULL && Place::getPlace(outputName) != NULL)
+	{
+		std::cerr<<"Nelze vytvořit hranu mezi 2 místy!"<<std::endl;
+		throw 1;
+	}
+	else if (Transition::getTransition(inputName) != NULL && Transition::getTransition(outputName) != NULL)
+	{
+		std::cerr<<"Nelze vytvořit hranu mezi 2 přechody!"<<std::endl;
+		throw 1;
+	}	
+	else if (Place::getPlace(inputName) == NULL &&  Place::getPlace(outputName) == NULL)
+	{
+		std::cerr<<"Nelze vytvořit hranu mezi přechodem a neexistujícím místem!"<<std::endl;
+		throw 1;
+	}
+	else if (Transition::getTransition(inputName) == NULL && Transition::getTransition(outputName) == NULL)
+	{
+		std::cerr<<"Nelze vytvořit hranu mezi místem a neexistujícím přechodem!"<<std::endl;
+		throw 1;
+	}	
+	else if (((t = Transition::getTransition(inputName)) != NULL) && ((p = Place::getPlace(outputName)) != NULL))
+	{
+		this->input = t;
+		this->output = p;
+		
+		p->addOutputLink(this); // vložení hrany k přechodu // je potřeba ???
+		t->addInputLink(this); // vložení hrany k místu
+	}
+	// pokud pokud je na vstupu hrany místo a na výstupu přechod
+	else if (((p = Place::getPlace(inputName)) != NULL) && ((t = Transition::getTransition(outputName)) != NULL))
+	{
+		this->input = p;
+		this->output = t;
+		
+		p->addInputLink(this); // vložení hrany k přechodu // je potřeba ???
+		t->addOutputLink(this); // vložení hrany k místu
+	}
+	
 	this->capacity = capacity;
 	listOfLinks.push_back(this);
 }

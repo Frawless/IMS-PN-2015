@@ -36,6 +36,23 @@ void Simulator::createModel()
 	model->addLink("přechod_1","místo_1", 0);
 	model->addLink("místo_1","přechod_2", 0);
 	model->addLink("přechod_2","místo_2", 0);
+	
+	//Token * t = model->addToken("místo_1");
+	
+	
+	
+	model->addToken("místo_1");
+	
+	model->modelValidate();
+	
+	/*Token::printTokens();
+	
+	Place::getPlace("místo_1")->printTokens();
+	Place::getPlace("místo_1")->removeToken(t);
+	model->removeToken(t);
+	std::cerr<<"print"<<endl;
+	Token::printTokens();
+	//Place::getPlace("místo_1")->printTokens();*/
 }
 
 /**

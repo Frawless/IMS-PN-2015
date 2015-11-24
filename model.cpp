@@ -41,12 +41,15 @@ void Model::addPlace(std::string name)
  */
 void Model::addPlace(std::string name, int capacity)
 {
-	if (Place::getPlace(name) != NULL)
-		std::cerr<<"Místo se jménem \""<<name<<" již existuje\"."<<std::endl;
-	else if (Transition::getTransition(name) != NULL)
-		std::cerr<<"Název pro místo \""<<name<<" je již použit pro pojmenování přechodu."<<std::endl;
-	else
+	try
+	{
 		new Place(name, capacity);
+	}
+	catch(int e)
+	{
+		std::cerr<<"ahoj"<<std::endl;
+	}
+	//??? statistiky
 }
 
 /**
@@ -57,18 +60,15 @@ void Model::addPlace(std::string name, int capacity)
  */
 void Model::addTransition(std::string name, int value, Transition::Type type)
 {
-	if (Transition::getTransition(name) != NULL)
-		std::cerr<<"Přechod se jménem \""<<name<<"\" již existuje."<<std::endl;
-	else if (Place::getPlace(name) != NULL)
-		std::cerr<<"Název pro přechod \""<<name<<" je již použit pro pojmenování místa."<<std::endl;
-	else if (!(type >= Transition::TIMED_EXP && type <= Transition::PRIORITY))
-		std::cerr<<"Nelze vložit přechod \""<<name<<"\" s neexistujícím typem."<<std::endl;
-	else if (value == 0 && type >= Transition::TIMED_EXP && type <= Transition::STOCHASTIC)
-		std::cerr<<"Nelze vložit přechod \""<<name<<"\" s nulovou hodnotou zpoždění nebo pravděpodobnosti."<<std::endl;
-	else if (value < 0)
-		std::cerr<<"Nelze vložit přechod \""<<name<<"\" s zápornou hodnotou jeho vlastnosti."<<std::endl;
-	else
+	try
+	{
 		new Transition(name, value, type);
+	}
+	catch(int e)
+	{
+		std::cerr<<"cau"<<std::endl;
+	}
+	//??? statistiky
 }
 
 /**
@@ -88,43 +88,15 @@ void Model::addTransition(std::string name)
  */
 void Model::addLink(std::string inputName, std::string outputName, int capacity)
 {
-	Transition* t; // ukazatel na přechod
-	Place* p; // ukazatel na místo
+	try
+	{
+		new Link(inputName, outputName, capacity); // vytvoření hrany
+	}
+	catch(int e)
+	{
 	
-	// pokud je hrana mezi přechodem a neexistujícím místem
-	if (Transition::getTransition(inputName) != NULL && Place::getPlace(outputName) == NULL)
-	{
-		std::cerr<<"Nelze vytvořit hranu mezi přechodem a neexistujícím místem.!"<<std::endl;
 	}
-	else if (Place::getPlace(inputName) != NULL && Transition::getTransition(outputName) == NULL)
-	{
-		std::cerr<<"Nelze vytvořit hranu mezi místem a neexistujícím přechodem.!"<<std::endl;
-	}
-	else if (Place::getPlace(inputName) != NULL && Place::getPlace(outputName) != NULL)
-	{
-		std::cerr<<"Nelze vytvořit hranu mezi 2 místy.!"<<std::endl;
-	}
-	else if (Transition::getTransition(inputName) != NULL && Transition::getTransition(outputName))
-	{
-		std::cerr<<"Nelze vytvořit hranu mezi 2 přechody.!"<<std::endl;
-	}
-	else if (((t = Transition::getTransition(inputName)) != NULL) && ((p = Place::getPlace(outputName)) != NULL))
-	{
-		Link *l = new Link(t, p, capacity); // vytvoření hrany
-		
-		p->addOutputLink(l); // vložení hrany k přechodu // je potřeba ???
-		t->addInputLink(l); // vložení hrany k místu
-	}
-	// pokud pokud je na vstupu hrany místo a na výstupu přechod
-	else if (((p = Place::getPlace(inputName)) != NULL) && ((t = Transition::getTransition(outputName)) != NULL))
-	{
-		Link *l = new Link(p, t, capacity); // vytvoření hrany
-		
-		p->addInputLink(l); // vložení hrany k přechodu // je potřeba ???
-		t->addOutputLink(l); // vložení hrany k místu
-	}
-	else
-		std::cerr<<"Chybná kombinace místo-přechod (více ošetřit?)"<<inputName<<"("<<(p==NULL)<<"):"<<outputName<<"("<<(t==NULL)<<")"<<std::endl;
+	//??? statistiky
 }
 
 /**
@@ -132,9 +104,10 @@ void Model::addLink(std::string inputName, std::string outputName, int capacity)
  * @param placeName název místa, kam má být token vložen
  * @param count počet vložench tokenů
  */
-void Model::addToken(std::string placeName, int count)
+Token* Model::addToken(std::string placeName, int count)
 {
 	Place * place;
+	Token *token;
 
 	// pokud zadané místo neexistuje
 	if((place = Place::getPlace(placeName)) == NULL)
@@ -146,18 +119,20 @@ void Model::addToken(std::string placeName, int count)
 	// vložení tokenu do místa i-krát
 	for(int i = 0; i < count; i++)
 	{
-		Token *token = new Token(place);
+		token = new Token(place);
 		place->addToken(token);  
 	}
+	return token;	//???smazat a vrátit metodu na void
+	//??? statistiky
 }
 
 /**
  * Přidání jednoho tokenu do místa zadaného jménem.
  * @param placeName název místa
  */
-void Model::addToken(std::string placeName)
+Token* Model::addToken(std::string placeName)
 {
-	Model::addToken(placeName, 1); 
+	return Model::addToken(placeName, 1); 
 }
 
 /**
@@ -188,4 +163,56 @@ void Model::printModel()
 		
 		std::cerr<<"Linka z: "<<(*modelLink)->getInput()->getName()<<" do: "<<(*modelLink)->getOutput()->getName()<<std::endl;
 	}	
+}
+
+/**
+ * 
+ * @param token
+ */
+void Model::removeToken(Token *token)
+{
+	Place *place = token->getPlace();
+	place->removeToken(token);	
+	/*???
+	 if(pokud není v událostech)
+		
+	 */token->removeToken(token);
+}
+
+/**
+ * 
+ */
+void Model::modelValidate()
+{
+	Place *place;
+	// deklarace iterátoru
+	std::map<std::string, Place *>::iterator iterPlace;
+	std::map<std::string, Transition *>::iterator iterTransition;
+	
+	std::map<std::string, Place *> *listOfPlaces =  Place::getPlaces();
+	std::map<std::string, Transition *> *listOfTransitions =  Transition::getTransitions();
+	
+	for (iterTransition = listOfTransitions->begin(); iterTransition != listOfTransitions->end(); iterTransition++)
+	{
+		
+	}
+	
+
+	for (iterPlace = listOfPlaces->begin(); iterPlace != listOfPlaces->end(); iterPlace++)
+	{
+		place = (*iterPlace).second;
+		std::cerr<<place->getName()<<std::endl;
+		//velikost místa < počet tokenů v místě
+		if(place->getCapacity() < place->getTokenCount() && place->getCapacity() != 0)
+		{
+			std::cerr<<"Počet značek v místě \""<< place->getName() <<"\" přesahuje jeho kapacitu!"<<std::endl;
+			throw 1;
+		}
+		//min. jedna vstupní nebo výstupní hrana
+		if(place->getInputLinkCount() < 1 && place->getOutputLinkCount() < 1)
+		{
+			std::cerr<<"Místo \""<< place->getName() <<"\" nemá ani vstupní ani výstupní hranu!"<<std::endl;
+			throw 1;
+		}
+	}
 }

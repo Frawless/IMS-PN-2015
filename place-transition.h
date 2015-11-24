@@ -31,6 +31,8 @@ class PlaceTransition
 		void addInputLink(Link *link); // přidání vstupu hrany k místu/přechodu
 		void addOutputLink(Link *link); // přidání výstupu hrany k místu/přechodu
 		std::string getName(); // získání názvu hrany/přechodu
+		int getInputLinkCount();
+		int getOutputLinkCount();
 
 	protected:
 		std::string name; // jméno místa/přechodu
@@ -49,6 +51,10 @@ class Place: public PlaceTransition
 		static std::map<std::string, Place *>* getPlaces(); // získání ukazatele na pole míst
 		void addToken(Token* token); // přidání tokenu do místa
 		static Place* getPlace(std::string name); // získání ukazatele na místo dle jeho jména
+		void removeToken(Token *token); //odstranění tokenu z pole tokenů v místě
+		int getCapacity();
+		int getTokenCount();
+		void printTokens();
 
 	private:
 		static std::map<std::string, Place *> listOfPlaces; // pole míst

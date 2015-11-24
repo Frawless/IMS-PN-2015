@@ -14,6 +14,8 @@
 #include "place-transition.h"
 #include "token.h"
 
+using namespace std;
+
 class Link;
 class PlaceTransition;
 class Place;
@@ -33,9 +35,11 @@ class Model
 		void addTransition(std::string name); // přidání přechodu
 		void addTransition(std::string name, int value, Transition::Type type); // přidání přechodu
 		void addLink(std::string inputName, std::string outputName, int capacity); // přidání hrany
-		void addToken(std::string placeName); // přidání tokenu do místa 
-		void addToken(std::string placeName, int count); // přidání tokenu do místa 
+		Token* addToken(std::string placeName); // přidání tokenu do místa 
+		Token* addToken(std::string placeName, int count); // přidání tokenu do místa 
 		void printModel(); // vytisknutí modelu
+		void removeToken(Token *token); //odebrání značky z místa
+		static void modelValidate(); //validace modelu
 	private:
 };
 

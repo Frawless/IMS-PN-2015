@@ -12,6 +12,9 @@
 #define TOKEN_H
 
 #include <vector>
+#include <iostream>
+
+using namespace std; 
 
 class Place;
 
@@ -24,6 +27,8 @@ class Token
 		Token(Place *place); //konstruktor tokenu
 		static std::vector <Token *>* getTokens(); // získání ukazatele na pole tokenů
 		Place* getPlace(); // získání ukazatele na místo v němž je token vložen
+		void removeToken(Token *token); //odstranění tokenu z pole všech tokenů
+		static void printTokens(); //vypsání všech tokenů
 
 	private:
 		static std::vector <Token *> listOfTokens; // pole tokenů

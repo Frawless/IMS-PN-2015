@@ -11,6 +11,7 @@
 
 #include "token.h"
 
+
 std::vector <Token *> Token::listOfTokens;
 
 /**
@@ -38,4 +39,37 @@ std::vector <Token *>* Token::getTokens()
 Place* Token::getPlace()
 {
 	return this->place;
+}
+
+/**
+ * 
+ * @param token
+ */
+void Token::removeToken(Token *token)
+{
+	std::vector <Token *>::iterator it;		//iterátor pro průchod polem tokenů
+	//prohledání pole tokenů
+	for(it = listOfTokens.begin(); it != listOfTokens.end(); it++)
+	{
+		if(*it == token)
+		{
+			delete(token);			//smazání objektu tokenu
+			listOfTokens.erase(it);		//smazání ze seznamu
+		}
+		return;
+	}
+}
+
+/**
+ * 
+ */
+void Token::printTokens()
+{
+	std::vector <Token *>::iterator it;		//iterátor pro průchod polem tokenů
+	//prohledání pole tokenů
+	for(it = listOfTokens.begin(); it != listOfTokens.end(); it++)
+	{
+		std::cerr<<"Token: "<<*it<<std::endl;
+
+	}
 }
