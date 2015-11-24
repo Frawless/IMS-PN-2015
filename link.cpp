@@ -49,8 +49,9 @@ Link::Link(std::string inputName, std::string outputName, int capacity)
 		this->input = t;
 		this->output = p;
 		
-		p->addOutputLink(this); // vložení hrany k přechodu // je potřeba ???
-		t->addInputLink(this); // vložení hrany k místu
+		p->addInputLink(this); // vložení hrany k místu
+		t->addOutputLink(this); // vložení hrany k přechodu // je potřeba ???
+		
 	}
 	// pokud pokud je na vstupu hrany místo a na výstupu přechod
 	else if (((p = Place::getPlace(inputName)) != NULL) && ((t = Transition::getTransition(outputName)) != NULL))
@@ -58,8 +59,8 @@ Link::Link(std::string inputName, std::string outputName, int capacity)
 		this->input = p;
 		this->output = t;
 		
-		p->addInputLink(this); // vložení hrany k přechodu // je potřeba ???
-		t->addOutputLink(this); // vložení hrany k místu
+		t->addInputLink(this); // vložení hrany k přechodu // je potřeba ???
+		p->addOutputLink(this); // vložení hrany k místu
 	}
 	
 	this->capacity = capacity;

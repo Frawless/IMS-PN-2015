@@ -40,6 +40,7 @@ class Model
 		void printModel(); // vytisknutí modelu
 		void removeToken(Token *token); //odebrání značky z místa
 		static void modelValidate(); //validace modelu
+		void printTokenCount();
 	private:
 };
 

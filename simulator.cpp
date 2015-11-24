@@ -29,22 +29,33 @@ void Simulator::createModel()
 	model->addPlace("místo_2");
 	model->addPlace("místo_3");
 	
+	//model->addTransition("přechod_1");
 	model->addTransition("přechod_1");
+	
 	model->addTransition("přechod_2");
+	model->addTransition("přechod_3");
+	//model->addTransition("přechod_3", 1, Transition::PRIORITY);
+	model->addTransition("přechod_4", 50, Transition::STOCHASTIC);
+	model->addTransition("přechod_5", 50, Transition::STOCHASTIC);
 	
 	model->addLink("místo_3","přechod_1", 0);
+	model->addLink("místo_3","přechod_3", 0);
+	
 	model->addLink("přechod_1","místo_1", 0);
 	model->addLink("místo_1","přechod_2", 0);
+	model->addLink("místo_3","přechod_2", 0);
 	model->addLink("přechod_2","místo_2", 0);
+	
+	model->addLink("místo_2","přechod_4",1);
+	model->addLink("místo_2","přechod_5",1);
 	
 	//Token * t = model->addToken("místo_1");
 	
-	
-	
 	model->addToken("místo_1");
-	
-	model->modelValidate();
-	
+	model->addToken("místo_1");
+	model->addToken("místo_1");
+	model->addToken("místo_3");
+
 	/*Token::printTokens();
 	
 	Place::getPlace("místo_1")->printTokens();
@@ -53,6 +64,8 @@ void Simulator::createModel()
 	std::cerr<<"print"<<endl;
 	Token::printTokens();
 	//Place::getPlace("místo_1")->printTokens();*/
+	
+	model->printTokenCount();
 }
 
 /**
@@ -80,7 +93,12 @@ int main()
 	try
 	{
 		simulator->createModel(); // vytvoření modelu
-		std::cerr<<"Model vytvořen"<<std::endl;
+		std::cerr<<"Model zapsán"<<std::endl;
+		std::cerr<<"Zacinam validovat"<<std::endl;
+		simulator->getModel()->modelValidate();
+		std::cerr<<"Model zvalidován"<<std::endl;
+		
+		std::cerr<<"Vypišuji model"<<std::endl;
 		simulator->getModel()->printModel(); // vytisknutí modelu
 	}
 	

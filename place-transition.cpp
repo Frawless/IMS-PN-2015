@@ -207,6 +207,24 @@ Transition* Transition::getTransition(std::string name)
 }
 
 /**
+ * 
+ * @return 
+ */
+int Transition::getTransitionType()
+{
+	return this->type;
+}
+
+/**
+ * 
+ * @return 
+ */
+unsigned int Transition::getValue()
+{
+	return this->value;
+}
+
+/**
  * Získání ukazatele na pole přechodů
  * @return ukazatel na pole přechodů
  */
@@ -257,4 +275,21 @@ int PlaceTransition::getInputLinkCount()
 int PlaceTransition::getOutputLinkCount()
 {
 	return outputLinks.size();
+}
+
+/**
+ * 
+ */
+std::vector<Link *> *PlaceTransition::getOutputLinks()
+{
+	return &outputLinks;
+}
+
+/**
+ * 
+ * @return 
+ */
+std::vector<Link *> *PlaceTransition::getInputLinks()
+{
+	return &inputLinks;
 }

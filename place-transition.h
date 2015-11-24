@@ -33,6 +33,8 @@ class PlaceTransition
 		std::string getName(); // získání názvu hrany/přechodu
 		int getInputLinkCount();
 		int getOutputLinkCount();
+		std::vector<Link *> *getOutputLinks();
+		std::vector<Link *> *getInputLinks();
 
 	protected:
 		std::string name; // jméno místa/přechodu
@@ -42,7 +44,7 @@ class PlaceTransition
 
 /**
  * Třída reprezentující místo modelu.
- */
+ */ 
 class Place: public PlaceTransition
 {
 	public:
@@ -76,6 +78,8 @@ class Transition: public PlaceTransition
 		Transition(std::string name, int value, Transition::Type type);
 		static std::map<std::string, Transition *>* getTransitions();
 		static Transition* getTransition(std::string name);
+		int getTransitionType();
+		unsigned int getValue();
 
 	private:
 		static std::map<std::string, Transition *> listOfTransitions; // pole přechodů
