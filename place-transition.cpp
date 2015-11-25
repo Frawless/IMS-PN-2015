@@ -225,6 +225,45 @@ unsigned int Transition::getValue()
 }
 
 /**
+ * 
+ * @return 
+ */
+bool Transition::checkPlaceOutput()
+{
+	std::vector<Link *> ::iterator iterOutputLink;
+	std::vector<Link *> *outputLinks = Link::getLinks();
+	Place* place;
+	
+	for(iterOutputLink = outputLinks->begin(); iterOutputLink != outputLinks->end(); iterOutputLink++ )
+	{
+		place  = (Place *)(*iterOutputLink)->getInput();
+		if (place->getTokenCount() < (*iterOutputLink)->getCapacity())
+			return false;
+	}
+	return true;
+}
+
+/**
+ * 
+ * @return 
+ */
+bool Transition::checkPlaceInput()
+{
+	std::vector<Link *> ::iterator iterInputLink;
+	std::vector<Link *> *inputLinks = Link::getLinks();
+	Place* place;
+	
+	for(iterInputLink = inputLinks->begin(); iterInputLink != inputLinks->end(); iterInputLink++ )
+	{
+		place  = (Place *)(*iterInputLink)->getInput();
+		if (place->getTokenCount() < (*iterInputLink)->getCapacity())
+			return false;
+	}
+	return true;
+}
+
+
+/**
  * Získání ukazatele na pole přechodů
  * @return ukazatel na pole přechodů
  */

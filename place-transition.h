@@ -80,6 +80,8 @@ class Transition: public PlaceTransition
 		static Transition* getTransition(std::string name);
 		int getTransitionType();
 		unsigned int getValue();
+		bool checkPlaceOutput();
+		bool checkPlaceInput();
 
 	private:
 		static std::map<std::string, Transition *> listOfTransitions; // pole přechodů

@@ -228,12 +228,11 @@ void Model::modelValidate()
 	// postupné procházení jednotlivých míst 
 	for (iterPlace = listOfPlaces->begin(); iterPlace != listOfPlaces->end(); iterPlace++)
 	{
-		std::cerr<<"Test validace"<<std::endl;
 		// získání dílčího místa
 		place = (*iterPlace).second;
 		
 		// vypsání místa
-		std::cerr<<"DEBUG:Místo: "<<place->getName()<<std::endl;
+		//???std::cerr<<"DEBUG:Místo: "<<place->getName()<<std::endl;
 		
 		// pokud počet tokenů v místě přesahuje jeho kapacitu
 		if(place->getTokenCount() > place->getCapacity()  && place->getCapacity() != 0)
@@ -310,7 +309,6 @@ void Model::modelValidate()
 				}
 			}
 			
-			std::cerr<<"Value tmp: "<<stochasticValueCnt<<std::endl;
 			if(stochasticValueCnt != 100 && stochasticValueCnt != 0)
 				std::cerr<<"Součet pravděpodobnostních přechodů není roven 100!"<<std::endl;
 		}

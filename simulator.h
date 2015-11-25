@@ -42,6 +42,19 @@ class Simulator
 		void createModel(); // vytvoření modelu
 		Model *getModel(); // získání ukazatele na model
 		void printModel(); // vytisknutí modelu
+		Calendar *getCalendar(); // získání ukazatele na model
+		
+		void setSimTime(double simTime); // nastavení simulačního času
+		void setMaxSimTime(double maxSimTime); // nastavení konce simulačního času
+		
+		// metoda pro volbu prioritního přechodu
+		
+		void simStart(); // zahájení simulace
+		void performTransitions(); // vykoná nečasové přechody a naplánuje časované přechody
+		// vykonání konkrétního přechodu
+		// vykonání časovaného přechodu
+		// naplánovat událost
+		
 
 	private:
 		Model *model; // ukazatel na model
