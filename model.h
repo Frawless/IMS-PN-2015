@@ -41,6 +41,8 @@ class Model
 		void removeToken(Token *token); //odebrání značky z místa
 		static void modelValidate(); //validace modelu
 		void printTokenCount();
+		int getTransitionCount();
+		Transition* getTransitionToParse(int random);
 	private:
 };
 

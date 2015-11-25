@@ -330,3 +330,44 @@ void Model::printTokenCount()
 		std::cerr<<"Místo: "<<it->second->getName()<<"Počet tokenů: "<<it->second->getTokenCount()<<std::endl;
 	}
 }
+
+/**
+ * 
+ */
+int Model::getTransitionCount()
+{
+	int transitions = 0;
+	std::map<std::string, Transition *>::iterator it;		//iterátor pro průchod polem tokenů
+	std::map<std::string, Transition *> *listOfTransitions =  Transition::getTransitions();
+	//prohledání pole tokenů
+	for(it = listOfTransitions->begin(); it != listOfTransitions->end(); it++)
+	{
+		transitions += 1;
+	}
+	
+	return transitions;
+}
+
+/**
+ * 
+ * @param random
+ * @return 
+ */
+Transition * Model::getTransitionToParse(int random)
+{
+	std::map<std::string, Transition *>::iterator it;		//iterátor pro průchod polem tokenů
+	std::map<std::string, Transition *> *listOfTransitions =  Transition::getTransitions();
+	Transition * transition;
+	
+	int i = 0;
+	it = listOfTransitions->begin();
+	
+	//prohledání pole tokenů a hledání příslušného podle random	
+	while(i < (random))
+	{
+		it++;
+		i++;
+	}
+
+	return (*it).second;
+}

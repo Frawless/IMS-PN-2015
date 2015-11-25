@@ -10,6 +10,9 @@
 
 #include "simulator.h"
 
+#include <cmath>
+#include <algorithm>
+
 using namespace std; 
 
 /**
@@ -175,7 +178,195 @@ void Simulator::simStart()
  */
 void Simulator::performTransitions()
 {
+	Transition *transition;
+	double wait;
+	std::vector<Transition *> checkTransitions; // vektor vektoru ukazatelů všech přechodů
+	std::map<std::string, Transition *>::iterator iterTransition; //iterátor pro průchod seznamem přechodů
+	std::map<std::string, Transition *> *listOfTransitions =  Transition::getTransitions(); // seznam přechodů
 	
+	// vložení ukazatelů na všechny přechody do vektoru přechodů
+	for(iterTransition = listOfTransitions->begin(); iterTransition != listOfTransitions->end(); iterTransition++)
+	{
+		checkTransitions.push_back(iterTransition->second);
+	}
+	
+	// shuffle s vectorem
+	std::random_shuffle(checkTransitions.begin(), checkTransitions.end());
+
+	int x = 0;
+	while(!checkTransitions.empty())
+	{
+		// získán ukazatel na vybraný přechod
+		transition = checkTransitions.back();
+		checkTransitions.pop_back();
+		
+		switch(transition->getTransitionType())
+		{
+			case Transition::TIMED_CONST:
+				std::cerr<<"Const"<<std::endl;
+				wait = transition->getValue(); // nastavení hodnoty zpoždění
+				// vložit do kalendáře
+				break;
+			case Transition::TIMED_EXP:
+				std::cerr<<"EXP"<<std::endl;		
+				// vygenerovat exponenciální zpoždění a vložit do kelenadáře
+				wait = Exponential(transition->getValue());
+				// vložit do kalendáře
+				break;
+			case Transition::PRIORITY:
+				std::cerr<<"Priority"<<std::endl;
+				//kontrola priorit
+				//vykonání přechodu
+				this->clearPerformedTransition(); //nastavení všech přechodů na false
+				break;
+			case Transition::STOCHASTIC:
+				std::cerr<<"Stochastic"<<std::endl;
+				//rozhodnou, který přechod použít (generováníh odnot)
+				//vykonat přechod
+				this->clearPerformedTransition(); //nastavení všech přechodů na false
+				break;
+		}
+	}
+
+	
+	//int random;
+	/*while(1)
+	{
+		x++;
+		random = rand() % this->model->getTransitionCount();
+		std::cerr<<"Random number: "<<random<<std::endl;
+		// získán ukazatel na vybraný přechod
+		transition = this->model->getTransitionToParse(random);
+		
+		if(!transition->checkPlaceInput() || !transition->checkPlaceOutput())
+		{
+			transition->setIsPerformed(true);	
+			continue;
+		}
+		else
+		{
+			switch(transition->getTransitionType())
+			{
+				case Transition::TIMED_CONST:
+					std::cerr<<"Const"<<std::endl;
+					wait = transition->getValue(); // nastavení hodnoty zpoždění
+					// vložit do kalendáře
+					break;
+				case Transition::TIMED_EXP:
+					std::cerr<<"EXP"<<std::endl;		
+					// vygenerovat exponenciální zpoždění a vložit do kelenadáře
+					wait = Exponential(transition->getValue());
+					// vložit do kalendáře
+					break;
+				case Transition::PRIORITY:
+					std::cerr<<"Priority"<<std::endl;
+					//kontrola priorit
+					//vykonání přechodu
+					this->clearPerformedTransition(); //nastavení všech přechodů na false
+					break;
+				case Transition::STOCHASTIC:
+					std::cerr<<"Stochastic"<<std::endl;
+					//rozhodnou, který přechod použít (generováníh odnot)
+					//vykonat přechod
+					this->clearPerformedTransition(); //nastavení všech přechodů na false
+					break;
+			}
+		}
+		transition->setIsPerformed(true);
+
+		if(x == 11)
+			return;
+	}*/
+}
+
+
+void Simulator::planTransition(Transition *transition, double wait)
+{
+	Event *event;
+	Place *place;
+	Transition *prechod;
+	Link *link;
+	Token *token;
+	
+	event = new Event(this->simTime+wait, wait, transition); // vytvoření události
+	
+	std::vector<Token *> checkTokens; // vektor vektoru ukazatelů všech přechodů
+	std::vector<Token *>::iterator iterPlaceTokens; //iterátor pro průchod seznamem přechodů
+	std::vector<Token *> *listOfTokens; // seznam přechodů
+	
+	std::vector<Link *>::iterator iterLink; //iterátor pro průchod seznamem linek
+	std::vector<Link *> *listOfLinks =  transition->getInputLinks(); // seznam vstupních linek	přechodu
+
+
+	// vložení ukazatelů na všechny přechody do vektoru přechodů
+	for(iterLink = listOfLinks->begin(); iterLink != listOfLinks->end(); iterLink++)
+	{
+		place = (Place*)(*iterLink)->getInput();
+		listOfTokens = place->getTokens();
+		
+		// vložení ukazatelů na všechny přechody do vektoru přechodů
+		for(iterPlaceTokens = listOfTokens->begin(); iterPlaceTokens != listOfTokens->end(); iterPlaceTokens++)
+		{
+			checkTokens.push_back((*iterPlaceTokens));
+		}
+
+		// shuffle s vectorem
+		std::random_shuffle(checkTokens.begin(), checkTokens.end());
+		
+		for(int i = 0; i < link->getCapacity(); i++)
+		{
+			// získání  náhodného tokenu
+			token = checkTokens.back();
+			checkTokens.pop_back();
+		}
+	}
+	
+}
+/**
+ * Metoda pro vykonán přechodu
+ * 1 - smazat značky ze vstupního místa
+ * 2 - vložit značky na výstupní místo 
+ */
+
+/**
+ * Metoda pro plánování  událostí v kalendáři
+ */
+
+//PlanTransitionEvents->planTimedEvent->addEvent
+
+/**
+ * 
+ * @return 
+ */
+double Simulator::Random()
+{
+	return rand()/(RAND_MAX+1.0);
+}
+
+/**
+ *  SIMLIB
+ * @param mv
+ * @return 
+ */
+double Simulator::Exponential(double mv)
+{
+  double exp = -mv * std::log(Random());
+//  _Print("Exponential(%g),%g = %g\n", mv, r, exp);
+  return exp;
+}
+
+/**
+ * 
+ */
+void Simulator::clearPerformedTransition()
+{
+	std::map<std::string, Transition *>::iterator iterTransition;
+	std::map<std::string, Transition *> *listOfTransitions = Transition::getTransitions();
+	
+	for(iterTransition = listOfTransitions->begin(); iterTransition != listOfTransitions->end(); iterTransition++)
+	{
+		(*iterTransition).second->setIsPerformed(false);
+	}
 }
 
 int main()

@@ -35,11 +35,13 @@ class PlaceTransition
 		int getOutputLinkCount();
 		std::vector<Link *> *getOutputLinks();
 		std::vector<Link *> *getInputLinks();
+		bool checkPlace();
 
 	protected:
 		std::string name; // jméno místa/přechodu
 		std::vector<Link *> inputLinks; // pole vstupních hran vázaných k místu/přechodu
 		std::vector<Link *> outputLinks; // pole výstupních hran vázaných k místu/přechoduan
+		bool isPlace;
 };
 
 /**
@@ -57,6 +59,7 @@ class Place: public PlaceTransition
 		int getCapacity();
 		int getTokenCount();
 		void printTokens();
+		std::vector<Token *> *getTokens();
 
 	private:
 		static std::map<std::string, Place *> listOfPlaces; // pole míst
@@ -80,13 +83,17 @@ class Transition: public PlaceTransition
 		static Transition* getTransition(std::string name);
 		int getTransitionType();
 		unsigned int getValue();
-		bool checkPlaceOutput();
+		bool checkPlacesValue();
 		bool checkPlaceInput();
+		bool checkPlaceOutput();
+		bool getIsPerformed();
+		void setIsPerformed(bool value);
 
 	private:
 		static std::map<std::string, Transition *> listOfTransitions; // pole přechodů
 		Type type; // typ přechodu
 		unsigned int value;	// hodnota typu přechodu - čas/priorita/pravděpodobnost
+		bool isPerformed;
 };
 
 #endif

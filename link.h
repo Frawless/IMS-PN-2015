@@ -30,6 +30,7 @@ class Link
 		PlaceTransition *getOutput(); // získání místa/přechodu na výstupu hrany
 		int getCapacity(); // získání kapacity
 
+
 	private:
 		static std::vector <Link *> listOfLinks; // pole hran
 		PlaceTransition *input;	// ukazatel na místo/přechod na vstupu hrany

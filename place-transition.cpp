@@ -10,6 +10,8 @@
 #include "place-transition.h"
 #include "token.h"
 
+#include <typeinfo>
+
 std::map<std::string, Transition *> Transition::listOfTransitions;
 std::map<std::string, Place *> Place::listOfPlaces;
 
@@ -43,6 +45,7 @@ Place::Place(std::string name, int capacity)
 	this->capacity = capacity;
 	this->min = 0;
 	this->max = 0;
+	this->isPlace = true;
 	listOfPlaces.insert(std::pair<std::string, Place*>(name, this));	
 }
 
@@ -134,6 +137,11 @@ void Place::printTokens()
 	}
 }
 
+std::vector<Token *> *Place::getTokens()
+{
+	return &listOfTokens;
+}
+
 /* ############################ class Transition ##############################*/
 
 /**
@@ -183,6 +191,8 @@ Transition::Transition(std::string name, int value, Transition::Type type)
 	this->name = name;
 	this->value = value;
 	this->type = type;
+	this->isPlace = false;
+	this->isPerformed = false;
 	listOfTransitions.insert(std::pair<std::string, Transition*>(name, this));
 }
 
@@ -236,7 +246,12 @@ bool Transition::checkPlaceOutput()
 	
 	for(iterOutputLink = outputLinks->begin(); iterOutputLink != outputLinks->end(); iterOutputLink++ )
 	{
+		if(!(*iterOutputLink)->getInput()->checkPlace())
+			continue;
 		place  = (Place *)(*iterOutputLink)->getInput();
+		
+		if(place->getTokenCount() == 0)
+			continue;
 		if (place->getTokenCount() < (*iterOutputLink)->getCapacity())
 			return false;
 	}
@@ -250,18 +265,36 @@ bool Transition::checkPlaceOutput()
 bool Transition::checkPlaceInput()
 {
 	std::vector<Link *> ::iterator iterInputLink;
-	std::vector<Link *> *inputLinks = Link::getLinks();
+	std::vector<Link *> *link = Link::getLinks();
 	Place* place;
 	
-	for(iterInputLink = inputLinks->begin(); iterInputLink != inputLinks->end(); iterInputLink++ )
+	for(iterInputLink = link->begin(); iterInputLink != link->end(); iterInputLink++ )
 	{
+		if(!(*iterInputLink)->getInput()->checkPlace())
+			continue;
 		place  = (Place *)(*iterInputLink)->getInput();
+		
+		if(place->getTokenCount() == 0)
+			continue;
 		if (place->getTokenCount() < (*iterInputLink)->getCapacity())
 			return false;
 	}
 	return true;
 }
 
+/**
+ * 
+ * @return 
+ */
+bool Transition::getIsPerformed()
+{
+	return this->isPerformed;
+}
+
+void Transition::setIsPerformed(bool value)
+{
+	this->isPerformed = value;
+}
 
 /**
  * Získání ukazatele na pole přechodů
@@ -281,6 +314,7 @@ void PlaceTransition::addInputLink(Link *link)
 {
 	this->inputLinks.push_back(link);
 }
+
 
 /**
  * Přidání výstupu hrany do pole místa/přechodu
@@ -331,4 +365,13 @@ std::vector<Link *> *PlaceTransition::getOutputLinks()
 std::vector<Link *> *PlaceTransition::getInputLinks()
 {
 	return &inputLinks;
+}
+
+/**
+ * 
+ * @return 
+ */
+bool PlaceTransition::checkPlace()
+{
+	return this->isPlace;
 }

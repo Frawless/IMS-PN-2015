@@ -22,6 +22,7 @@
 #include <fstream>
 #include <sstream>
 #include <string>
+#include <vector>
 
 class Link;
 class PlaceTransition;
@@ -30,6 +31,7 @@ class Transition;
 class Token;
 class Model;
 class Calendar;
+class Event;
 
 /**
  * Třída reprezentující simulátor Petriho sítě.
@@ -54,6 +56,14 @@ class Simulator
 		// vykonání konkrétního přechodu
 		// vykonání časovaného přechodu
 		// naplánovat událost
+		
+		//funkce progenerování exponenciálního zpoždění
+		double Random();
+		double Exponential(double mv);
+		
+		static void clearPerformedTransition(); // nastavení přechodů na false
+		
+		void planTransition(Transition *transition, double wai); // naplánování časovaného přechodu
 		
 
 	private:

@@ -10,6 +10,8 @@
 
 #include "link.h"
 
+#include <typeinfo>
+
 std::vector <Link *> Link::listOfLinks;
 
 /**
@@ -84,6 +86,14 @@ PlaceTransition* Link::getInput()
 {
 	return this->input;
 }
+/*
+Place* Link::getInput2()
+{
+	if(typeid(Place*) == this->input)
+		return (Place*)this->input;
+	else
+		return NULL;
+}*/
 
 /**
  * Získání místa/přechodu na výstupu hrany
