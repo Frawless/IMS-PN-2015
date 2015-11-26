@@ -32,6 +32,7 @@ Calendar::~Calendar()
  */
 bool Calendar::isEmpty()
 {
+	std::cerr<<"velikost kalendáře: "<<listOfEvents.size()<<std::endl;
 	return this->listOfEvents.empty();
 }
 
@@ -130,4 +131,13 @@ void Event::addTokenToEvent(Token* token)
 {
 	// ??? možná něco ke statistikám
 	listOfTokens.push_back(token);
+}
+
+/**
+ * 
+ * @param event
+ */
+void Calendar::deleteEvent(Event *event)
+{
+	listOfEvents.erase(event);
 }

@@ -64,7 +64,12 @@ class Simulator
 		
 		static void clearPerformedTransition(); // nastavení přechodů na false
 		
-		void planTransition(Transition *transition, double wai); // naplánování časovaného přechodu
+		void planTransition(Transition *transition, double wait); // naplánování časovaného přechodu
+		
+		void planEvents(Transition *transition, double wait); // plánování událostí
+		void performTransitionFromEvent(Event *event);
+		
+		
 		
 
 	private:

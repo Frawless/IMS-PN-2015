@@ -32,6 +32,7 @@ class Event
 		Transition *getTransition(); // vrátí ukazatel na přechod
 		void addTokenToEvent(Token *token);
 		
+		
 
 	private:
 		double time; // čas události
@@ -67,6 +68,8 @@ class Calendar
 		//delete first
 		void printCalendar(); //vytisknutí kalendáře		
 		std::multiset<Event *, EventSort>* getEvents();
+		
+		void deleteEvent(Event *event);
 	private:
 		std::multiset<Event *, EventSort> listOfEvents; // multimnožina záznamů v kalendáři
 

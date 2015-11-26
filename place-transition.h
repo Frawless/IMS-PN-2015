@@ -88,12 +88,15 @@ class Transition: public PlaceTransition
 		bool checkPlaceOutput();
 		bool getIsPerformed();
 		void setIsPerformed(bool value);
+		bool getIsTimed();
+		void setIsTimed(bool value);
 
 	private:
 		static std::map<std::string, Transition *> listOfTransitions; // pole přechodů
 		Type type; // typ přechodu
 		unsigned int value;	// hodnota typu přechodu - čas/priorita/pravděpodobnost
 		bool isPerformed;
+		bool isTimed;
 };
 
 #endif

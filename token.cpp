@@ -21,6 +21,7 @@ Token::Token(Place * place)
 {
 	this->place = place;
 	listOfTokens.push_back(this);
+	this->waitFlag = false;
 }
 
 /**

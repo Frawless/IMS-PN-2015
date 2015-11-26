@@ -99,6 +99,7 @@ void Place::removeToken(Token *token)
 	{
 		if(*it == token)
 		{
+			delete(token);			//smazání objektu tokenu
 			listOfTokens.erase(it);		//smazání ze seznamu
 		}
 		return;
@@ -193,6 +194,7 @@ Transition::Transition(std::string name, int value, Transition::Type type)
 	this->type = type;
 	this->isPlace = false;
 	this->isPerformed = false;
+	this->isTimed = false;
 	listOfTransitions.insert(std::pair<std::string, Transition*>(name, this));
 }
 
@@ -304,6 +306,24 @@ std::map<std::string, Transition *>* Transition::getTransitions()
 {
 	return &listOfTransitions;
 } 
+
+/**
+ * 
+ * @return 
+ */
+bool Transition::getIsTimed()
+{
+	return this->isTimed;
+}
+
+/**
+ * 
+ * @param value
+ */
+void Transition::setIsTimed(bool value)
+{
+	this->isTimed = value;
+}
 
 /* ########################## class PlaceTransition ###########################*/
 /**
