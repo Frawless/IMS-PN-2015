@@ -193,7 +193,6 @@ void Simulator::performTransitions()
 	// shuffle s vectorem
 	std::random_shuffle(checkTransitions.begin(), checkTransitions.end());
 
-	int x = 0;
 	while(!checkTransitions.empty())
 	{
 		// získán ukazatel na vybraný přechod
@@ -206,6 +205,7 @@ void Simulator::performTransitions()
 				std::cerr<<"Const"<<std::endl;
 				wait = transition->getValue(); // nastavení hodnoty zpoždění
 				// vložit do kalendáře
+				std::cerr<<wait<<std::endl;
 				break;
 			case Transition::TIMED_EXP:
 				std::cerr<<"EXP"<<std::endl;		
@@ -284,7 +284,6 @@ void Simulator::planTransition(Transition *transition, double wait)
 {
 	Event *event;
 	Place *place;
-	Transition *prechod;
 	Link *link;
 	Token *token;
 	
@@ -301,6 +300,7 @@ void Simulator::planTransition(Transition *transition, double wait)
 	// vložení ukazatelů na všechny přechody do vektoru přechodů
 	for(iterLink = listOfLinks->begin(); iterLink != listOfLinks->end(); iterLink++)
 	{
+		link = (*iterLink);
 		place = (Place*)(*iterLink)->getInput();
 		listOfTokens = place->getTokens();
 		
@@ -317,7 +317,16 @@ void Simulator::planTransition(Transition *transition, double wait)
 		{
 			// získání  náhodného tokenu
 			token = checkTokens.back();
-			checkTokens.pop_back();
+			if(token->isTokenProcessedByTransition(transition))
+				continue;
+			if(checkTokens.empty())
+			{
+				delete event;
+				return;
+			}
+			
+			
+			checkTokens.pop_back(); // ??? možná jinde
 		}
 	}
 	

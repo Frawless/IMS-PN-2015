@@ -73,3 +73,29 @@ void Token::printTokens()
 
 	}
 }
+
+/**
+ * 
+ * @param transition
+ * @return 
+ */
+bool Token::isTokenProcessedByTransition(Transition* transition)
+{
+	std::vector<Transition*>::iterator iterToken;
+	for(iterToken = listOfEvents.begin(); iterToken != listOfEvents.end(); iterToken++)
+	{
+		if(transition ==(*iterToken))
+			return true;
+	}
+	return false;
+}
+
+
+/**
+ * 
+ * @param transition
+ */
+void Token::tokenProcessedByTransition(Transition *transition)
+{
+	listOfEvents.push_back(transition);
+}

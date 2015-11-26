@@ -17,6 +17,7 @@
 using namespace std; 
 
 class Place;
+class Transition;
 
 /**
  * Třída reprezentující token v místě
@@ -29,9 +30,13 @@ class Token
 		Place* getPlace(); // získání ukazatele na místo v němž je token vložen
 		void removeToken(Token *token); //odstranění tokenu z pole všech tokenů
 		static void printTokens(); //vypsání všech tokenů
+		
+		void tokenProcessedByTransition(Transition *transition); // 
+		bool isTokenProcessedByTransition(Transition* transition); // 
 
 	private:
 		static std::vector <Token *> listOfTokens; // pole tokenů
 		Place * place; // ukazatel na místo v němž je token vložen
+		std::vector<Transition *> listOfEvents; // seznam přechodů, ve kterých se nachází
 };
 #endif
