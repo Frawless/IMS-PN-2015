@@ -53,7 +53,8 @@ class Simulator
 		
 		void simStart(); // zahájení simulace
 		void performTransitions(); // vykoná nečasové přechody a naplánuje časované přechody
-		// vykonání konkrétního přechodu
+		void performTransition(Transition *transition); // vykonání konkrétního přechodu
+		
 		// vykonání časovaného přechodu
 		// naplánovat událost
 		

@@ -30,6 +30,7 @@ class Event
 		//přidání/odebrání tokenu dos eznamu tokenu nalezici udalosti ???
 		bool isEmpty(); // je seznam tokenů prázdný?
 		Transition *getTransition(); // vrátí ukazatel na přechod
+		void addTokenToEvent(Token *token);
 		
 
 	private:

@@ -42,7 +42,7 @@ Place* Token::getPlace()
 }
 
 /**
- * 
+ *  Pro smazání při opuštění systému
  * @param token
  */
 void Token::removeToken(Token *token)
@@ -98,4 +98,13 @@ bool Token::isTokenProcessedByTransition(Transition* transition)
 void Token::tokenProcessedByTransition(Transition *transition)
 {
 	listOfEvents.push_back(transition);
+}
+
+/**
+ * 
+ * @param isInEvent
+ */
+void Token::setFlag(bool isInEvent)
+{
+	this->waitFlag = isInEvent;
 }

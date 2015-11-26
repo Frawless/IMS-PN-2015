@@ -176,7 +176,8 @@ void Model::removeToken(Token *token)
 	/*???
 	 if(pokud není v událostech)
 		
-	 */token->removeToken(token);
+	 */
+	token->removeToken(token);
 }
 
 /**
@@ -339,6 +340,7 @@ int Model::getTransitionCount()
 	int transitions = 0;
 	std::map<std::string, Transition *>::iterator it;		//iterátor pro průchod polem tokenů
 	std::map<std::string, Transition *> *listOfTransitions =  Transition::getTransitions();
+	
 	//prohledání pole tokenů
 	for(it = listOfTransitions->begin(); it != listOfTransitions->end(); it++)
 	{
@@ -357,7 +359,6 @@ Transition * Model::getTransitionToParse(int random)
 {
 	std::map<std::string, Transition *>::iterator it;		//iterátor pro průchod polem tokenů
 	std::map<std::string, Transition *> *listOfTransitions =  Transition::getTransitions();
-	Transition * transition;
 	
 	int i = 0;
 	it = listOfTransitions->begin();

@@ -43,6 +43,7 @@ class Model
 		void printTokenCount();
 		int getTransitionCount();
 		Transition* getTransitionToParse(int random);
+
 	private:
 };
 

@@ -121,3 +121,13 @@ Transition *Event::getTransition()
 {
 	return this->trainsition;
 }
+
+/**
+ * 
+ * @param token
+ */
+void Event::addTokenToEvent(Token* token)
+{
+	// ??? možná něco ke statistikám
+	listOfTokens.push_back(token);
+}

@@ -33,10 +33,13 @@ class Token
 		
 		void tokenProcessedByTransition(Transition *transition); // 
 		bool isTokenProcessedByTransition(Transition* transition); // 
+		
+		void setFlag(bool isInEvent);
 
 	private:
 		static std::vector <Token *> listOfTokens; // pole tokenů
 		Place * place; // ukazatel na místo v němž je token vložen
 		std::vector<Transition *> listOfEvents; // seznam přechodů, ve kterých se nachází
+		bool waitFlag;
 };
 #endif
