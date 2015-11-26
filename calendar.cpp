@@ -27,8 +27,8 @@ Calendar::~Calendar()
 }
 
 /**
- * 
- * @return 
+ * Ověří, zda je kalendář záznamů o událostech prázdný.
+ * @return true - pokud je kalendář prázdný
  */
 bool Calendar::isEmpty()
 {
@@ -37,8 +37,8 @@ bool Calendar::isEmpty()
 }
 
 /**
- * 
- * @param 
+ * Přidá událost zadanou parametrem do kalendáře záznamů o událostech.
+ * @param event událost pro vložení
  */
 void Calendar::addEvent(Event *event)
 {
@@ -46,50 +46,63 @@ void Calendar::addEvent(Event *event)
 }
 
 /**
- * 
- * @return 
+ * Smaže událost zadanou parametrem z kalendáře událostí.
+ * @param event mazaná událost
+ */
+void Calendar::deleteEvent(Event *event)
+{
+	listOfEvents.erase(event);
+}
+
+/**
+ * Vrátí nejdříve naplánovaný záznam o události z kalendáře záznamů o událostech.
+ * @return první událost z kalendáře událostí
  */
 Event *Calendar::getEvent()
 {
 	return (*this->listOfEvents.begin());
 }
 
+/**
+ * Vrátí ukazatel na seznam záznamů kalendáře záznamů o událostech.
+ * @return ukazatel na seznam událostí kalendáře
+ */
 std::multiset<Event *, EventSort>* Calendar::getEvents()
 {
 	return &listOfEvents;
 }
 
 /**
- * 
+ * Vytiskne postupně jednotlivé události kalendáře záznamů o událostech na strerr (debug).
  */
 void Calendar::printCalendar()
 {
-	std::multiset<Event *>::iterator event;
+	std::multiset<Event *>::iterator event; // iterátor pro průchod kalendářem
 	
+	// získání seznamu událostí
 	std::multiset<Event *, EventSort>*  listOfEvents = this->getEvents();
+	
+	// postupné procházení seznamem událostí
 	for(event = listOfEvents->begin(); event != listOfEvents->end(); event++)
-	{
 		std::cerr<<(*event)->getTransition()->getName()<<"T: "<<(*event)->getTime()<<"W: "<<(*event)->getWait()<<std::endl;
-	}
 }
 
-
 /**
- * 
- * @param time
- * @param waint
- * @param transition
+ * Konstruktur záznamu o události kalendáře záznamů o událostech.
+ * @param time čas, na který je událost naplánována
+ * @param wait čas, po který se přechod provádí
+ * @param transition ukazatel na přechod, který s událostí souvisí
  */
 Event::Event(double time, double wait, Transition *transition)
 {
 	this->time = time;
-	this->wait = wait;
+	this->wait = wait; // ???možná by nemuselo být a hodnota by se získávála přímo z přechodu
 	this->trainsition = transition;
 }
 
 /**
- * Získání času události
- * @return čas události
+ * Vrátí aktivační čas události
+ * @return aktivační čas události
  */
 double Event::getTime()
 {
@@ -97,8 +110,8 @@ double Event::getTime()
 }
 
 /**
- * 
- * @return 
+ * Vrátí čas provádění přechodu.
+ * @return  čas provádění přechodu
  */
 double Event::getWait()
 {
@@ -106,17 +119,8 @@ double Event::getWait()
 }
 
 /**
- * 
- * @return 
- */
-bool Event::isEmpty()
-{
-	return this->listOfTokens.empty();
-}
-
-/**
- * 
- * @return 
+ * Vrátí ukazatel na přechod, ke kterému se událost váže.
+ * @return ukazatel na přechod
  */
 Transition *Event::getTransition()
 {
@@ -124,8 +128,8 @@ Transition *Event::getTransition()
 }
 
 /**
- * 
- * @param token
+ * Přídá token do seznamu tokenů účastnících se události.
+ * @param token vkládaný token
  */
 void Event::addTokenToEvent(Token* token)
 {
@@ -134,10 +138,10 @@ void Event::addTokenToEvent(Token* token)
 }
 
 /**
- * 
- * @param event
+ * Ověří, zda je seznam tokenů účástnících se události prázdný.
+ * @return true - seznam tokenů je prázdný
  */
-void Calendar::deleteEvent(Event *event)
+bool Event::isListOfTokensEmpty()
 {
-	listOfEvents.erase(event);
+	return this->listOfTokens.empty();
 }

@@ -18,31 +18,50 @@ class Token;
 class Transition;
 
 /**
- * Třída reprezentující událost v kalendáři
+ * Třída reprezentující kalendář záznamů o událostech.
+ */
+class Calendar
+{
+	public:
+		Calendar(); // konstruktor kalendáře
+		~Calendar(); // destruktor kalendáře
+		bool isEmpty(); // ověří, zda je kalendář prázdný
+		void addEvent(Event *event); // přídá událost do kalendáře
+		void deleteEvent(Event *event); // smaže událost z kalendáře
+		Event* getEvent(); // vrátí nejblíže naplánovanou událost z kalendáře
+		std::multiset<Event *, EventSort>* getEvents(); // vrátí ukazatel na seznam záznamů o událostech
+		void printCalendar(); // vytiskne kalendář
+		
+	
+	private:
+		std::multiset<Event *, EventSort> listOfEvents; // seznam záznamů o událostech v kalendáři
+
+};
+
+
+/**
+ * Třída reprezentující záznam o události v kalendáři
  * @return 
  */
 class Event
 {
 	public:
-		Event(double time, double wait, Transition *transition); //konstruktor
-		double getTime(); // získání času události
-		double getWait(); // získání zpoždění události
-		//přidání/odebrání tokenu dos eznamu tokenu nalezici udalosti ???
-		bool isEmpty(); // je seznam tokenů prázdný?
-		Transition *getTransition(); // vrátí ukazatel na přechod
-		void addTokenToEvent(Token *token);
-		
-		
+		Event(double time, double wait, Transition *transition); // konstruktor události
+		double getTime(); // vratí aktivační čas události
+		double getWait(); // vrátí čas provádění prechodu
+		Transition *getTransition(); // vrátí ukazatel na přechod učástnící se události
+		void addTokenToEvent(Token *token); // přidá token seznamu tokenů události
+		bool isListOfTokensEmpty(); // ověří, zda je seznam tokenů události prázdný
 
 	private:
-		double time; // čas události
-		double wait; // ??? doba čekání
+		double time; // aktivační čas události
+		double wait; // doba provádění přechodu
 		Transition *trainsition; // ukazatel na přechod
-		std::vector<Token *> listOfTokens; // pole tokenů události
+		std::vector<Token *> listOfTokens; // seznam tokenů události
 	};
 
 	/**
-	 * Deklarace řazení seznamu událostí
+	 * Deklarace řazení seznamu kaládáře záznamů o událostech
      */
 	struct EventSort
 	{
@@ -51,28 +70,6 @@ class Event
 			//return x < y -> vzít event time
 			return x->getTime() < y->getTime();
 		}
-};
-
-/**
- * Třída reprezentující kalendář záznamů o událostech.
- */
-class Calendar
-{
-	public:
-		Calendar(); // konstruktor kalendáře
-		~Calendar(); // destruktor kalendáře
-		
-		bool isEmpty(); //je kalendář prádzný?
-		void addEvent(Event *event); //přidání události 
-		Event* getEvent(); //funkce pro získání následující události
-		//delete first
-		void printCalendar(); //vytisknutí kalendáře		
-		std::multiset<Event *, EventSort>* getEvents();
-		
-		void deleteEvent(Event *event);
-	private:
-		std::multiset<Event *, EventSort> listOfEvents; // multimnožina záznamů v kalendáři
-
-};
+	};
 
 #endif
