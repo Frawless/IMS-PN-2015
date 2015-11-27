@@ -72,7 +72,7 @@ void Model::addTransition(std::string name, int value, Transition::Type type)
 }
 
 /**
- * Přidání přechodu do modelu
+ * Přidá přechod do modelu
  * @param name název přechodu
  */
 void Model::addTransition(std::string name)
@@ -81,7 +81,7 @@ void Model::addTransition(std::string name)
 }
 
 /**
- * Přidání hrany do modelu
+ * Přidá hranu do modelu
  * @param inputName název místa/přechodu na vstupní části hrany
  * @param outputName název místa/přechodu na výstupní části hrany
  * @param capacity kapacita hrany
@@ -100,11 +100,11 @@ void Model::addLink(std::string inputName, std::string outputName, int capacity)
 }
 
 /**
- * Přidání zadaného počtu tokenů do místa zadaného jménem.
+ * Přidá zadaný počet tokenů do místa zadaného jménem.
  * @param placeName název místa, kam má být token vložen
  * @param count počet vložench tokenů
  */
-Token* Model::addToken(std::string placeName, int count)
+void Model::addToken(std::string placeName, int count)
 {
 	Place * place;
 	Token *token;
@@ -122,72 +122,39 @@ Token* Model::addToken(std::string placeName, int count)
 		token = new Token(place);
 		place->addToken(token);  
 	}
-	return token;	//???smazat a vrátit metodu na void
 	//??? statistiky
 }
 
 /**
- * Přidání jednoho tokenu do místa zadaného jménem.
+ * Přidá jeden token do místa zadaného jménem.
  * @param placeName název místa
  */
-Token* Model::addToken(std::string placeName)
+void Model::addToken(std::string placeName)
 {
 	return Model::addToken(placeName, 1); 
 }
 
 /**
- * Vytisknutí modelu
- */
-void Model::printModel()
-{
-	// deklarace iterátorů pro průchod polí míst, přechodů a hran
-	std::map<std::string, Place *>::iterator modelPlace;
-	std::map<std::string, Transition *>::iterator modelTransition;
-	std::vector<Link *>::iterator modelLink;
-	
-	// průchod míst
-	for(modelPlace = Place::getPlaces()->begin(); modelPlace != Place::getPlaces()->end(); modelPlace++)
-	{
-		std::cerr<<"Místo: "<<modelPlace->second->getName()<<std::endl;
-	}
-	
-	// průchod přechodů
-	for(modelTransition = Transition::getTransitions()->begin(); modelTransition != Transition::getTransitions()->end(); modelTransition++)
-	{
-		std::cerr<<"Přechod: "<<modelTransition->second->getName()<<" (type:"<<modelTransition->second->getTransitionType()<<")"<<std::endl;
-	}	
-
-	// průchod hran
-	for(modelLink = Link::getLinks()->begin(); modelLink != Link::getLinks()->end(); modelLink++)
-	{
-		
-		std::cerr<<"Linka z: "<<(*modelLink)->getInput()->getName()<<" do: "<<(*modelLink)->getOutput()->getName()<<std::endl;
-	}	
-}
-
-/**
- * 
- * @param token
+ * Smaže zadaný token. odkud jak proč ???!!!???
+ * @param token ukazatel na token, který má být smazán
  */
 void Model::removeToken(Token *token)
 {
-	Place *place = token->getPlace();
-	//place->removeToken(token);	
 
 	if(token->getListOfEvents()->empty())
 		token->removeToken(token);	
 }
 
 /**
- * Ověření, zda je model syntakticky správný.
+ * Ověřeí, zda byl model syntakticky správně zapsán.
  */
 void Model::modelValidate()
 {
 	Place *place;  // ukazatel na místo
 	Transition *transition; // ukazatel na přechod
 	Link *link; // ukazatel na hranu
-	double isFirstPriorityOrDelay = false;
-	int stochasticValueCnt = 0;
+	double isFirstPriorityOrDelay = false; // první v seznamu je prioritní nebo časovaný přechod
+	int stochasticValueCnt = 0; // součet pravděpodobností převděpodobnostních přechodů
 	
 	// deklarace iterátorů pro místa, přechody a výstupní hrany
 	std::map<std::string, Place *>::iterator iterPlace;
@@ -212,7 +179,7 @@ void Model::modelValidate()
 			throw 1;
 		}
 		
-		// řeším dole
+		// řeším dole ???
 		/*// pokud se jedná o časovaný nebo prioritní přechod (TIMED_EXP, TIMED_CONST, STOCHASTIC, PRIORITY)
 		if(transition->getTransitionType() != Transition::STOCHASTIC)
 		{
@@ -250,27 +217,27 @@ void Model::modelValidate()
 		std::vector<Link *> *outputLinks = place->getOutputLinks();
 		
 		// pokud má místo nějaké výstupní hrany
-		if (outputLinks->size()  != 0)
+		if (outputLinks->size() != 0)
 		{
 			// pokud je první procházený přechod prioritní nebo časovaný (tak i všechny ostatní musí být 
-			// tohoto typu, nastaven příznak typu prvního na  true
+			// tohoto typu, nastaven příznak typu prvního na true)
 			if (((Transition *)((*outputLinks->begin())->getOutput()))->getTransitionType() != Transition::STOCHASTIC)
 				isFirstPriorityOrDelay = true;
 
 			// postupné procházení hran vedoucích z právě zpracovávaného místa
 			for(iterOutputLink = outputLinks->begin(); iterOutputLink != outputLinks->end(); iterOutputLink++ )
 			{
-				//std::cerr<<(Transition *)((*iterOutputLink)->getOutput())<<std::endl;
+				//???std::cerr<<(Transition *)((*iterOutputLink)->getOutput())<<std::endl;
 				// právě procházená hrana
 				link = *iterOutputLink;
-				// přiřazení přechodu na konci procházené hrany
+				
+				// přechodu na konci procházené hrany
 				transition = ((Transition *)((*iterOutputLink)->getOutput()));
 
 				// pokud je typ právě procházeného přechodu STOCHASTIC
 				if (transition->getTransitionType() == Transition::STOCHASTIC) 
 				{
-
-					// pokud již byl nalezen časovaný nebo priotiní typ přechodu připojený na dané místo
+					// pokud již byl nalezen časovaný nebo prioritní typ přechodu připojený na dané místo
 					if (isFirstPriorityOrDelay == true)
 						std::cerr<<"Místo \""<< place->getName() <<"\" kombinuje časovaný nebo prioritní přechod s pravděpodobnostním!"<<std::endl;				
 				
@@ -308,65 +275,48 @@ void Model::modelValidate()
 				}
 			}
 			
+			// pokud je součet pravděpodobnostních přechodů různých od 100 & byly zpracovávány pravděpodobnostních přechody
 			if(stochasticValueCnt != 100 && stochasticValueCnt != 0)
 				std::cerr<<"Součet pravděpodobnostních přechodů není roven 100!"<<std::endl;
 		}
-		isFirstPriorityOrDelay = false;	// reset hodnoty 
-		stochasticValueCnt = 0;	// reset součtu pravděpodobnostních přechodů
+		
+		isFirstPriorityOrDelay = false;	// reset příznaku prioritního nebo časovaného přechodu
+		stochasticValueCnt = 0;	// reset součtu hodnot pravděpodobnostních přechodů
 	}
 }
 
 /**
- * 
+ * Vytiskne počty tokenů ve všech místech modelu.
  */
 void Model::printTokenCount()
 {
-	std::map<std::string, Place *>::iterator it;		//iterátor pro průchod polem tokenů
-	std::map<std::string, Place *> *listOfPlaces =  Place::getPlaces();
-	//prohledání pole tokenů
+	std::map<std::string, Place *>::iterator it; // iterátor pro průchod seznamem všech míst modelu
+	std::map<std::string, Place *> *listOfPlaces =  Place::getPlaces(); // získání seznamu všech míst modelu
+	
+	// postupné procházení seznamu všech míst modelu
 	for(it = listOfPlaces->begin(); it != listOfPlaces->end(); it++)
-	{
 		std::cerr<<"Místo: "<<it->second->getName()<<" -> Počet tokenů: "<<it->second->getTokenCount()<<std::endl;
-	}
 }
 
 /**
- * 
+ * Vytiskne přehled celého modelu
  */
-int Model::getTransitionCount()
+void Model::printModel()
 {
-	int transitions = 0;
-	std::map<std::string, Transition *>::iterator it;		//iterátor pro průchod polem tokenů
-	std::map<std::string, Transition *> *listOfTransitions =  Transition::getTransitions();
+	// deklarace iterátorů pro průchod polí míst, přechodů a hran
+	std::map<std::string, Place *>::iterator modelPlace;
+	std::map<std::string, Transition *>::iterator modelTransition;
+	std::vector<Link *>::iterator modelLink;
 	
-	//prohledání pole tokenů
-	for(it = listOfTransitions->begin(); it != listOfTransitions->end(); it++)
-	{
-		transitions += 1;
-	}
+	// průchod míst
+	for(modelPlace = Place::getPlaces()->begin(); modelPlace != Place::getPlaces()->end(); modelPlace++)
+		std::cerr<<"Místo: "<<modelPlace->second->getName()<<std::endl;
 	
-	return transitions;
-}
+	// průchod přechodů
+	for(modelTransition = Transition::getTransitions()->begin(); modelTransition != Transition::getTransitions()->end(); modelTransition++)
+		std::cerr<<"Přechod: "<<modelTransition->second->getName()<<" (type:"<<modelTransition->second->getTransitionType()<<")"<<std::endl;
 
-/**
- * 
- * @param random
- * @return 
- */
-Transition * Model::getTransitionToParse(int random)
-{
-	std::map<std::string, Transition *>::iterator it;		//iterátor pro průchod polem tokenů
-	std::map<std::string, Transition *> *listOfTransitions =  Transition::getTransitions();
-	
-	int i = 0;
-	it = listOfTransitions->begin();
-	
-	//prohledání pole tokenů a hledání příslušného podle random	
-	while(i < (random))
-	{
-		it++;
-		i++;
-	}
-
-	return (*it).second;
+	// průchod hran
+	for(modelLink = Link::getLinks()->begin(); modelLink != Link::getLinks()->end(); modelLink++)
+		std::cerr<<"Linka z: "<<(*modelLink)->getInput()->getName()<<" do: "<<(*modelLink)->getOutput()->getName()<<std::endl;
 }

@@ -23,26 +23,24 @@ class Transition;
 class Token;
 
 /**
- * Třída reprezentující model Petriho sítě.
+ * Třída reprezentující model Petriho sítě, který bude simulován.
  */
 class Model
 {
 	public:
-		Model(); // konstruktor	
-		~Model(); // destruktor
-		void addPlace(std::string name); // přidání místa
-		void addPlace(std::string name, int capacity); // přidání místa
-		void addTransition(std::string name); // přidání přechodu
-		void addTransition(std::string name, int value, Transition::Type type); // přidání přechodu
-		void addLink(std::string inputName, std::string outputName, int capacity); // přidání hrany
-		Token* addToken(std::string placeName); // přidání tokenu do místa 
-		Token* addToken(std::string placeName, int count); // přidání tokenu do místa 
-		void printModel(); // vytisknutí modelu
-		void removeToken(Token *token); //odebrání značky z místa
-		static void modelValidate(); //validace modelu
-		void printTokenCount();
-		int getTransitionCount();
-		Transition* getTransitionToParse(int random);
+		Model(); // konstruktor	modelu
+		~Model(); // destruktor modelu
+		void addPlace(std::string name); // přidá místo do modelu
+		void addPlace(std::string name, int capacity); // přidá místo do modelu
+		void addTransition(std::string name); // přidá přechod do modelu
+		void addTransition(std::string name, int value, Transition::Type type); // přidá přechod do modelu
+		void addLink(std::string inputName, std::string outputName, int capacity); // přidá hranu do modelu
+		void addToken(std::string placeName); // přidá token do místa 
+		void addToken(std::string placeName, int count); // přidá zadaný počet tokenů do místa 
+		void removeToken(Token *token); // odebere token z místa ???!!!???
+		static void modelValidate(); // ověří syntaktickou správnou modelu
+		void printTokenCount(); // vytiskne počty tokenů v jednotlivých místech modelu
+		void printModel(); // vytiskne přehled celého modelu
 
 	private:
 };
