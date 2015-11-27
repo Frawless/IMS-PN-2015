@@ -25,19 +25,19 @@ Model::~Model()
 }
 
 /**
- * Přidání místa do modelu zadaného jménem
- * @param name jméno místa
+ * Přidá místo do modelu.
+ * @param name jméno místa pro přidání
  */
 void Model::addPlace(std::string name)
 {
 	// kontrola ???
-	Model::addPlace(name, 0);
+	Model::addPlace(name, 0); // ???nula pryč
 }
 
 /**
- * Přidá místo do modelu
+ * Přidá místo do modelu.
  * @param name jméno místa
- * @param capacity kapacita místa ???
+ * @param capacity kapacita místa
  */
 void Model::addPlace(std::string name, int capacity)
 {
@@ -47,15 +47,15 @@ void Model::addPlace(std::string name, int capacity)
 	}
 	catch(int e)
 	{
-		std::cerr<<"ahoj"<<std::endl;
+		std::cerr<<"ahoj"<<std::endl; // ???
 	}
 	//??? statistiky
 }
 
 /**
- * Přidání přechodu do modelu
+ * Přidá přechod do modelu
  * @param name jméno přechodu
- * @param value parametr přechodu (čas, pravděpodobnost, priorita)
+ * @param value parametr typu přechodu (čas, hodnota pravděpodobnosti, priorita)
  * @param type typ přechodu (časovaný, pravděpodobnostní, prioritní)
  */
 void Model::addTransition(std::string name, int value, Transition::Type type)
@@ -66,7 +66,7 @@ void Model::addTransition(std::string name, int value, Transition::Type type)
 	}
 	catch(int e)
 	{
-		std::cerr<<"cau"<<std::endl;
+		std::cerr<<"cau"<<std::endl; // ???
 	}
 	//??? statistiky
 }
@@ -77,7 +77,7 @@ void Model::addTransition(std::string name, int value, Transition::Type type)
  */
 void Model::addTransition(std::string name)
 {
-	Model::addTransition(name, 0, Transition::PRIORITY);
+	Model::addTransition(name, 0, Transition::PRIORITY); // nula pryč
 }
 
 /**
@@ -116,7 +116,7 @@ Token* Model::addToken(std::string placeName, int count)
 		throw 1;
 	}
 	
-	// vložení tokenu do místa i-krát
+	// vložení tokenu do místa count-krát
 	for(int i = 0; i < count; i++)
 	{
 		token = new Token(place);

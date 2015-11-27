@@ -19,7 +19,6 @@ class Transition;
 
 /**
  * Třída reprezentující záznam o události v kalendáři
- * @return 
  */
 class Event
 {
