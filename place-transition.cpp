@@ -94,15 +94,17 @@ void Place::addToken(Token* token)
 void Place::removeToken(Token *token)
 {
 	std::vector <Token *>::iterator it;		//iterátor pro průchod polem tokenů
+	std::vector<Token *> *listOfTokens = this->getTokens();
 	//prohledání pole tokenů
-	for(it = listOfTokens.begin(); it != listOfTokens.end(); it++)
+	for(it = listOfTokens->begin(); it != listOfTokens->end(); it++)
 	{
 		if(*it == token)
-		{
+		{;
 			delete(token);			//smazání objektu tokenu
-			listOfTokens.erase(it);		//smazání ze seznamu
+			listOfTokens->erase(it);		//smazání ze seznamu
+			return;
 		}
-		return;
+		
 	}
 }
 

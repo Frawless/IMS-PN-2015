@@ -10,6 +10,7 @@
 
 
 #include "token.h"
+#include "place-transition.h"
 
 
 std::vector <Token *> Token::listOfTokens;

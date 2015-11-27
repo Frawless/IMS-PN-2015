@@ -328,7 +328,7 @@ void Model::printTokenCount()
 	//prohledání pole tokenů
 	for(it = listOfPlaces->begin(); it != listOfPlaces->end(); it++)
 	{
-		std::cerr<<"Místo: "<<it->second->getName()<<"Počet tokenů: "<<it->second->getTokenCount()<<std::endl;
+		std::cerr<<"Místo: "<<it->second->getName()<<" -> Počet tokenů: "<<it->second->getTokenCount()<<std::endl;
 	}
 }
 

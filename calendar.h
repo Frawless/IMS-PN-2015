@@ -18,28 +18,6 @@ class Token;
 class Transition;
 
 /**
- * Třída reprezentující kalendář záznamů o událostech.
- */
-class Calendar
-{
-	public:
-		Calendar(); // konstruktor kalendáře
-		~Calendar(); // destruktor kalendáře
-		bool isEmpty(); // ověří, zda je kalendář prázdný
-		void addEvent(Event *event); // přídá událost do kalendáře
-		void deleteEvent(Event *event); // smaže událost z kalendáře
-		Event* getEvent(); // vrátí nejblíže naplánovanou událost z kalendáře
-		std::multiset<Event *, EventSort>* getEvents(); // vrátí ukazatel na seznam záznamů o událostech
-		void printCalendar(); // vytiskne kalendář
-		
-	
-	private:
-		std::multiset<Event *, EventSort> listOfEvents; // seznam záznamů o událostech v kalendáři
-
-};
-
-
-/**
  * Třída reprezentující záznam o události v kalendáři
  * @return 
  */
@@ -71,5 +49,26 @@ class Event
 			return x->getTime() < y->getTime();
 		}
 	};
+	
+/**
+ * Třída reprezentující kalendář záznamů o událostech.
+ */
+class Calendar
+{
+	public:
+		Calendar(); // konstruktor kalendáře
+		~Calendar(); // destruktor kalendáře
+		bool isEmpty(); // ověří, zda je kalendář prázdný
+		void addEvent(Event *event); // přídá událost do kalendáře
+		void deleteEvent(Event *event); // smaže událost z kalendáře
+		Event* getEvent(); // vrátí nejblíže naplánovanou událost z kalendáře
+		std::multiset<Event *, EventSort>* getEvents(); // vrátí ukazatel na seznam záznamů o událostech
+		void printCalendar(); // vytiskne kalendář
+		
+	
+	private:
+		std::multiset<Event *, EventSort> listOfEvents; // seznam záznamů o událostech v kalendáři
+
+};
 
 #endif

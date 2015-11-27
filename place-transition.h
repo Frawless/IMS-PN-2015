@@ -61,6 +61,7 @@ class Place: public PlaceTransition
 		void printTokens();
 		std::vector<Token *> *getTokens();
 
+
 	private:
 		static std::map<std::string, Place *> listOfPlaces; // pole míst
 		std::vector<Token *> listOfTokens;  // pole tokenů v místě
