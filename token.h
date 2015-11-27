@@ -35,6 +35,8 @@ class Token
 		bool isTokenProcessedByTransition(Transition* transition); // 
 		
 		void setFlag(bool isInEvent);
+		
+		std::vector<Transition *> *getListOfEvents();
 
 	private:
 		static std::vector <Token *> listOfTokens; // pole tokenů

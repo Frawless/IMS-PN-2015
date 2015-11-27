@@ -57,8 +57,8 @@ void Token::removeToken(Token *token)
 		{
 			delete(token);			//smazání objektu tokenu
 			listOfTokens.erase(it);		//smazání ze seznamu
-		}
-		return;
+			return;
+		}	
 	}
 }
 
@@ -109,4 +109,9 @@ void Token::tokenProcessedByTransition(Transition *transition)
 void Token::setFlag(bool isInEvent)
 {
 	this->waitFlag = isInEvent;
+}
+
+std::vector<Transition *> *Token::getListOfEvents()
+{
+	return &(this->listOfEvents);
 }
