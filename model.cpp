@@ -172,12 +172,10 @@ void Model::printModel()
 void Model::removeToken(Token *token)
 {
 	Place *place = token->getPlace();
-	place->removeToken(token);	
-	/*???
-	 if(pokud není v událostech)
-		
-	 */
-	token->removeToken(token);
+	//place->removeToken(token);	
+
+	if(token->getListOfEvents()->empty())
+		token->removeToken(token);	
 }
 
 /**

@@ -192,6 +192,7 @@ void Simulator::simStart()
 		if(this->simTime > this->maxSimTime)
 		{
 			std::cerr<<"DEBUG: Konec simulace"<<std::endl;
+			std::cout<<"Konec simulace! Ukončuji simulátor..."<<std::endl;
 			exit(0);
 		}
 		//std::cerr<<"DEBUG: Kalendář není prázdný2"<<std::endl;
@@ -218,6 +219,7 @@ void Simulator::simStart()
  */
 void Simulator::performTransitionFromEvent(Event *event)
 {	
+	bool canBePerformed = false;
 	Transition *transition = event->getTransition();
 	//když je vykonán přechod vezmou se značky ze všech vstupů a dají se do všech výstupů
 	std::vector<Link *>::iterator iterLink; //iterátor pro průchod seznamem linek
@@ -225,6 +227,7 @@ void Simulator::performTransitionFromEvent(Event *event)
 	std::vector<Link *> *listOfOutputLinks =  transition->getOutputLinks(); // seznam výstupních linek	přechodu
 	Token * token;
 	Place *place;
+	Link *link;
 	
 	std::vector<Token *> checkTokens; // vektor vektoru ukazatelů všech přechodů
 	std::vector<Token *>::iterator iterPlaceTokens; //iterátor pro průchod seznamem přechodů
@@ -233,33 +236,53 @@ void Simulator::performTransitionFromEvent(Event *event)
 	// průchodu seznemu vstupních linek
 	for(iterLink = listOfInputLinks->begin(); iterLink != listOfInputLinks->end(); iterLink++)
 	{
-		place = ((Place*)((*iterLink)->getInput()));
-		listOfTokens = place->getTokens();
-
-		// získání tokentu z místa
-		// vložení ukazatelů na všechny přechody do vektoru přechodů
-		if(!listOfTokens->empty())
+		link = (*iterLink);
+		place = ((Place*)(link->getInput()));
+		if(place->getTokenCount() > link->getCapacity())
+			canBePerformed = true;
+		
+		if(!canBePerformed)
+			break;
+	}
+	
+	if(canBePerformed)
+	{
+		// průchodu seznemu vstupních linek
+		for(iterLink = listOfInputLinks->begin(); iterLink != listOfInputLinks->end(); iterLink++)
 		{
-			std::cerr<<"DEBUG: EVENT->přesouvám token z místa: "<<place->getName()<<std::endl;
-			//std::cerr<<listOfTokens->size()<<std::endl;
-			// ??? tady možná natane problém při jednom tokenu v poli
-			// procházení seznamu tokenů daného místa
-			for(iterPlaceTokens = listOfTokens->begin(); iterPlaceTokens != listOfTokens->end(); iterPlaceTokens++)
-			{
-				//std::cerr<<"V cyklu"<<std::endl;
-				checkTokens.push_back((*iterPlaceTokens));
-			}
-			// shuffle s vectorem
-			std::random_shuffle(checkTokens.begin(), checkTokens.end());	
-			//získání náhodného tokenu ze vstupního místa
-			token = checkTokens.back();
-			checkTokens.pop_back();
-			//smazání tokenu ze vstupního místa
-			std::cerr<<"DEBUG: Počet značek v místě \""<<place->getName()<<"\" : "<<place->getTokenCount()<<std::endl;
-			place->removeToken(token);
-			std::cerr<<"DEBUG: Počet značek v místě \""<<place->getName()<<"\" : "<<place->getTokenCount()<<std::endl;
+			place = ((Place*)((*iterLink)->getInput()));
+			listOfTokens = place->getTokens();
 
-		}			
+			// získání tokentu z místa
+			// vložení ukazatelů na všechny přechody do vektoru přechodů
+			if(!listOfTokens->empty())
+			{
+				std::cerr<<"DEBUG: PerformOnly->přesouvám token z místa: "<<place->getName()<<std::endl;
+				//std::cerr<<listOfTokens->size()<<std::endl;
+				// ??? tady možná natane problém při jednom tokenu v poli
+				// procházení seznamu tokenů daného místa
+				for(iterPlaceTokens = listOfTokens->begin(); iterPlaceTokens != listOfTokens->end(); iterPlaceTokens++)
+				{
+					//std::cerr<<"V cyklu"<<std::endl;
+					checkTokens.push_back((*iterPlaceTokens));
+				}
+				// shuffle s vectorem
+				std::random_shuffle(checkTokens.begin(), checkTokens.end());	
+				//získání náhodného tokenu ze vstupního místa
+				token = checkTokens.back();
+				checkTokens.pop_back();
+				//smazání tokenu ze vstupního místa
+				place->removeToken(token);
+				//???model->removeToken(token);
+				std::cerr<<"DEBUG: Počet značek v místě \""<<place->getName()<<"\" : "<<place->getTokenCount()<<std::endl;
+
+			}
+			checkTokens.clear();			
+		}
+	}
+	else if(!listOfInputLinks->empty())
+	{
+		return;
 	}
 
 	// průchodu seznamu výstupních linek
@@ -321,6 +344,7 @@ void Simulator::performTransition(Transition *transition)
 				//std::cerr<<listOfTokens->size()<<std::endl;
 				// ??? tady možná natane problém při jednom tokenu v poli
 				// procházení seznamu tokenů daného místa
+				
 				for(iterPlaceTokens = listOfTokens->begin(); iterPlaceTokens != listOfTokens->end(); iterPlaceTokens++)
 				{
 					//std::cerr<<"V cyklu"<<std::endl;
@@ -332,16 +356,18 @@ void Simulator::performTransition(Transition *transition)
 				token = checkTokens.back();
 				checkTokens.pop_back();
 				//smazání tokenu ze vstupního místa
-				std::cerr<<"DEBUG: Počet značek v místě \""<<place->getName()<<"\" : "<<place->getTokenCount()<<std::endl;
-				std::cerr<<"Objekt token pro smazání: "<<token<<std::endl;
 				place->removeToken(token);
 				std::cerr<<"DEBUG: Počet značek v místě \""<<place->getName()<<"\" : "<<place->getTokenCount()<<std::endl;
 
-			}			
+			}		
+			checkTokens.clear();
 		}
 	}
+	else if(!listOfInputLinks->empty())
+	{
+		return;
+	}
 	
-	if(!canBePerformed)
 	// průchodu seznamu výstupních linek
 	for(iterLink = listOfOutputLinks->begin(); iterLink != listOfOutputLinks->end(); iterLink++)
 	{
@@ -530,6 +556,7 @@ void Simulator::planTransition(Transition *transition, double wait)
 			event->addTokenToEvent(token);
 			checkTokens.pop_back(); // 
 		}
+		checkTokens.clear();
 	}
 	transition->setIsTimed(true);
 	std::cerr<<"DEBUG: Do kalendáře vložen Event s přechodem: "<<transition->getName()<<std::endl;
@@ -569,7 +596,7 @@ void Simulator::planEvents(Transition* transition, double wait)
 			tmp = tmpPlace->getTokenCount() / (*iterLink)->getCapacity();
 		}
 		
-		for(int i = 0; i <= place->getTokenCount(); i++)
+		for(int i = 0; i < place->getTokenCount(); i++)
 		{
 			//std::cerr<<"DEBUG: planEvents ->"<<transition<<std::endl;
 			this->planTransition(transition, wait);

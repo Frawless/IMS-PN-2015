@@ -99,7 +99,7 @@ void Place::removeToken(Token *token)
 	for(it = listOfTokens->begin(); it != listOfTokens->end(); it++)
 	{
 		if(*it == token)
-		{;
+		{
 			delete(token);			//smazání objektu tokenu
 			listOfTokens->erase(it);		//smazání ze seznamu
 			return;
