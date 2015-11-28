@@ -191,7 +191,6 @@ void Simulator::simStart()
  */
 void Simulator::performTransitionFromEvent(Event *event)
 {	
-	bool canBePerformed = false;
 	Transition *transition = event->getTransition();
 	//když je vykonán přechod vezmou se značky ze všech vstupů a dají se do všech výstupů
 	std::vector<Link *>::iterator iterLink; //iterátor pro průchod seznamem linek
@@ -199,27 +198,13 @@ void Simulator::performTransitionFromEvent(Event *event)
 	std::vector<Link *> *listOfOutputLinks =  transition->getOutputLinks(); // seznam výstupních linek	přechodu
 	Token * token;
 	Place *place;
-	Link *link;
 	
 	std::vector<Token *> checkTokens; // vektor vektoru ukazatelů všech přechodů
 	std::vector<Token *>::iterator iterPlaceTokens; //iterátor pro průchod seznamem přechodů
 	std::vector<Token *> *listOfTokens; // seznam přechodů
 	
-	// průchodu seznemu vstupních linek
-	for(iterLink = listOfInputLinks->begin(); iterLink != listOfInputLinks->end(); iterLink++)
-	{
-		link = (*iterLink);
-		place = ((Place*)(link->getInput()));
-		if(place->getTokenCount() > link->getCapacity())
-			canBePerformed = true;
-		else
-			canBePerformed = false;
-		
-		if(!canBePerformed)
-			break;
-	}
 	
-	if(canBePerformed )
+	if(transitionCanBePerformed(transition) )
 	{
 		// průchodu seznemu vstupních linek
 		for(iterLink = listOfInputLinks->begin(); iterLink != listOfInputLinks->end(); iterLink++)
@@ -277,34 +262,19 @@ void Simulator::performTransitionFromEvent(Event *event)
  */
 void Simulator::performTransition(Transition *transition)
 {	
-	bool canBePerformed = false;
 	//když je vykonán přechod vezmou se značky ze všech vstupů a dají se do všech výstupů
 	std::vector<Link *>::iterator iterLink; //iterátor pro průchod seznamem linek
 	std::vector<Link *> *listOfInputLinks =  transition->getInputLinks(); // seznam vstupních linek	přechodu
 	std::vector<Link *> *listOfOutputLinks =  transition->getOutputLinks(); // seznam výstupních linek	přechodu
 	Token * token;
 	Place *place;
-	Link *link;
 	
 	std::vector<Token *> checkTokens; // vektor vektoru ukazatelů všech přechodů
 	std::vector<Token *>::iterator iterPlaceTokens; //iterátor pro průchod seznamem přechodů
 	std::vector<Token *> *listOfTokens; // seznam přechodů
 	
-	// průchodu seznemu vstupních linek
-	for(iterLink = listOfInputLinks->begin(); iterLink != listOfInputLinks->end(); iterLink++)
-	{
-		link = (*iterLink);
-		place = ((Place*)(link->getInput()));
-		if(place->getTokenCount() > link->getCapacity())
-			canBePerformed = true;
-		else
-			canBePerformed = false;
-		
-		if(!canBePerformed)
-			break;
-	}
 	
-	if(canBePerformed)
+	if(transitionCanBePerformed(transition))
 	{
 		// průchodu seznemu vstupních linek
 		for(iterLink = listOfInputLinks->begin(); iterLink != listOfInputLinks->end(); iterLink++)
@@ -420,10 +390,14 @@ void Simulator::performTransitions()
 				{
 					//kontrola priorit
 					tmpTransition = ((Transition*)((*iterLink)->getOutput()));
+					// pokud nemůže být přechod proveden jdeme na další iteraci
+					if(!transitionCanBePerformed(tmpTransition))
+						continue;
 					if(tmp < tmpTransition->getValue())
 						transition = tmpTransition;
 					
 					tmp = transition->getValue();
+					std::cerr<<"Vypiš prioritu přechodu: "<<tmp<<std::endl;
 				}
 				//std::cerr<<"DEBUG: Vybrán přechod \""<<transition->getName()<<"\" s prioritou: "<<transition->getValue()<<std::endl;
 				std::cerr<<"DEBUG: Hodnota přechodu \""<<transition->getName()<<"\" (PRIORITY) : "<<transition->getValue()<<std::endl;
@@ -500,6 +474,9 @@ void Simulator::planTransition(Transition *transition, double wait)
 		//std::cerr<<listOfTokens->size()<<std::endl;
 		for(iterPlaceTokens = listOfTokens->begin(); iterPlaceTokens != listOfTokens->end(); iterPlaceTokens++)
 		{
+			// pokud je token už nastaven někde
+			// ?X?
+			// tohle bude asi trošku chybka, máme funkci  "isTokenProcessedByTransition" a měla by to dělat ona, nejspíš špatně funguje nebo tak -> zkus to opravit kdybych se k tomu endostal navečer
 			if((*iterPlaceTokens)->getFlag() == true)
 				continue;
 			//std::cerr<<"DEBUG: planTransition->přidávání do kalendáře3"<<std::endl;
@@ -517,25 +494,18 @@ void Simulator::planTransition(Transition *transition, double wait)
 		std::random_shuffle(checkTokens.begin(), checkTokens.end());
 			
 		for(int i = 0; i < link->getCapacity(); i++)
-		{		
-			
-			
+		{					
 			while(1)
 			{
 				// získání  náhodného tokenu
 				token = checkTokens.back();
-				std::cerr<<"tady"<<std::endl;
-				if(	token->isTokenProcessedByTransition(transition))
+				if(token->isTokenProcessedByTransition(transition))
 				{
 					checkTokens.pop_back(); // 
-					
 					continue;
 				}
 				else	
-				{
-					std::cerr<<"problem"<<std::endl;
 					break;
-				}
 					
 
 				if(checkTokens.empty())
@@ -546,19 +516,7 @@ void Simulator::planTransition(Transition *transition, double wait)
 			}			
 			
 			// získání  náhodného tokenu
-			token = checkTokens.back();
-			if(token->isTokenProcessedByTransition(transition))
-			{
-				checkTokens.pop_back(); // 
-				continue;
-			}
-				
-			
-			if(checkTokens.empty())
-			{
-				delete event;
-				return;
-			}	
+			token = checkTokens.back();				
 			
 			token->tokenProcessedByTransition(transition);
 			token->setFlag(true);
@@ -653,6 +611,35 @@ void Simulator::clearPerformedTransition()
 	{
 		(*iterTransition).second->setIsPerformed(false);
 	}
+}
+
+bool Simulator::transitionCanBePerformed(Transition *transition)
+{
+	bool canBePerformed = false;
+	//když je vykonán přechod vezmou se značky ze všech vstupů a dají se do všech výstupů
+	std::vector<Link *>::iterator iterLink; //iterátor pro průchod seznamem linek
+	std::vector<Link *> *listOfInputLinks =  transition->getInputLinks(); // seznam vstupních linek	přechodu
+	Place *place;
+	Link *link;
+	
+	std::vector<Token *> checkTokens; // vektor vektoru ukazatelů všech přechodů
+	std::vector<Token *>::iterator iterPlaceTokens; //iterátor pro průchod seznamem přechodů
+	
+	// průchodu seznemu vstupních linek
+	for(iterLink = listOfInputLinks->begin(); iterLink != listOfInputLinks->end(); iterLink++)
+	{
+		link = (*iterLink);
+		place = ((Place*)(link->getInput()));
+		if(place->getTokenCount() >= link->getCapacity())
+			canBePerformed = true;
+		else
+			canBePerformed = false;
+		
+		if(!canBePerformed)
+			break;
+	}
+	
+	return canBePerformed;
 }
 
 int main()

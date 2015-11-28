@@ -69,6 +69,7 @@ class Simulator
 		void planEvents(Transition *transition, double wait); // plánování událostí
 		void performTransitionFromEvent(Event *event);
 		
+		bool transitionCanBePerformed(Transition *transition);
 		
 		
 		static unsigned ix;     // seed pro generator
