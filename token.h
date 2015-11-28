@@ -35,6 +35,7 @@ class Token
 		bool isTokenProcessedByTransition(Transition* transition); // 
 		
 		void setFlag(bool isInEvent);
+		bool getFlag();
 		
 		std::vector<Transition *> *getListOfEvents();
 		

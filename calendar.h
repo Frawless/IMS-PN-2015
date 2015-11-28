@@ -48,7 +48,7 @@ class Event
      */
 	struct EventSort
 	{
-		bool operator()(Event *x, Event *y)
+		bool operator()(Event *x, Event *y) const
 		{
 			//return x < y -> vzít event time
 			return x->getTime() < y->getTime();

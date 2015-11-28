@@ -157,6 +157,7 @@ void Simulator::simStart()
 	{	
 		model->printTokenCount();
 		std::cerr<<"DEBUG: Hodnota simulačního času: ----------------->"<<this->simTime<<std::endl;
+		this->calendar->printCalendar();
 		//std::cerr<<"DEBUG: Kalendář není prázdný1"<<std::endl;
 		// ověření, zda je dosaženo konečného času
 		if(this->simTime > this->maxSimTime)
@@ -211,6 +212,8 @@ void Simulator::performTransitionFromEvent(Event *event)
 		place = ((Place*)(link->getInput()));
 		if(place->getTokenCount() > link->getCapacity())
 			canBePerformed = true;
+		else
+			canBePerformed = false;
 		
 		if(!canBePerformed)
 			break;
@@ -294,6 +297,8 @@ void Simulator::performTransition(Transition *transition)
 		place = ((Place*)(link->getInput()));
 		if(place->getTokenCount() > link->getCapacity())
 			canBePerformed = true;
+		else
+			canBePerformed = false;
 		
 		if(!canBePerformed)
 			break;
@@ -495,12 +500,11 @@ void Simulator::planTransition(Transition *transition, double wait)
 		//std::cerr<<listOfTokens->size()<<std::endl;
 		for(iterPlaceTokens = listOfTokens->begin(); iterPlaceTokens != listOfTokens->end(); iterPlaceTokens++)
 		{
+			if((*iterPlaceTokens)->getFlag() == true)
+				continue;
 			//std::cerr<<"DEBUG: planTransition->přidávání do kalendáře3"<<std::endl;
 			checkTokens.push_back((*iterPlaceTokens));
 		}
-
-		// shuffle s vectorem
-		std::random_shuffle(checkTokens.begin(), checkTokens.end());
 		
 		// ošetření prázdnosti místa -> v simulaci by snad nemělo nastat
 		if(checkTokens.empty())
@@ -509,6 +513,8 @@ void Simulator::planTransition(Transition *transition, double wait)
 			return;
 		}
 		
+		// shuffle s vectorem
+		std::random_shuffle(checkTokens.begin(), checkTokens.end());
 			
 		for(int i = 0; i < link->getCapacity(); i++)
 		{		

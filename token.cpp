@@ -123,3 +123,8 @@ std::vector<Transition *> *Token::getListOfEvents()
 {
 	return &(this->listOfEvents);
 }
+
+bool Token::getFlag()
+{
+	return this->waitFlag;
+}

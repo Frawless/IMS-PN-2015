@@ -143,5 +143,5 @@ void Calendar::printCalendar()
 	
 	// postupné procházení seznamem událostí
 	for(event = listOfEvents->begin(); event != listOfEvents->end(); event++)
-		std::cerr<<(*event)->getTransition()->getName()<<"T: "<<(*event)->getTime()<<"W: "<<(*event)->getWait()<<std::endl;
+		std::cerr<<"Výpis kalendáře: "<<(*event)->getTransition()->getName()<<" T: "<<(*event)->getTime()<<" W: "<<(*event)->getWait()<<std::endl;
 }
