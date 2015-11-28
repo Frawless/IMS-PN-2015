@@ -12,9 +12,12 @@
 
 #include <cmath>
 #include <algorithm>
+#include <climits>
+#include <sys/types.h>
+#include <unistd.h>
 
 using namespace std; 
-
+unsigned Simulator::ix = 0;
 /**
  * Konstruktor simulátoru
  */
@@ -22,6 +25,9 @@ Simulator::Simulator()
 {
 	this->calendar = new Calendar();
 	this->model = new Model();
+	srand((unsigned int)(time(0)+getpid()));
+	 ix = rand()%UINT_MAX;
+	this->simTime = 0;
 }
 
 Simulator::~Simulator()
@@ -63,7 +69,7 @@ void Simulator::createModel()
 	model->addLink("p_hrac_prichazi","m_hraci",1);
 	model->addLink("m_hraci","p_jde_hrat",1);
 	model->addLink("m_pocitace", "p_jde_hrat",1);
-	model->addLink("p_jde_hrat","m_hrajici",1);
+	model->addLink("p_jde_hrat","m_hrajici",2);
 	model->addLink("m_hrajici","p_hraje",1);
 	model->addLink("p_hraje", "m_dohrali",1);
 	model->addLink("m_dohrali", "p_dohral_odchazi",1);
@@ -87,44 +93,6 @@ void Simulator::createModel()
 
 	model->addToken("m_pocitace",10);
 	
-	/*model->addPlace("místo_1");
-	model->addPlace("místo_2");
-	model->addPlace("místo_3");
-	
-	//model->addTransition("přechod_1");
-	model->addTransition("přechod_1");
-	
-	model->addTransition("přechod_2");
-	model->addTransition("přechod_3");
-	//model->addTransition("přechod_3", 1, Transition::PRIORITY);
-	model->addTransition("přechod_4", 50, Transition::PRIORITY);
-	model->addTransition("přechod_5", 50, Transition::STOCHASTIC);
-	
-	model->addLink("místo_3","přechod_1", 0);
-	model->addLink("místo_3","přechod_3", 0);
-	
-	model->addLink("přechod_1","místo_1", 0);
-	model->addLink("místo_1","přechod_2", 0);
-	model->addLink("místo_3","přechod_2", 0);
-	model->addLink("přechod_2","místo_2", 0);
-	
-	model->addLink("místo_2","přechod_4",1);
-	model->addLink("místo_2","přechod_5",1);
-	
-	//Token * t = model->addToken("místo_1");
-	
-	
-	
-	model->addToken("místo_1");*/
-
-	/*Token::printTokens();
-	
-	Place::getPlace("místo_1")->printTokens();
-	Place::getPlace("místo_1")->removeToken(t);
-	model->removeToken(t);
-	std::cerr<<"print"<<endl;
-	Token::printTokens();
-	//Place::getPlace("místo_1")->printTokens();*/
 }
 
 /**
@@ -180,6 +148,7 @@ void Simulator::simStart()
 	
 	model->printTokenCount();
 	std::cerr<<"DEBUG: Začátek simulace...."<<std::endl;
+	std::cerr<<"DEBUG: Hodnota simulačního času: "<<this->simTime<<std::endl;
 	// vykonání nečasovaných přechodů a nastavení časovaných
 	this->performTransitions();
 	
@@ -187,12 +156,14 @@ void Simulator::simStart()
 	while(!this->calendar->isEmpty())
 	{	
 		model->printTokenCount();
+		std::cerr<<"DEBUG: Hodnota simulačního času: ----------------->"<<this->simTime<<std::endl;
 		//std::cerr<<"DEBUG: Kalendář není prázdný1"<<std::endl;
 		// ověření, zda je dosaženo konečného času
 		if(this->simTime > this->maxSimTime)
 		{
 			std::cerr<<"DEBUG: Konec simulace"<<std::endl;
 			std::cout<<"Konec simulace! Ukončuji simulátor..."<<std::endl;
+			std::cerr<<"DEBUG: Hodnota simulačního času: "<<this->simTime<<std::endl;
 			exit(0);
 		}
 		//std::cerr<<"DEBUG: Kalendář není prázdný2"<<std::endl;
@@ -245,7 +216,7 @@ void Simulator::performTransitionFromEvent(Event *event)
 			break;
 	}
 	
-	if(canBePerformed)
+	if(canBePerformed )
 	{
 		// průchodu seznemu vstupních linek
 		for(iterLink = listOfInputLinks->begin(); iterLink != listOfInputLinks->end(); iterLink++)
@@ -275,7 +246,7 @@ void Simulator::performTransitionFromEvent(Event *event)
 				place->removeToken(token);
 				//???model->removeToken(token);
 				std::cerr<<"DEBUG: Počet značek v místě \""<<place->getName()<<"\" : "<<place->getTokenCount()<<std::endl;
-
+				std::cerr<<"Mažu hrače ze systému"<<std::endl;
 			}
 			checkTokens.clear();			
 		}
@@ -537,19 +508,51 @@ void Simulator::planTransition(Transition *transition, double wait)
 			delete event;
 			return;
 		}
+		
 			
 		for(int i = 0; i < link->getCapacity(); i++)
-		{
+		{		
+			
+			
+			while(1)
+			{
+				// získání  náhodného tokenu
+				token = checkTokens.back();
+				std::cerr<<"tady"<<std::endl;
+				if(	token->isTokenProcessedByTransition(transition))
+				{
+					checkTokens.pop_back(); // 
+					
+					continue;
+				}
+				else	
+				{
+					std::cerr<<"problem"<<std::endl;
+					break;
+				}
+					
+
+				if(checkTokens.empty())
+				{
+					delete event;
+					return;
+				}				
+			}			
+			
 			// získání  náhodného tokenu
 			token = checkTokens.back();
 			if(token->isTokenProcessedByTransition(transition))
+			{
+				checkTokens.pop_back(); // 
 				continue;
+			}
+				
 			
 			if(checkTokens.empty())
 			{
 				delete event;
 				return;
-			}
+			}	
 			
 			token->tokenProcessedByTransition(transition);
 			token->setFlag(true);
@@ -561,6 +564,7 @@ void Simulator::planTransition(Transition *transition, double wait)
 	transition->setIsTimed(true);
 	std::cerr<<"DEBUG: Do kalendáře vložen Event s přechodem: "<<transition->getName()<<std::endl;
 	this->calendar->addEvent(event);	
+	std::cerr<<"DEBUG: Provádění eventu: Start -> "<<this->simTime<<" Konec -> "<<this->simTime+wait<<std::endl;
 }
 
 /**

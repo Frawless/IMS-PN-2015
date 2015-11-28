@@ -30,6 +30,12 @@ class Event
 		void addTokenToEvent(Token *token); // přidá token seznamu tokenů události
 		bool isListOfTokensEmpty(); // ověří, zda je seznam tokenů události prázdný
 
+		// pretezeni operatoru < pro potreby multisetu kalendare (rikame jak se maji udalosti radit)
+		bool operator < (const Event& refParam) const
+		{
+			return (this->time < refParam.time);
+		}
+		
 	private:
 		double time; // aktivační čas události
 		double wait; // doba provádění přechodu

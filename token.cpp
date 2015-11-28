@@ -83,12 +83,20 @@ void Token::printTokens()
  */
 bool Token::isTokenProcessedByTransition(Transition* transition)
 {
+	//std::cerr<<"XXXXXXXXXXXXXXXXXXXXXXXXX"<<transition->getName()<<std::endl;
 	std::vector<Transition*>::iterator iterToken;
+	this->listOfEvents.clear();
+	//std::cerr<<"BBBBBBBBBBBBBBBBBBBBBBB"<<this->listOfEvents.size()<<std::endl;
+	if(this->listOfEvents.size() ==0)
+		return false;
+	//std::cerr<<"GGGGGGGGGGGGGGGGGGGGGGGGGGG"<<transition->getName()<<std::endl;
 	for(iterToken = listOfEvents.begin(); iterToken != listOfEvents.end(); iterToken++)
 	{
+		std::cerr<<"Nalezeno -> NENASTAVUJE SE EVENT PRO TENTO TOKEN!!!"<<(*iterToken)->getName()<<std::endl;
 		if(transition ==(*iterToken))
 			return true;
 	}
+	//std::cerr<<"HHHHHHHHHHHHHHHHHHHHHHHHHHHHH"<<transition->getName()<<std::endl;
 	return false;
 }
 

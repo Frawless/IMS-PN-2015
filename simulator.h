@@ -71,7 +71,7 @@ class Simulator
 		
 		
 		
-
+		static unsigned ix;     // seed pro generator
 	private:
 		Model *model; // ukazatel na model
 		Calendar *calendar; // ukazatel na kalednář záznamů o událostech
