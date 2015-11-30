@@ -38,7 +38,7 @@ Link::Link(std::string inputName, std::string outputName, int capacity)
 		throw 1;
 	}	
 	// pokud je hrana nezačíná ani nekončí místem
-	else if (Place::getPlace(inputName) == NULL &&  Place::getPlace(outputName) == NULL)
+	else if (Place::getPlace(inputName) == NULL && Place::getPlace(outputName) == NULL)
 	{
 		std::cerr<<"Nelze vytvořit hranu mezi přechodem a neexistujícím místem!"<<std::endl;
 		throw 1;

@@ -40,7 +40,6 @@ Model::~Model()
  */
 void Model::addPlace(std::string name)
 {
-	// kontrola ???
 	Model::addPlace(name, DEFAULT_PLACE_CAPACITY);
 }
 
@@ -57,9 +56,8 @@ void Model::addPlace(std::string name, int capacity)
 	}
 	catch(int e)
 	{
-		std::cerr<<"ahoj"<<std::endl; // ???
 	}
-	//??? statistiky
+	// ??? statistiky
 }
 
 /**
@@ -78,7 +76,7 @@ void Model::addTransition(std::string name, int value, Transition::Type type)
 	{
 		std::cerr<<"cau"<<std::endl; // ???
 	}
-	//??? statistiky
+	// ??? statistiky
 }
 
 /**
@@ -106,7 +104,7 @@ void Model::addLink(std::string inputName, std::string outputName, int capacity)
 	{
 	
 	}
-	//??? statistiky
+	// ??? statistiky
 }
 
 /**
@@ -130,9 +128,9 @@ void Model::addToken(std::string placeName, int count)
 	for(int i = 0; i < count; i++)
 	{
 		token = new Token(place);
-		place->addToken(token);  
+		place->addToken(token);
 	}
-	//??? statistiky
+	// ??? statistiky
 }
 
 /**
@@ -145,7 +143,7 @@ void Model::addToken(std::string placeName)
 }
 
 /**
- * Smaže zadaný token. odkud jak proč ???!!!???
+ * Smaže token zadaný parametrem
  * @param token ukazatel na token, který má být smazán
  */
 void Model::removeToken(Token *token)
@@ -160,7 +158,7 @@ void Model::removeToken(Token *token)
  */
 void Model::modelValidate()
 {
-	Place *place;  // ukazatel na místo
+	Place *place; // ukazatel na místo
 	Transition *transition; // ukazatel na přechod
 	Link *link; // ukazatel na hranu
 	double isFirstPriorityOrDelay = false; // první v seznamu je prioritní nebo časovaný přechod
@@ -173,10 +171,10 @@ void Model::modelValidate()
 	std::vector<Link *> ::iterator iterOutputLink_2;
 	
 	// získání seznamu míst a přechodů
-	std::map<std::string, Place *> *listOfPlaces =  Place::getPlaces();
-	std::map<std::string, Transition *> *listOfTransitions =  Transition::getTransitions();
+	std::map<std::string, Place *> *listOfPlaces = Place::getPlaces();
+	std::map<std::string, Transition *> *listOfTransitions = Transition::getTransitions();
 
-	/// postupné procházení jednotlivých přechodů
+	// postupné procházení jednotlivých přechodů
 	for (iterTransition = listOfTransitions->begin(); iterTransition != listOfTransitions->end(); iterTransition++)
 	{
 		// získání dílčího přechodu
@@ -185,20 +183,9 @@ void Model::modelValidate()
 		// pokud přechod nemá alespoň jednu vstupní nebo výstupní hranu
 		if(!(transition->getInputLinkCount() >= 1 || transition->getOutputLinkCount() >= 1))
 		{
-			std::cerr<<"Přechod \""<< transition->getName() <<"\" nemá alespoň jednu vstupní nebo  výstupní hranu!"<<std::endl;
+			std::cerr<<"Přechod \""<< transition->getName() <<"\" nemá alespoň jednu vstupní nebo výstupní hranu!"<<std::endl;
 			throw 1;
 		}
-		
-		// řeším dole ???
-		/*// pokud se jedná o časovaný nebo prioritní přechod (TIMED_EXP, TIMED_CONST, STOCHASTIC, PRIORITY)
-		if(transition->getTransitionType() != Transition::STOCHASTIC)
-		{
-			//ověření okolních přechodů
-			for(int i = 0; i < transition->getInputLinkCount(); i++)
-			{
-				
-			}
-		}*/
 	}
 	
 	// postupné procházení jednotlivých míst 
@@ -208,15 +195,15 @@ void Model::modelValidate()
 		place = (*iterPlace).second;
 		
 		// vypsání místa
-		//???std::cerr<<"DEBUG:Místo: "<<place->getName()<<std::endl;
+		// ???std::cerr<<"DEBUG:Místo: "<<place->getName()<<std::endl;
 		
 		// pokud počet tokenů v místě přesahuje jeho kapacitu
-		if(place->getTokenCount() > place->getCapacity()  && place->getCapacity() != 0)
+		if(place->getTokenCount() > place->getCapacity() && place->getCapacity() != 0)
 		{
 			std::cerr<<"Počet značek v místě \""<< place->getName() <<"\" přesahuje jeho kapacitu!"<<std::endl;
 			throw 1;
 		}
-		/// pokud místo nemá alespoň jednu vstupní nebo výstupní hranu
+		// pokud místo nemá alespoň jednu vstupní nebo výstupní hranu
 		if(!(place->getInputLinkCount() >= 1 || place->getOutputLinkCount() >= 1))
 		{
 			std::cerr<<"Místo \""<< place->getName() <<"\" nemá ani vstupní ani výstupní hranu!"<<std::endl;
@@ -237,7 +224,7 @@ void Model::modelValidate()
 			// postupné procházení hran vedoucích z právě zpracovávaného místa
 			for(iterOutputLink = outputLinks->begin(); iterOutputLink != outputLinks->end(); iterOutputLink++ )
 			{
-				//???std::cerr<<(Transition *)((*iterOutputLink)->getOutput())<<std::endl;
+				// ???std::cerr<<(Transition *)((*iterOutputLink)->getOutput())<<std::endl;
 				// právě procházená hrana
 				link = *iterOutputLink;
 				
@@ -301,7 +288,7 @@ void Model::modelValidate()
 void Model::printTokenCount()
 {
 	std::map<std::string, Place *>::iterator it; // iterátor pro průchod seznamem všech míst modelu
-	std::map<std::string, Place *> *listOfPlaces =  Place::getPlaces(); // získání seznamu všech míst modelu
+	std::map<std::string, Place *> *listOfPlaces = Place::getPlaces(); // získání seznamu všech míst modelu
 	
 	// postupné procházení seznamu všech míst modelu
 	for(it = listOfPlaces->begin(); it != listOfPlaces->end(); it++)

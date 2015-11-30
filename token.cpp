@@ -35,32 +35,32 @@ Place* Token::getPlace()
 }
 
 /**
- *  Pro smazání při opuštění systému
+ * Pro smazání při opuštění systému
  * @param token ukazatel na tokne
  */
 void Token::removeToken(Token *token)
 {
-	std::vector <Token *>::iterator it;		//iterátor pro průchod seznamem tokenů
+	std::vector <Token *>::iterator it;	 // iterátor pro průchod seznamem tokenů
 	// procházení seznamu tokenů
 	for(it = listOfTokens.begin(); it != listOfTokens.end(); it++)
 	{
 		if(*it == token)
 		{
-			delete(token); //smazání objektu tokenu
-			listOfTokens.erase(it);	 //smazání tokenu ze seznamu všech tokenů
+			delete(token); // smazání objektu tokenu
+			listOfTokens.erase(it);	 // smazání tokenu ze seznamu všech tokenů
 			return;
 		}	
 	}
 }
 
 /**
- *  Vytisknutí všech tokenů.
+ * Vytisknutí všech tokenů.
  */
 void Token::printTokens()
 {
-	std::vector <Token *>::iterator it;		//iterátor pro průchod polem tokenů
+	std::vector <Token *>::iterator it;	 // iterátor pro průchod polem tokenů
 	
-	//procházení seznamu tokenů
+	// procházení seznamu tokenů
 	for(it = listOfTokens.begin(); it != listOfTokens.end(); it++)
 	{
 		std::cerr<<"Token: "<<*it<<std::endl;
@@ -69,8 +69,8 @@ void Token::printTokens()
 }
 
 /**
- * ??????????
- * @param transition
+ * Vloží přechod do seznamu přechodů, které zpracovávají daný token.
+ * @param transition přechod, který mý být vložen
  */
 void Token::tokenProcessedByTransition(Transition *transition)
 {
@@ -78,9 +78,9 @@ void Token::tokenProcessedByTransition(Transition *transition)
 }
 
 /**
- * ????????????
- * @param transition
- * @return 
+ * Zjistí, zda přechod zadaný parametrem zpracovává daný token.
+ * @param transition testovaný přechod
+ * @return true - pokud přechod zpracovává token
  */
 bool Token::isTokenProcessedByTransition(Transition* transition)
 {
@@ -102,8 +102,8 @@ bool Token::isTokenProcessedByTransition(Transition* transition)
 
 
 /**
- * ??????????,
- * @param isInEvent
+ * Nastaví hodnotu příznaku značícího, že je token zpracováván.
+ * @param isInEvent nová hodnota příznaku
  */
 void Token::setFlag(bool isInEvent)
 {
@@ -111,8 +111,8 @@ void Token::setFlag(bool isInEvent)
 }
 
 /**
- * Vrátí true, pokud ???
- * @return 
+ * Vrátí hodnotu příznaku značícího, že je token zpracováván.
+ * @return true - pokud je token zpracováván
  */
 
 bool Token::getFlag()

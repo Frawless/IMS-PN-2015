@@ -25,21 +25,21 @@ class Transition;
 class Token
 {
 	public:
-		Token(Place *place); //konstruktor tokenu
-		Place* getPlace(); // získání ukazatele na místo v němž je token vložen
-		void removeToken(Token *token); //odstranění tokenu ze seznamu všech tokenů modelu
-		static void printTokens(); //vypsání všech tokenů
+		Token(Place *place); // konstruktor tokenu
+		Place* getPlace(); // vrátí ukazatel na místo, v němž je token vložen
+		void removeToken(Token *token); // odstraní token ze seznamu všech tokenů modelu
+		static void printTokens(); // vypíše seznam všech tokenů
 		void tokenProcessedByTransition(Transition *transition); // ???
 		bool isTokenProcessedByTransition(Transition* transition); // ???
-		void setFlag(bool isInEvent); //???	
-		bool getFlag(); // ???
-		std::vector<Transition *> *getListOfEvents(); // získání seznamu všech událostí
-		static std::vector <Token *>* getTokens(); // získání ukazatele na seznam všech tokenů modelu
+		void setFlag(bool isInEvent); // nastaví příznak tokenu značící, že je token naplánován v přechodu
+		bool getFlag(); // získá příznak tokenu značící, že je token naplánován v přechodu
+		std::vector<Transition *> *getListOfEvents(); // vrátí seznam všech událostí
+		static std::vector <Token *>* getTokens(); // vrátí ukazatel na seznam všech tokenů modelu
 
 	private:
 		static std::vector <Token *> listOfTokens; // seznam všech tokenů z modelu
 		Place * place; // ukazatel na místo v němž je token vložen
 		std::vector<Transition *> listOfEvents; // seznam přechodů, ve kterých se nachází
-		bool waitFlag; // ???
+		bool waitFlag; // příznak značící, že token čeká na přesun
 };
 #endif

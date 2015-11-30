@@ -53,7 +53,7 @@ void PlaceTransition::addInputLink(Link *link)
  */
 void PlaceTransition::addOutputLink(Link *link)
 {
-	this->outputLinks.push_back(link);  
+	this->outputLinks.push_back(link);
 }
 
 /**
@@ -169,7 +169,7 @@ void Place::addToken(Token* token)
  */
 void Place::removeToken(Token *token)
 {
-	std::vector <Token *>::iterator it; //iterátor pro průchod polem tokenů
+	std::vector <Token *>::iterator it; // iterátor pro průchod polem tokenů
 	std::vector<Token *> *listOfTokens = this->getTokens(); // seznam všech tokenů modelu
 	
 	// prohledání pole tokenů
@@ -178,7 +178,7 @@ void Place::removeToken(Token *token)
 		if(*it == token)
 		{
 			delete(token); // dealokace objektu tokenu
-			listOfTokens->erase(it);  // smazání ukazatele ze seznamu všech tokenů
+			listOfTokens->erase(it); // smazání ukazatele ze seznamu všech tokenů
 			return;
 		}
 		
@@ -325,7 +325,7 @@ bool Transition::checkPlaceOutput()
 			continue;
 		
 		// získání místa na výstupu hrany
-		place  = (Place *)(*iterOutputLink)->getInput();
+		place = (Place *)(*iterOutputLink)->getInput();
 		
 		// pokud v místě nejsou žádné tokeny, zpracuj další hranu
 		if(place->getTokenCount() == 0)
@@ -357,7 +357,7 @@ bool Transition::checkPlaceInput()
 			continue;
 		
 		// získání místa na výstupu hrany
-		place  = (Place *)(*iterInputLink)->getInput();
+		place = (Place *)(*iterInputLink)->getInput();
 		
 		// pokud v místě nejsou žádné tokeny, zpracuj další hranu
 		if(place->getTokenCount() == 0)
@@ -371,8 +371,8 @@ bool Transition::checkPlaceInput()
 }
 
 /**
- * ???
- * @param value ???
+ * Nastaví příznak přechodu, že je vykonán.
+ * @param value hodnota příznaku
  */
 void Transition::setIsPerformed(bool value)
 {
@@ -380,8 +380,8 @@ void Transition::setIsPerformed(bool value)
 }
 
 /**
- * Vrátí true, pokud ???
- * @return ???
+ * Vrátí true, pokud je nastaven příznak vykonání přechodu.
+ * @return true, pokud je nastaven příznak vykonání přechodu
  */
 bool Transition::getIsPerformed()
 {
@@ -389,7 +389,7 @@ bool Transition::getIsPerformed()
 }
 
 /**
- * Nastaví načasovaní přechodu na logickou hodnotu zadanou parametem ???
+ * Nastaví načasovaní přechodu na logickou hodnotu zadanou parametrem
  * @param value true - přechod je načasován
  */
 void Transition::setIsTimed(bool value)
@@ -398,8 +398,8 @@ void Transition::setIsTimed(bool value)
 }
 
 /**
- * Vrátí true, pokud je přechod načasován ???
- * @return 
+ * Vrátí true, pokud je nastaven příznak, že je přechod načasován.
+ * @return true, pokud je nastaven příznak, že je přechod načasován
  */
 bool Transition::getIsTimed()
 {

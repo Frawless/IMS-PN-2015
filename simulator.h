@@ -50,18 +50,18 @@ class Simulator
 		Calendar *getCalendar(); // získá ukazatele na model
 		// ??? metoda pro volbu prioritního přechodu
 		// ???vykonání časovaného přechodu
-		void performTransitionFromEvent(Event *event); // ???
-		void performTransition(Transition *transition); // vykonání konkrétního přechodu
+		void performTransitionFromEvent(Event *event); // vykoná přechod z události kalendáře
+		void performTransition(Transition *transition); // vykoná přechod zadaný parametrem
 		void performTransitions(); // vykoná nečasové přechody a naplánuje časované přechody
 		// ???naplánovat událost
 		static void clearPerformedTransition(); // nastavení příznaku vykonání přechodů na false
 		void planTransition(Transition *transition, double wait); // naplánování časovaného přechodu
 		void planEvents(Transition *transition, double wait); // plánování událostí
-		bool transitionCanBePerformed(Transition *transition); // ???	
-		double Random(); // vygenerování náhodného čísla
-		double Exponential(double mv); // vygenerování čísla s exponeniálním rozložením se střeem mv
+		bool transitionCanBePerformed(Transition *transition); // zjistí, zda může být přechod vykonán	
+		double Random(); // vyeneruje náhodné číslo
+		double Exponential(double mv); // vygeneruje číslo s exponeniálním rozložením se střeem mv
 		
-		static unsigned ix; // seed pro generator
+		static unsigned ix; // ???seed pro generator
 	private:
 		Model *model; // ukazatel na model
 		Calendar *calendar; // ukazatel na kalednář záznamů o událostech
