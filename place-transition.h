@@ -15,6 +15,7 @@
 #include <iostream>
 #include <vector>
 #include <map>
+#include <algorithm>
 
 #include "link.h"
 
@@ -89,6 +90,7 @@ class Transition: public PlaceTransition
 		bool getIsTimed(); // Vrátí true, pokud je přechod načasován ???
 		static std::map<std::string, Transition *>* getTransitions(); // vrátí ukazatel na seznam všech přechodů modelu
 		static Transition* getTransition(std::string name); // vrátí ukazatel na přechod zadaný jménem
+		static std::vector<Transition*> getRandomVectorTransitions();
 		
 	private:
 		static std::map<std::string, Transition *> listOfTransitions; // seznam všech přechodů modelu

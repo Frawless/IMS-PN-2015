@@ -9,6 +9,7 @@
 ************************************************/
 #include "place-transition.h"
 #include "token.h"
+#include "calendar.h"
 
 #include <typeinfo>
 
@@ -432,4 +433,25 @@ Transition* Transition::getTransition(std::string name)
 		return iterTransition->second;
 	else 
 		return NULL;
+}
+
+/**
+ * 
+ * @return 
+ */
+std::vector<Transition*> Transition::getRandomVectorTransitions()
+{
+	std::map<std::string, Transition *>::iterator iterTransition; //iterátor pro průchod seznamem přechodů
+	std::vector<Transition *> checkTransitions; // pomocný seznam přechodů
+	
+	std::map<std::string, Transition *> *listOfTransitions =  Transition::getTransitions(); // seznam všech tokenů v místě
+
+	// postupné procházení přechodů a vložení jejich ukazatelů do pomocného seznamu přechodů
+	for(iterTransition = listOfTransitions->begin(); iterTransition != listOfTransitions->end(); iterTransition++)
+		checkTransitions.push_back(iterTransition->second);
+	
+	// zamíchání prvků pomocného seznamu přechodů
+	std::random_shuffle(checkTransitions.begin(), checkTransitions.end());
+	
+	return checkTransitions;
 }
