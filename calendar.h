@@ -45,12 +45,11 @@ class Event
 
 	/**
 	 * Deklarace řazení seznamu kaládáře záznamů o událostech
-     */
+	 */
 	struct EventSort
 	{
 		bool operator()(Event *x, Event *y) const
 		{
-			//return x < y -> vzít event time
 			return x->getTime() < y->getTime();
 		}
 	};
