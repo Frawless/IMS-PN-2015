@@ -48,7 +48,7 @@ class Simulator
 		void printModel(); // vytiskne model
 		void simStart(); // zahájí simulace
 		Calendar *getCalendar(); // získá ukazatele na model
-		///???  metoda pro volbu prioritního přechodu
+		// ??? metoda pro volbu prioritního přechodu
 		// ???vykonání časovaného přechodu
 		void performTransitionFromEvent(Event *event); // ???
 		void performTransition(Transition *transition); // vykonání konkrétního přechodu
@@ -61,7 +61,7 @@ class Simulator
 		double Random(); // vygenerování náhodného čísla
 		double Exponential(double mv); // vygenerování čísla s exponeniálním rozložením se střeem mv
 		
-		static unsigned ix;     // seed pro generator
+		static unsigned ix; // seed pro generator
 	private:
 		Model *model; // ukazatel na model
 		Calendar *calendar; // ukazatel na kalednář záznamů o událostech
