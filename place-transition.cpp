@@ -370,8 +370,8 @@ bool Transition::checkPlaceInput()
 }
 
 /**
- * ???
- * @param value ???
+ * Nastaví příznak přechodu, že je vykonán.
+ * @param value hodnota příznaku
  */
 void Transition::setIsPerformed(bool value)
 {
@@ -379,8 +379,8 @@ void Transition::setIsPerformed(bool value)
 }
 
 /**
- * Vrátí true, pokud ???
- * @return ???
+ * Vrátí true, pokud je nastaven příznak vykonání přechodu.
+ * @return true, pokud je nastaven příznak vykonání přechodu
  */
 bool Transition::getIsPerformed()
 {
@@ -388,7 +388,7 @@ bool Transition::getIsPerformed()
 }
 
 /**
- * Nastaví načasovaní přechodu na logickou hodnotu zadanou parametem ???
+ * Nastaví načasovaní přechodu na logickou hodnotu zadanou parametrem
  * @param value true - přechod je načasován
  */
 void Transition::setIsTimed(bool value)
@@ -397,8 +397,8 @@ void Transition::setIsTimed(bool value)
 }
 
 /**
- * Vrátí true, pokud je přechod načasován ???
- * @return 
+ * Vrátí true, pokud je nastaven příznak, že je přechod načasován.
+ * @return true, pokud je nastaven příznak, že je přechod načasován
  */
 bool Transition::getIsTimed()
 {

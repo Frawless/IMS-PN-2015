@@ -84,9 +84,9 @@ class Transition: public PlaceTransition
 		bool checkPlaceOutput(); // zkontroluje, zda je ve všech výstupních místech přechodů počet tokenů větší nebo roven kapacitě hrany a vrátí true
 		bool checkPlaceInput(); // zkontroluje, zda je ve všech vstupních místech přechodů počet tokenů větší nebo roven kapacitě hrany a vrátí true
 		void setIsPerformed(bool value); // nastaví přechodu příznak, že je vykonán
-		bool getIsPerformed(); // ???
-		void setIsTimed(bool value); // nastaví načasovaní přechodu na logickou hodnotu zadanou parametem ???
-		bool getIsTimed(); // Vrátí true, pokud je přechod načasován ???
+		bool getIsPerformed(); // vrátí příznak značíčí, že byl přechod vykonán
+		void setIsTimed(bool value); // nastaví načasovaní přechodu na logickou hodnotu zadanou parametem
+		bool getIsTimed(); // Vrátí true, pokud je přechod načasován
 		static std::map<std::string, Transition *>* getTransitions(); // vrátí ukazatel na seznam všech přechodů modelu
 		static Transition* getTransition(std::string name); // vrátí ukazatel na přechod zadaný jménem
 		
@@ -94,8 +94,8 @@ class Transition: public PlaceTransition
 		static std::map<std::string, Transition *> listOfTransitions; // seznam všech přechodů modelu
 		Type type; // typ přechodu
 		unsigned int value;	// hodnota typu přechodu - čas/priorita/pravděpodobnost
-		bool isPerformed; // značí, že je přechod vykonán ???
-		bool isTimed; // značí, že je přechod načasován ???
+		bool isPerformed; // značí, že byl přechod vykonán
+		bool isTimed; // značí, že je přechod načasován
 };
 
 #endif

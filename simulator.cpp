@@ -252,7 +252,7 @@ void Simulator::performTransitionFromEvent(Event *event)
 			checkTokens.clear(); // vymazání pomocného seznamu tokenů v aktuálním místě			
 		}
 	}
-	// pokud seznam vstupních hran není prázdný ??? proč
+	// pokud se nejedná o přechod bez vstupních linek (== nejedná se o generátor)
 	else if(!listOfInputLinks->empty())
 	{
 		return;
@@ -269,7 +269,7 @@ void Simulator::performTransitionFromEvent(Event *event)
 		model->addToken(place->getName());
 		std::cerr<<"DEBUG: Počet značek v místě \""<<place->getName()<<"\" : "<<place->getTokenCount()<<std::endl;
 	}	
-	// ???
+	// nastaví přechodu z události příznak, že není načasován
 	event->getTransition()->setIsTimed(false);
 }
 
@@ -329,7 +329,7 @@ void Simulator::performTransition(Transition *transition)
 			checkTokens.clear(); // vymazání pomocného seznamu tokenů v aktuálním místě		
 		}
 	}
-	// pokud seznam vstupních hran není prázdný ??? proč
+	// pokud se nejedná o přechod bez vstupních linek (== nejedná se o generátor)
 	else if(!listOfInputLinks->empty())
 	{
 		return;
@@ -348,7 +348,7 @@ void Simulator::performTransition(Transition *transition)
 }
 
 /**
- * Vykoná přechody ??? jaké, které
+ * Pokusí se vykonat všechny přechody.
  */
 void Simulator::performTransitions()
 {
@@ -432,7 +432,7 @@ void Simulator::performTransitions()
 				// vykonání přechodu
 				
 				this->performTransition(transition); // vykonání zadaného přechodu
-				this->clearPerformedTransition(); // nastavení všech přechodů na false ???
+				this->clearPerformedTransition(); // nastavení příznaků vykonání všech přechodů na false
 				break;
 			case Transition::STOCHASTIC:
 				// std::cerr<<"DEBUG: Stochastic"<<std::endl;
@@ -485,7 +485,7 @@ void Simulator::clearPerformedTransition()
 }
 
 /**
- * Naplánování zadaného přechodu ???
+ * Naplánuje přechod zadaný ukazatelem a vloží ho do kalendáře.
  * @param transition přechod pro naplánování
  * @param wait zpoždění přechodu
  */
@@ -519,19 +519,16 @@ void Simulator::planTransition(Transition *transition, double wait)
 		// postupné procházení seznamu všech tokenů v místě
 		for(iterPlaceTokens = listOfTokens->begin(); iterPlaceTokens != listOfTokens->end(); iterPlaceTokens++)
 		{
-			// pokud je token už nastaven někde
-			// ???
-			// tohle bude asi trošku chybka, máme funkci "isTokenProcessedByTransition" a měla by to dělat ona, nejspíš špatně funguje nebo tak -> zkus to opravit kdybych se k tomu endostal navečer
-			// doplnit koment ???
+			// ??? tohle bude asi trošku chybka, máme funkci "isTokenProcessedByTransition" a měla by to dělat ona, nejspíš špatně funguje nebo tak -> zkus to opravit kdybych se k tomu endostal navečer
+			// pokud je už token nastaven jinde
 			if((*iterPlaceTokens)->getFlag() == true)
 				continue;
 			// std::cerr<<"DEBUG: planTransition->přidávání do kalendáře3"<<std::endl;
-			// ??? nebude sort?? + koment
+			// plnění pomocného seznamu tokenů (s flag na false)
 			checkTokens.push_back((*iterPlaceTokens));
 		}
 		
-		// pokud nejsou v místě žádné tokeny (???v simulaci by snad nemělo nastat)
-		if(checkTokens.empty())
+		// pokud nejsou v místě žádné tokeny
 		{
 			delete event;
 			return;
@@ -548,7 +545,7 @@ void Simulator::planTransition(Transition *transition, double wait)
 				// získání náhodného tokenu
 				token = checkTokens.back();
 				
-				// ??? koment
+				// ??? možná nejde // pokud token již není součástí přechodu
 				if(token->isTokenProcessedByTransition(transition))
 				{
 					checkTokens.pop_back(); // smazání z pomocného seznamu tokenů v místě
@@ -568,17 +565,17 @@ void Simulator::planTransition(Transition *transition, double wait)
 			// získání náhodného tokenu
 			token = checkTokens.back();				
 			
-			// ??? komentáře násled 4 řádky
-			token->tokenProcessedByTransition(transition);
-			token->setFlag(true);
-			event->addTokenToEvent(token);
-			checkTokens.pop_back(); 
+			token->tokenProcessedByTransition(transition); // nastaví, že token je zpracováván přechodem
+			token->setFlag(true); // nastavení příznaku k tokenu, že je zpracováván
+			event->addTokenToEvent(token); // přidání tokenu do události
+			checkTokens.pop_back(); // vymazání tokenu ze seznamu tokenů ke zpracování
 		}
 		checkTokens.clear(); // vymazání pomocného seznamu všech tokenů v místě
 	}
-	// ??? koment
+	// nastavení příznaku k přechodu, že je načasován
 	transition->setIsTimed(true);
 	std::cerr<<"DEBUG: Do kalendáře vložen Event s přechodem: "<<transition->getName()<<std::endl;
+	// přidání události do kalendáře
 	this->calendar->addEvent(event);	
 	std::cerr<<"DEBUG: Provádění eventu: Start -> "<<this->simTime<<" Konec -> "<<this->simTime+wait<<std::endl;
 }
@@ -609,7 +606,6 @@ void Simulator::planEvents(Transition* transition, double wait)
 	}
 	else
 	{
-		// ???
 		// postupné procházení všech hran
 		for(iterLink = listOfLinks->begin(); iterLink != listOfLinks->end(); iterLink++)
 		{
@@ -638,11 +634,10 @@ void Simulator::planEvents(Transition* transition, double wait)
 		}
 	}		
 }
-
 /**
- * ???
+ * Ověří, zda může být přechod zadaný parametrem vykonán.
  * @param transition ukazatel na ověřovaný přechod
- * @return ???
+ * @return true - pokud může být vykonán
  */
 bool Simulator::transitionCanBePerformed(Transition *transition)
 {
@@ -676,8 +671,8 @@ bool Simulator::transitionCanBePerformed(Transition *transition)
 }
 
 /**
- * Získání náhodného čísla ???? interal??
- * @return 
+ * Vygeneruje náhodné číslo
+ * @return vygenerované náhodné číslo
  */
 double Simulator::Random()
 {

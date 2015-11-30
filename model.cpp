@@ -40,7 +40,6 @@ Model::~Model()
  */
 void Model::addPlace(std::string name)
 {
-	// kontrola ???
 	Model::addPlace(name, DEFAULT_PLACE_CAPACITY);
 }
 
@@ -57,7 +56,6 @@ void Model::addPlace(std::string name, int capacity)
 	}
 	catch(int e)
 	{
-		std::cerr<<"ahoj"<<std::endl; // ???
 	}
 	// ??? statistiky
 }
@@ -145,7 +143,7 @@ void Model::addToken(std::string placeName)
 }
 
 /**
- * Smaže zadaný token. odkud jak proč ???!!!???
+ * Smaže token zadaný parametrem
  * @param token ukazatel na token, který má být smazán
  */
 void Model::removeToken(Token *token)
@@ -188,17 +186,6 @@ void Model::modelValidate()
 			std::cerr<<"Přechod \""<< transition->getName() <<"\" nemá alespoň jednu vstupní nebo výstupní hranu!"<<std::endl;
 			throw 1;
 		}
-		
-		// řeším dole ???
-		/*// pokud se jedná o časovaný nebo prioritní přechod (TIMED_EXP, TIMED_CONST, STOCHASTIC, PRIORITY)
-		if(transition->getTransitionType() != Transition::STOCHASTIC)
-		{
-			// ověření okolních přechodů
-			for(int i = 0; i < transition->getInputLinkCount(); i++)
-			{
-				
-			}
-		}*/
 	}
 	
 	// postupné procházení jednotlivých míst 

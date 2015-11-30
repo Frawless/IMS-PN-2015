@@ -69,8 +69,8 @@ void Token::printTokens()
 }
 
 /**
- * ??????????
- * @param transition
+ * Vloží přechod do seznamu přechodů, které zpracovávají daný token.
+ * @param transition přechod, který mý být vložen
  */
 void Token::tokenProcessedByTransition(Transition *transition)
 {
@@ -78,9 +78,9 @@ void Token::tokenProcessedByTransition(Transition *transition)
 }
 
 /**
- * ????????????
- * @param transition
- * @return 
+ * Zjistí, zda přechod zadaný parametrem zpracovává daný token.
+ * @param transition testovaný přechod
+ * @return true - pokud přechod zpracovává token
  */
 bool Token::isTokenProcessedByTransition(Transition* transition)
 {
@@ -102,8 +102,8 @@ bool Token::isTokenProcessedByTransition(Transition* transition)
 
 
 /**
- * ??????????,
- * @param isInEvent
+ * Nastaví hodnotu příznaku značícího, že je token zpracováván.
+ * @param isInEvent nová hodnota příznaku
  */
 void Token::setFlag(bool isInEvent)
 {
@@ -111,8 +111,8 @@ void Token::setFlag(bool isInEvent)
 }
 
 /**
- * Vrátí true, pokud ???
- * @return 
+ * Vrátí hodnotu příznaku značícího, že je token zpracováván.
+ * @return true - pokud je token zpracováván
  */
 
 bool Token::getFlag()
