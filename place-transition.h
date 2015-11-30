@@ -16,6 +16,7 @@
 #include <vector>
 #include <map>
 #include <algorithm>
+#include <climits>
 
 #include "link.h"
 
@@ -62,13 +63,22 @@ class Place: public PlaceTransition
 		std::vector<Token *> *getTokens(); // vratí ukazatel na seznam všech tokenů v místě
 		static std::map<std::string, Place *>* getPlaces(); // získá ukazatel na seznam všech míst modelu
 		
+		// Statistiky
+		void setStats();
+		void printStats();
+		
 
 	private:
 		static std::map<std::string, Place *> listOfPlaces; // seznam všechm míst modelu
 		int capacity; // kapacita místa
 		std::vector<Token *> listOfTokens; // sezam všech tokenů v místě
-		unsigned int min; // ???
-		unsigned int max; // ???
+		
+		// Statistiky míst
+		int min; // 
+		int max; //
+		int performCount; //
+		double average; //
+		
 };
 
 /**
@@ -82,6 +92,8 @@ class Transition: public PlaceTransition
 		Transition(std::string name, int value, Transition::Type type); // konstruktor přechodu zadáním místa a parametrů
 		int getTransitionType(); // vrátí typ přechodu
 		unsigned int getValue(); // vrátí hodnotu typu přechodu
+		void setGeneratedValue(double value); // nastaví vypočítanou hodnotu
+		double getGeneratedValue(); // vrátí vypočítanou hodnotu
 		bool checkPlaceOutput(); // zkontroluje, zda je ve všech výstupních místech přechodů počet tokenů větší nebo roven kapacitě hrany a vrátí true
 		bool checkPlaceInput(); // zkontroluje, zda je ve všech vstupních místech přechodů počet tokenů větší nebo roven kapacitě hrany a vrátí true
 		void setIsPerformed(bool value); // nastaví přechodu příznak, že je vykonán
@@ -91,6 +103,11 @@ class Transition: public PlaceTransition
 		static std::map<std::string, Transition *>* getTransitions(); // vrátí ukazatel na seznam všech přechodů modelu
 		static Transition* getTransition(std::string name); // vrátí ukazatel na přechod zadaný jménem
 		static std::vector<Transition*> getRandomVectorTransitions();
+				
+		// Statistiky
+		void setStats();
+		void printStats();
+		void printTimedStats();
 		
 	private:
 		static std::map<std::string, Transition *> listOfTransitions; // seznam všech přechodů modelu
@@ -98,6 +115,14 @@ class Transition: public PlaceTransition
 		unsigned int value;	// hodnota typu přechodu - čas/priorita/pravděpodobnost
 		bool isPerformed; // značí, že byl přechod vykonán
 		bool isTimed; // značí, že je přechod načasován
+		double generatedValue; // vygenerovaná hodnota z value
+		
+		// Statistiky přechodů
+		double min; //
+		double max; //
+		double average; //
+		int performCount; //
+
 };
 
 #endif

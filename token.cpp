@@ -35,25 +35,6 @@ Place* Token::getPlace()
 }
 
 /**
- * Pro smazání při opuštění systému
- * @param token ukazatel na tokne
- */
-void Token::removeToken(Token *token)
-{
-	std::vector <Token *>::iterator it;	 // iterátor pro průchod seznamem tokenů
-	// procházení seznamu tokenů
-	for(it = listOfTokens.begin(); it != listOfTokens.end(); it++)
-	{
-		if(*it == token)
-		{
-			delete(token); // smazání objektu tokenu
-			listOfTokens.erase(it);	 // smazání tokenu ze seznamu všech tokenů
-			return;
-		}	
-	}
-}
-
-/**
  * Vytisknutí všech tokenů.
  */
 void Token::printTokens()
@@ -124,6 +105,7 @@ bool Token::getFlag()
  * Získání ukazatele na seznam všech přechodů modelu.
  * @return ukazatel na seznam všech událostí
  */
+//NEPOUŽÍVÁ SE!!!
 std::vector<Transition *> *Token::getListOfEvents()
 {
 	return &(this->listOfEvents);

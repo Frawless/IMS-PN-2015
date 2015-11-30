@@ -104,7 +104,7 @@ void Model::addLink(std::string inputName, std::string outputName, int capacity)
 	{
 	
 	}
-	// ??? statistiky
+	// ??? statistiky :
 }
 
 /**
@@ -140,17 +140,6 @@ void Model::addToken(std::string placeName, int count)
 void Model::addToken(std::string placeName)
 {
 	return Model::addToken(placeName, DEFAULT_TOKEN_CNT); 
-}
-
-/**
- * Smaže token zadaný parametrem
- * @param token ukazatel na token, který má být smazán
- */
-void Model::removeToken(Token *token)
-{
-
-	if(token->getListOfEvents()->empty())
-		token->removeToken(token);	
 }
 
 /**
@@ -290,9 +279,13 @@ void Model::printTokenCount()
 	std::map<std::string, Place *>::iterator it; // iterátor pro průchod seznamem všech míst modelu
 	std::map<std::string, Place *> *listOfPlaces = Place::getPlaces(); // získání seznamu všech míst modelu
 	
+	std::cout<<"Počet tokenů v místech:"<<std::endl;
 	// postupné procházení seznamu všech míst modelu
 	for(it = listOfPlaces->begin(); it != listOfPlaces->end(); it++)
-		std::cerr<<"Místo: "<<it->second->getName()<<" -> Počet tokenů: "<<it->second->getTokenCount()<<std::endl;
+		//std::cerr<<"Místo: "<<it->second->getName()<<" -> Počet tokenů: "<<it->second->getTokenCount()<<std::endl;
+		std::cout<<"| "<<it->second->getName()<<" ("<<it->second->getTokenCount()<<") ";
+	
+	std::cout<<"|"<<std::endl;
 }
 
 /**
@@ -316,4 +309,43 @@ void Model::printModel()
 	// průchod hran
 	for(modelLink = Link::getLinks()->begin(); modelLink != Link::getLinks()->end(); modelLink++)
 		std::cerr<<"Linka z: "<<(*modelLink)->getInput()->getName()<<" do: "<<(*modelLink)->getOutput()->getName()<<std::endl;
+}
+
+/**
+ * 
+ */
+void Model::printStats()
+{
+	// deklarace iterátorů pro průchod polí míst, přechodů a hran
+	std::map<std::string, Place *>::iterator modelPlace;
+	std::map<std::string, Transition *>::iterator modelTransition;
+	std::vector<Link *>::iterator modelLink;
+	
+	std::cout<<std::endl;
+	std::cout<<"Výpis souhrnné statistiky pro místa a přechody"<<std::endl;
+	
+	// průchod míst
+	for(modelPlace = Place::getPlaces()->begin(); modelPlace != Place::getPlaces()->end(); modelPlace++)
+	{
+		modelPlace->second->printStats();		
+	}
+	
+	// průchod přechodů pro časované přechody
+	for(modelTransition = Transition::getTransitions()->begin(); modelTransition != Transition::getTransitions()->end(); modelTransition++)
+	{	
+		
+		
+		if(modelTransition->second->getTransitionType() == Transition::TIMED_EXP ||
+		   modelTransition->second->getTransitionType() == Transition::TIMED_EXP)
+			modelTransition->second->printTimedStats();
+	}
+	
+	// průchod přechodů
+	for(modelTransition = Transition::getTransitions()->begin(); modelTransition != Transition::getTransitions()->end(); modelTransition++)
+	{
+		if(!modelTransition->second->getTransitionType() == Transition::TIMED_EXP ||
+		   !modelTransition->second->getTransitionType() == Transition::TIMED_EXP)
+			modelTransition->second->printStats();
+	}	
+		
 }

@@ -37,11 +37,11 @@ class Model
 		void addLink(std::string inputName, std::string outputName, int capacity); // přidá hranu do modelu
 		void addToken(std::string placeName); // přidá token do místa 
 		void addToken(std::string placeName, int count); // přidá zadaný počet tokenů do místa 
-		void removeToken(Token *token); // odebere token z místa ???!!!???
 		static void modelValidate(); // ověří syntaktickou správnou modelu
 		void printTokenCount(); // vytiskne počty tokenů v jednotlivých místech modelu
 		void printModel(); // vytiskne přehled celého modelu
-
+		void printStats();
+		
 	private:
 };
 

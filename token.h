@@ -27,7 +27,6 @@ class Token
 	public:
 		Token(Place *place); // konstruktor tokenu
 		Place* getPlace(); // vrátí ukazatel na místo, v němž je token vložen
-		void removeToken(Token *token); // odstraní token ze seznamu všech tokenů modelu
 		static void printTokens(); // vypíše seznam všech tokenů
 		void tokenProcessedByTransition(Transition *transition); // ???
 		bool isTokenProcessedByTransition(Transition* transition); // ???

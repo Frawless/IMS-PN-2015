@@ -123,6 +123,12 @@ Place::Place(std::string name, int capacity)
 	this->max = 0;
 	this->isPlace = true;
 	listOfPlaces.insert(std::pair<std::string, Place*>(name, this));	
+	
+	// Statistiky
+	this->min = INT_MAX;
+	this->max = 0;
+	this->average = 0;
+	this->performCount = 0;
 }
 
 /**
@@ -227,6 +233,37 @@ std::map<std::string, Place *>* Place::getPlaces()
 	return &listOfPlaces;
 }
 
+/**
+ * 
+ */
+void Place::setStats()
+{
+	this->performCount++;
+	
+	if(this->min > this->getTokenCount())
+		this->min = this->getTokenCount();
+	
+	if(this->max < this->getTokenCount())
+		this->max = this->getTokenCount();
+	
+	this->average = (this->performCount * this->average + this->getTokenCount()) / (this->performCount + 1);
+}
+
+/**
+ * 
+ */
+void Place::printStats()
+{
+	std::cout<<"######################"<<std::endl;
+	std::cout<<"Místo: "<<this->getName()<<std::endl;
+	std::cout<<"	Počet změn: "<<this->performCount<<std::endl;
+	std::cout<<"	Minimální počet značek: "<<this->min<<std::endl;
+	std::cout<<"	Maximální počet značek: "<<this->max<<std::endl;
+	std::cout<<"	Průměrný počet značek: "<<this->average<<std::endl;
+	std::cout<<"######################"<<std::endl;
+	std::cout<<std::endl;
+}
+
 /* ########################## class Transition ###########################*/
 
 /**
@@ -286,6 +323,12 @@ Transition::Transition(std::string name, int value, Transition::Type type)
 	
 	// přidání vytvořeného přechodu do seznamu všech vytvořených přechodů
 	listOfTransitions.insert(std::pair<std::string, Transition*>(name, this));
+	
+	// Statistiky
+	this->min = INT_MAX;
+	this->max = 0;
+	this->average = 0;
+	this->performCount = 0;
 }
 
 /**
@@ -304,6 +347,24 @@ int Transition::getTransitionType()
 unsigned int Transition::getValue()
 {
 	return this->value;
+}
+
+/**
+ * 
+ * @param value
+ */
+void Transition::setGeneratedValue(double value)
+{
+	this->generatedValue = value;
+}
+
+/**
+ * 
+ * @return 
+ */
+double Transition::getGeneratedValue()
+{
+	return this->generatedValue;
 }
 
 /**
@@ -454,4 +515,47 @@ std::vector<Transition*> Transition::getRandomVectorTransitions()
 	std::random_shuffle(checkTransitions.begin(), checkTransitions.end());
 	
 	return checkTransitions;
+}
+
+/**
+ * 
+ */
+void Transition::setStats()
+{
+	this->performCount++;
+	
+	if(this->min > this->generatedValue)
+		this->min = this->generatedValue;
+	
+	if(this->max < this->generatedValue)
+		this->max =this->generatedValue;
+	
+	this->average = (this->performCount * this->average + this->generatedValue) / (this->performCount + 1);
+}
+
+/**
+ * 
+ */
+void Transition::printTimedStats()
+{
+	std::cout<<"#######################"<<std::endl;
+	std::cout<<"Přechod: "<<this->getName()<<std::endl;
+	std::cout<<"	Celkový počet provedení: "<<this->performCount<<std::endl;
+	std::cout<<"	Nejkratší doba provedení: "<<this->min<<std::endl;
+	std::cout<<"	Nejdelší doba provedení: "<<this->max<<std::endl;
+	std::cout<<"	Průměrná doba provedení: "<<this->average<<std::endl;
+	std::cout<<"######################"<<std::endl;
+	std::cout<<std::endl;
+}
+
+/**
+ * 
+ */
+void Transition::printStats()
+{
+	std::cout<<"######################"<<std::endl;
+	std::cout<<"Přechod: "<<this->getName()<<std::endl;
+	std::cout<<"	Celkový počet provedení: "<<this->performCount<<std::endl;
+	std::cout<<"######################"<<std::endl;
+	std::cout<<std::endl;
 }
