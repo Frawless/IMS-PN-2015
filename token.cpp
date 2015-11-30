@@ -26,15 +26,6 @@ Token::Token(Place * place)
 }
 
 /**
- * Získání ukazatele na pole tokenů
- * @return ukazatel na pole tokenů
- */
-std::vector <Token *>* Token::getTokens()
-{
-	return &listOfTokens;
-}
-
-/**
  * Získní ukazatele na místo
  * @return ukazatel na místo
  */
@@ -45,30 +36,31 @@ Place* Token::getPlace()
 
 /**
  *  Pro smazání při opuštění systému
- * @param token
+ * @param token ukazatel na tokne
  */
 void Token::removeToken(Token *token)
 {
-	std::vector <Token *>::iterator it;		//iterátor pro průchod polem tokenů
-	//prohledání pole tokenů
+	std::vector <Token *>::iterator it;		//iterátor pro průchod seznamem tokenů
+	// procházení seznamu tokenů
 	for(it = listOfTokens.begin(); it != listOfTokens.end(); it++)
 	{
 		if(*it == token)
 		{
-			delete(token);			//smazání objektu tokenu
-			listOfTokens.erase(it);		//smazání ze seznamu
+			delete(token); //smazání objektu tokenu
+			listOfTokens.erase(it);	 //smazání tokenu ze seznamu všech tokenů
 			return;
 		}	
 	}
 }
 
 /**
- * 
+ *  Vytisknutí všech tokenů.
  */
 void Token::printTokens()
 {
 	std::vector <Token *>::iterator it;		//iterátor pro průchod polem tokenů
-	//prohledání pole tokenů
+	
+	//procházení seznamu tokenů
 	for(it = listOfTokens.begin(); it != listOfTokens.end(); it++)
 	{
 		std::cerr<<"Token: "<<*it<<std::endl;
@@ -77,18 +69,29 @@ void Token::printTokens()
 }
 
 /**
- * 
+ * ??????????
+ * @param transition
+ */
+void Token::tokenProcessedByTransition(Transition *transition)
+{
+	listOfEvents.push_back(transition);
+}
+
+/**
+ * ????????????
  * @param transition
  * @return 
  */
 bool Token::isTokenProcessedByTransition(Transition* transition)
 {
-	std::vector<Transition*>::iterator iterToken;
-	this->listOfEvents.clear();
+	std::vector<Transition*>::iterator iterToken; // iterátor pro token
+	this->listOfEvents.clear(); // vymazání seznamu událostí
 	
+	// pokud je seznam událstí prázdný
 	if(this->listOfEvents.size() ==0)
 		return false;
 	
+	// posutupné procházení tokenů
 	for(iterToken = listOfEvents.begin(); iterToken != listOfEvents.end(); iterToken++)
 	{
 		if(transition ==(*iterToken))
@@ -99,16 +102,7 @@ bool Token::isTokenProcessedByTransition(Transition* transition)
 
 
 /**
- * 
- * @param transition
- */
-void Token::tokenProcessedByTransition(Transition *transition)
-{
-	listOfEvents.push_back(transition);
-}
-
-/**
- * 
+ * ??????????,
  * @param isInEvent
  */
 void Token::setFlag(bool isInEvent)
@@ -116,12 +110,30 @@ void Token::setFlag(bool isInEvent)
 	this->waitFlag = isInEvent;
 }
 
+/**
+ * Vrátí true, pokud ???
+ * @return 
+ */
+
+bool Token::getFlag()
+{
+	return this->waitFlag;
+}
+
+/**
+ * Získání ukazatele na seznam všech přechodů modelu.
+ * @return ukazatel na seznam všech událostí
+ */
 std::vector<Transition *> *Token::getListOfEvents()
 {
 	return &(this->listOfEvents);
 }
 
-bool Token::getFlag()
+/**
+ * Získání ukazatele na pole tokenů
+ * @return ukazatel na pole tokenů
+ */
+std::vector <Token *>* Token::getTokens()
 {
-	return this->waitFlag;
+	return &listOfTokens;
 }

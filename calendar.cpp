@@ -21,7 +21,7 @@
 Event::Event(double time, double wait, Transition *transition)
 {
 	this->time = time;
-	this->wait = wait; // ???možná by nemuselo být a hodnota by se získávála přímo z přechodu
+	this->wait = wait; 
 	this->trainsition = transition;
 }
 
@@ -36,7 +36,7 @@ double Event::getTime()
 
 /**
  * Vrátí čas provádění přechodu.
- * @return  čas provádění přechodu
+ * @return čas provádění přechodu
  */
 double Event::getWait()
 {

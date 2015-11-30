@@ -26,24 +26,20 @@ class Token
 {
 	public:
 		Token(Place *place); //konstruktor tokenu
-		static std::vector <Token *>* getTokens(); // získání ukazatele na pole tokenů
 		Place* getPlace(); // získání ukazatele na místo v němž je token vložen
-		void removeToken(Token *token); //odstranění tokenu z pole všech tokenů
+		void removeToken(Token *token); //odstranění tokenu ze seznamu všech tokenů modelu
 		static void printTokens(); //vypsání všech tokenů
-		
-		void tokenProcessedByTransition(Transition *transition); // 
-		bool isTokenProcessedByTransition(Transition* transition); // 
-		
-		void setFlag(bool isInEvent);
-		bool getFlag();
-		
-		std::vector<Transition *> *getListOfEvents();
-		
+		void tokenProcessedByTransition(Transition *transition); // ???
+		bool isTokenProcessedByTransition(Transition* transition); // ???
+		void setFlag(bool isInEvent); //???	
+		bool getFlag(); // ???
+		std::vector<Transition *> *getListOfEvents(); // získání seznamu všech událostí
+		static std::vector <Token *>* getTokens(); // získání ukazatele na seznam všech tokenů modelu
 
 	private:
-		static std::vector <Token *> listOfTokens; // pole tokenů
+		static std::vector <Token *> listOfTokens; // seznam všech tokenů z modelu
 		Place * place; // ukazatel na místo v němž je token vložen
 		std::vector<Transition *> listOfEvents; // seznam přechodů, ve kterých se nachází
-		bool waitFlag;
+		bool waitFlag; // ???
 };
 #endif

@@ -26,11 +26,11 @@ class Event
 		Event(double time, double wait, Transition *transition); // konstruktor události
 		double getTime(); // vratí aktivační čas události
 		double getWait(); // vrátí čas provádění prechodu
-		Transition *getTransition(); // vrátí ukazatel na přechod učástnící se události
+		Transition *getTransition(); // vrátí ukazatel na přechod účástnící se události
 		void addTokenToEvent(Token *token); // přidá token seznamu tokenů události
-		bool isListOfTokensEmpty(); // ověří, zda je seznam tokenů události prázdný
+		bool isListOfTokensEmpty(); // ověří, zda je seznam tokenů událostí prázdný
 
-		// pretezeni operatoru < pro potreby multisetu kalendare (rikame jak se maji udalosti radit)
+		// přetížení operátoru < pro řazení událostí v kalendáři
 		bool operator < (const Event& refParam) const
 		{
 			return (this->time < refParam.time);

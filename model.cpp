@@ -11,6 +11,16 @@
 #include "model.h"
 
 /**
+ * Výčet konstant
+ */
+enum type
+{
+	DEFAULT_PLACE_CAPACITY = 0,
+	DEFAULT_TRANSITION_VALUE = 0,
+	DEFAULT_TOKEN_CNT = 1
+};
+
+/**
  * 	Konstruktor modelu
  */
 Model::Model()
@@ -31,7 +41,7 @@ Model::~Model()
 void Model::addPlace(std::string name)
 {
 	// kontrola ???
-	Model::addPlace(name, 0); // ???nula pryč
+	Model::addPlace(name, DEFAULT_PLACE_CAPACITY);
 }
 
 /**
@@ -77,7 +87,7 @@ void Model::addTransition(std::string name, int value, Transition::Type type)
  */
 void Model::addTransition(std::string name)
 {
-	Model::addTransition(name, 0, Transition::PRIORITY); // nula pryč
+	Model::addTransition(name, DEFAULT_TRANSITION_VALUE, Transition::PRIORITY); // nula pryč
 }
 
 /**
@@ -131,7 +141,7 @@ void Model::addToken(std::string placeName, int count)
  */
 void Model::addToken(std::string placeName)
 {
-	return Model::addToken(placeName, 1); 
+	return Model::addToken(placeName, DEFAULT_TOKEN_CNT); 
 }
 
 /**

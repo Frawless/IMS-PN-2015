@@ -39,38 +39,27 @@ class Event;
 class Simulator
 {
 	public:
-		Simulator(); // konstruktor
-		~Simulator(); // destruktor
-		void createModel(); // vytvoření modelu
-		Model *getModel(); // získání ukazatele na model
-		void printModel(); // vytisknutí modelu
-		Calendar *getCalendar(); // získání ukazatele na model
-		
-		void setSimTime(double simTime); // nastavení simulačního času
-		void setMaxSimTime(double maxSimTime); // nastavení konce simulačního času
-		
-		// metoda pro volbu prioritního přechodu
-		
-		void simStart(); // zahájení simulace
-		void performTransitions(); // vykoná nečasové přechody a naplánuje časované přechody
+		Simulator(); // konstruktor simulátoru
+		~Simulator(); // destruktor simulátoru
+		void setSimTime(double simTime); // nastaví simulační čas
+		void setMaxSimTime(double maxSimTime); // nastaví konec simulačního času	
+		void createModel(); // vytvoří model
+		Model *getModel(); // získá ukazatel na model
+		void printModel(); // vytiskne model
+		void simStart(); // zahájí simulace
+		Calendar *getCalendar(); // získá ukazatele na model
+		///???  metoda pro volbu prioritního přechodu
+		// ???vykonání časovaného přechodu
+		void performTransitionFromEvent(Event *event); // ???
 		void performTransition(Transition *transition); // vykonání konkrétního přechodu
-		
-		// vykonání časovaného přechodu
-		// naplánovat událost
-		
-		//funkce progenerování exponenciálního zpoždění
-		double Random();
-		double Exponential(double mv);
-		
-		static void clearPerformedTransition(); // nastavení přechodů na false
-		
+		void performTransitions(); // vykoná nečasové přechody a naplánuje časované přechody
+		// ???naplánovat událost
+		static void clearPerformedTransition(); // nastavení příznaku vykonání přechodů na false
 		void planTransition(Transition *transition, double wait); // naplánování časovaného přechodu
-		
 		void planEvents(Transition *transition, double wait); // plánování událostí
-		void performTransitionFromEvent(Event *event);
-		
-		bool transitionCanBePerformed(Transition *transition);
-		
+		bool transitionCanBePerformed(Transition *transition); // ???	
+		double Random(); // vygenerování náhodného čísla
+		double Exponential(double mv); // vygenerování čísla s exponeniálním rozložením se střeem mv
 		
 		static unsigned ix;     // seed pro generator
 	private:
