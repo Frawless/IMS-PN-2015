@@ -163,6 +163,10 @@ void Simulator::simStart() // ??? upravit komentáře po dokončení
 		
 		// std::cerr<<"DEBUG: Kalendář není prázdný1"<<std::endl;
 		
+		// vybrání události z kalendáře
+		event = this->calendar->getEvent();
+		this->simTime = event->getTime();
+		
 		// pokud je přesažena maximální hodnota simulačního času
 		if(this->simTime > this->maxSimTime)
 		{
@@ -173,11 +177,6 @@ void Simulator::simStart() // ??? upravit komentáře po dokončení
 			this->model->printAllStats();
 			exit(0);
 		}
-		// std::cerr<<"DEBUG: Kalendář není prázdný2"<<std::endl;
-		// vybrání události z kalendáře
-		event = this->calendar->getEvent();
-		this->simTime = event->getTime();
-		// std::cerr<<"DEBUG: Kalendář není prázdný3"<<std::endl;
 
 		// vykonání časovaného přechodu dané události
 		this->performTransitionFromEvent(event);
@@ -344,37 +343,29 @@ void Simulator::performTransitions()
 		switch(transition->getTransitionType())
 		{
 			case Transition::TIMED_CONST:
-				// std::cerr<<"DEBUG: Const"<<std::endl;
 				wait = transition->getValue(); // získání hodnoty zpoždění přechodu
+				checkTransitions.pop_back();
 				
 				//std::cerr<<"DEBUG: Vygenerováno zpoždění pro přechod \""<<transition->getName()<<"\" (CONST) : "<<wait<<std::endl;
 				
-				if(!this->transitionCanBePerformed(transition))
-				{
-					checkTransitions.pop_back();
+				if(!this->transitionCanBePerformed(transition))					
 					break;
-				}
 				
 				// vložení náhodně vybraného přechodu do kalendáře	
 				planEvents(transition, wait);
-				checkTransitions.pop_back();
 				break;
-			case Transition::TIMED_EXP:
-				// std::cerr<<"DEBUG: EXP"<<std::endl;		
+			case Transition::TIMED_EXP:	
 				// vygenerování exponenciálního zpoždění
 				wait = Exponential(transition->getValue());
+				checkTransitions.pop_back();
 
 				//std::cerr<<"DEBUG: Vygenerováno zpoždění pro přechod \""<<transition->getName()<<"\" (EXP) : "<<wait<<std::endl;
 				
 				if(!this->transitionCanBePerformed(transition) && !transition->getInputLinkCount() == 0)
-				{
-					checkTransitions.pop_back();
 					break;
-				}
-				
+			
 				// vložení náhodně vybraného přechodu do kalende
 				planEvents(transition, wait);
-				checkTransitions.pop_back();
 				break;
 			case Transition::PRIORITY:
 				// získání vstupního místa
