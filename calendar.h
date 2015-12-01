@@ -1,12 +1,19 @@
 /*************************************************
 *		  Projekt: 	Projekt do předmětu IMS     * 
-* 					Simulátor petriho sítí		*
+* 					Simulátor Petriho sítí		*
 *		   Autoři:	Jakub Stejskal <xstejs24>	*
 *		   			Petr Staněk <xstane34>      *
 *   Nazev souboru: 	calendar.h	             	*
 *			Datum:  14. 11. 2015				*
 *			Verze:	1.0							*
 ************************************************/
+
+/**
+ * @file calendar.h
+ * @brief Hlavičkový soubor obsahující třídy reprezentující kalendář a záznam události v kalednáři.
+ * @author Staněk Petr <xstane34@stud.fit.vutbr.cz>
+ * @author Stejskal Jakub <xstejs24@stud.fit.vutbr.cz>
+ */
 
 #ifndef CALENDAR_H
 #define CALENDAR_H
@@ -18,7 +25,8 @@ class Token;
 class Transition;
 
 /**
- * Třída reprezentující záznam o události v kalendáři
+ * @class Event
+ * @brief Třída reprezentující záznam o události v kalendáři.
  */
 class Event
 {
@@ -29,13 +37,7 @@ class Event
 		Transition *getTransition(); // vrátí ukazatel na přechod účástnící se události
 		void addTokenToEvent(Token *token); // přidá token seznamu tokenů události
 		bool isListOfTokensEmpty(); // ověří, zda je seznam tokenů událostí prázdný
-
-		// přetížení operátoru < pro řazení událostí v kalendáři
-		bool operator < (const Event& refParam) const
-		{
-			return (this->time < refParam.time);
-		}
-		
+	
 	private:
 		double time; // aktivační čas události
 		double wait; // doba provádění přechodu
@@ -44,7 +46,8 @@ class Event
 	};
 
 	/**
-	 * Deklarace řazení seznamu kaládáře záznamů o událostech
+	 * @class EventSort
+	 * @brief Deklarace řazení seznamu kalendáře záznamů o událostech (podtřída)
 	 */
 	struct EventSort
 	{
@@ -55,7 +58,8 @@ class Event
 	};
 	
 /**
- * Třída reprezentující kalendář záznamů o událostech.
+ * @class Calendar
+ * @brief Třída reprezentující kalendář záznamů o událostech.
  */
 class Calendar
 {
@@ -68,8 +72,7 @@ class Calendar
 		Event* getEvent(); // vrátí nejblíže naplánovanou událost z kalendáře
 		std::multiset<Event *, EventSort>* getEvents(); // vrátí ukazatel na seznam záznamů o událostech
 		void printCalendar(); // vytiskne kalendář
-		
-	
+
 	private:
 		std::multiset<Event *, EventSort> listOfEvents; // seznam záznamů o událostech v kalendáři
 

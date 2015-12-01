@@ -1,12 +1,19 @@
 /*************************************************
 *		  Projekt: 	Projekt do předmětu IMS     * 
-* 					Simulátor petriho sítí		*
+* 					Simulátor Petriho sítí		*
 *		   Autoři:	Jakub Stejskal <xstejs24>	*
 *		   			Petr Staněk <xstane34>      *
 *   Nazev souboru: 	link.h				     	*
 *			Datum:  14. 11. 2015				*
 *			Verze:	1.0							*
 ************************************************/
+
+/**
+ * @file link.h
+ * @brief Hlavičkový soubor obsahující třídu reprezentující hranu modelu.
+ * @author Staněk Petr <xstane34@stud.fit.vutbr.cz>
+ * @author Stejskal Jakub <xstejs24@stud.fit.vutbr.cz>
+ */
 
 #ifndef LINK_H
 #define LINK_H
@@ -21,7 +28,8 @@ class Transition;
 class Place;
 
 /**
- * Třída reprezentující hranu modelu.
+ * @class Link
+ * @brief Třída reprezentující hranu modelu.
  */
 class Link
 {
@@ -33,7 +41,6 @@ class Link
 		static std::vector <Link *>* getLinks(); // vrátí ukazatel na seznam všech hran modelu
 
 	private:
-		
 		PlaceTransition *input;	// ukazatel na místo/přechod na vstupu hrany
 		PlaceTransition *output; // ukazatel na místo/přechod na výstupu hrany
 		int capacity; // kapacita hrany

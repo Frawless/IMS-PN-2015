@@ -1,12 +1,19 @@
 /*************************************************
 *		  Projekt: 	Projekt do předmětu IMS     * 
-* 					Simulátor petriho sítí		*
+* 					Simulátor Petriho sítí		*
 *		   Autoři:	Jakub Stejskal <xstejs24>	*
 *		   			Petr Staněk <xstane34>      *
 *   Nazev souboru: 	link.cpp		         	*
 *			Datum:  14. 11. 2015				*
 *			Verze:	1.0							*
 ************************************************/
+
+/**
+ * @file link.cpp
+ * @brief Soubor obsahující třídu reprezentující hranu modelu.
+ * @author Staněk Petr <xstane34@stud.fit.vutbr.cz>
+ * @author Stejskal Jakub <xstejs24@stud.fit.vutbr.cz>
+ */
 
 #include "link.h"
 
@@ -16,8 +23,8 @@ std::vector <Link *> Link::listOfLinks;
 
 /**
  * Konstruktor hrany mezi místem/přechodem a přechodem/místem.
- * @param input místo/přechod na vstupu hrany
- * @param output místo/přechod na výstupu hrany
+ * @param inputName místo/přechod na vstupu hrany
+ * @param outputName místo/přechod na výstupu hrany
  * @param capacity kapacita přechodu
  */
 Link::Link(std::string inputName, std::string outputName, int capacity)

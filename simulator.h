@@ -1,6 +1,6 @@
 /*************************************************
 *		  Projekt: 	Projekt do předmětu IMS     * 
-* 					Simulátor petriho sítí		*
+* 					Simulátor Petriho sítí		*
 *		   Autoři:	Jakub Stejskal <xstejs24>	*
 *		   			Petr Staněk <xstane34>      *
 *   Nazev souboru: 	simulator.h             	*
@@ -34,7 +34,15 @@ class Calendar;
 class Event;
 
 /**
- * Třída reprezentující simulátor Petriho sítě.
+ * @file simulator.h
+ * @brief Hlavičkový soubor obsahující třídu reprezentující simulátor Petriho sítě.
+ * @author Staněk Petr <xstane34@stud.fit.vutbr.cz>
+ * @author Stejskal Jakub <xstejs24@stud.fit.vutbr.cz>
+ */
+
+/**
+ * @class Simulator
+ * @brief Třída reprezentující simulátor Petriho sítě.
  */
 class Simulator
 {
@@ -48,25 +56,23 @@ class Simulator
 		void printModel(); // vytiskne model
 		void simStart(); // zahájí simulace
 		Calendar *getCalendar(); // získá ukazatele na model
-		// ??? metoda pro volbu prioritního přechodu
-		// ???vykonání časovaného přechodu
 		void performTransitionFromEvent(Event *event); // vykoná přechod z události kalendáře
 		void performTransition(Transition *transition); // vykoná přechod zadaný parametrem
 		void performTransitions(); // vykoná nečasové přechody a naplánuje časované přechody
-		// ???naplánovat událost
 		static void clearPerformedTransition(); // nastavení příznaku vykonání přechodů na false
 		void planTransition(Transition *transition, double wait); // naplánování časovaného přechodu
 		void planEvents(Transition *transition, double wait); // plánování událostí
 		bool transitionCanBePerformed(Transition *transition); // zjistí, zda může být přechod vykonán	
 		double Random(); // vyeneruje náhodné číslo
 		double Exponential(double mv); // vygeneruje číslo s exponeniálním rozložením se střeem mv
-		
-		static unsigned ix; // ???seed pro generator
+	
 	private:
 		Model *model; // ukazatel na model
 		Calendar *calendar; // ukazatel na kalednář záznamů o událostech
 		double simTime; // aktuální hodnota simulačnho času
 		double maxSimTime; // maximální hodnota simulačního času (čas. rámec)
 };
+
+unsigned time_seed(); // ratí seed pro inicializaci generátoru pseudo-náhodných čísel
 
 #endif

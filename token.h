@@ -1,12 +1,19 @@
 /*************************************************
 *		  Projekt: 	Projekt do předmětu IMS     * 
-* 					Simulátor petriho sítí		*
+* 					Simulátor Petriho sítí		*
 *		   Autoři:	Jakub Stejskal <xstejs24>	*
 *		   			Petr Staněk <xstane34>      *
 *   Nazev souboru: 	token.cpp			     	*
 *			Datum:  14. 11. 2015				*
 *			Verze:	1.0							*
 ************************************************/
+
+/**
+ * @file token.h
+ * @brief Hlavičkový soubor obsahující třídu reprezentující token v místě
+ * @author Staněk Petr <xstane34@stud.fit.vutbr.cz>
+ * @author Stejskal Jakub <xstejs24@stud.fit.vutbr.cz>
+ */
 
 #ifndef TOKEN_H
 #define TOKEN_H
@@ -20,7 +27,8 @@ class Place;
 class Transition;
 
 /**
- * Třída reprezentující token v místě
+ * @class Token
+ * @brief Třída reprezentující token v místě
  */
 class Token
 {
@@ -32,13 +40,13 @@ class Token
 		bool isTokenProcessedByTransition(Transition* transition); // ???
 		void setFlag(bool isInEvent); // nastaví příznak tokenu značící, že je token naplánován v přechodu
 		bool getFlag(); // získá příznak tokenu značící, že je token naplánován v přechodu
-		std::vector<Transition *> *getListOfEvents(); // vrátí seznam všech událostí
 		static std::vector <Token *>* getTokens(); // vrátí ukazatel na seznam všech tokenů modelu
 
 	private:
 		static std::vector <Token *> listOfTokens; // seznam všech tokenů z modelu
-		Place * place; // ukazatel na místo v němž je token vložen
+		Place * place; // ukazatel na místo, v němž je token vložen
 		std::vector<Transition *> listOfEvents; // seznam přechodů, ve kterých se nachází
 		bool waitFlag; // příznak značící, že token čeká na přesun
 };
+
 #endif

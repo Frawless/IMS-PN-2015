@@ -1,12 +1,20 @@
 /*************************************************
 *		  Projekt: 	Projekt do předmětu IMS     * 
-* 					Simulátor petriho sítí		*
+* 					Simulátor Petriho sítí		*
 *		   Autoři:	Jakub Stejskal <xstejs24>	*
 *		   			Petr Staněk <xstane34>      *
 *   Nazev souboru: 	place-transition.h       	*
 *			Datum:  14. 11. 2015				*
 *			Verze:	1.0							*
 ************************************************/
+
+/**
+ * @file place-transition.h
+ * @brief Hlavičkový soubor obsahující třídu společné vlastnosti tříd Place a Transition a na základě 
+ * ní jsou vytvořeny třídy Place a Transition (zděděno).
+ * @author Staněk Petr <xstane34@stud.fit.vutbr.cz>
+ * @author Stejskal Jakub <xstejs24@stud.fit.vutbr.cz>
+ */
 
 #ifndef PLACE_TRANSITION_H
 #define PLACE_TRANSITION_H
@@ -24,7 +32,8 @@ class Link;
 class Token;
 
 /**
- * Třída obsahující společné vlastnosti tříd Place a Transition a na základě
+ * @class PlaceTransition
+ * @brief Třída obsahující společné vlastnosti tříd Place a Transition a na základě 
  * ní jsou vytvořeny třídy Place a Transition (zděděno).
  */
 class PlaceTransition
@@ -47,7 +56,8 @@ class PlaceTransition
 };
 
 /**
- * Třída reprezentující místo modelu.
+ * @class Place
+ * @brief Třída reprezentující místo modelu.
  */ 
 class Place: public PlaceTransition
 {
@@ -64,30 +74,30 @@ class Place: public PlaceTransition
 		static std::map<std::string, Place *>* getPlaces(); // získá ukazatel na seznam všech míst modelu
 		
 		// Statistiky
-		void setStats();
-		void printStats();
+		void setStats(); // uloží statistiku místa
+		void printStats(); // vytiskne statistiku místa
 		
-
 	private:
-		static std::map<std::string, Place *> listOfPlaces; // seznam všechm míst modelu
+		static std::map<std::string, Place *> listOfPlaces; // seznam všech míst modelu
 		int capacity; // kapacita místa
 		std::vector<Token *> listOfTokens; // sezam všech tokenů v místě
 		
-		// Statistiky míst
-		int min; // 
-		int max; //
-		int performCount; //
-		double average; //
+		// Statistiky
+		int min; // minimální počet tokenů v místě
+		int max; // maximální počet tokenů v mí
+		int performCount; // počet provedení výpočtu statistik
+		double average; // průměrná hodnota počtu tokenů v místě
 		
 };
 
 /**
- * Třída reprezentující přechod modelu
+ * @class Transition
+ * @brief Třída reprezentující přechod modelu
  */
 class Transition: public PlaceTransition
 {
 	public:
-		enum Type{TIMED_EXP, TIMED_CONST, STOCHASTIC, PRIORITY}; // výčet typů přechodů
+		enum Type{TIMED_EXP, TIMED_CONST, PROBABILITY, PRIORITY}; // výčet typů přechodů
 		Transition(std::string name); // konstruktor přechodu zadáním jména
 		Transition(std::string name, int value, Transition::Type type); // konstruktor přechodu zadáním místa a parametrů
 		int getTransitionType(); // vrátí typ přechodu
@@ -102,12 +112,12 @@ class Transition: public PlaceTransition
 		bool getIsTimed(); // Vrátí true, pokud je přechod načasován
 		static std::map<std::string, Transition *>* getTransitions(); // vrátí ukazatel na seznam všech přechodů modelu
 		static Transition* getTransition(std::string name); // vrátí ukazatel na přechod zadaný jménem
-		static std::vector<Transition*> getRandomVectorTransitions();
+		static std::vector<Transition*> getRandomVectorTransitions(); // vrátí ukazatel na náhodně uspořádaný seznam všech přechodů modelu
 				
 		// Statistiky
-		void setStats();
-		void printStats();
-		void printTimedStats();
+		void setStats(); // uloží statistiky přechodu
+		void printStats(); // tiskne statistiky nečasovaného přechodu
+		void printTimedStats(); // tiskne statistiky časovaného přechodu 
 		
 	private:
 		static std::map<std::string, Transition *> listOfTransitions; // seznam všech přechodů modelu
@@ -118,10 +128,10 @@ class Transition: public PlaceTransition
 		double generatedValue; // vygenerovaná hodnota z value
 		
 		// Statistiky přechodů
-		double min; //
-		double max; //
-		double average; //
-		int performCount; //
+		double min; // maximální hodnota vygenerovaného času přechodu
+		double max; // minimální hodnota vygenerovaného času přechodu
+		double average; // průměrná hodnota vygenerovaného času přechodu
+		int performCount; // počet provedených přechodů
 
 };
 

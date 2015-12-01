@@ -1,12 +1,19 @@
 /*************************************************
 *		  Projekt: 	Projekt do předmětu IMS     * 
-* 					Simulátor petriho sítí		*
+* 					Simulátor Petriho sítí		*
 *		   Autoři:	Jakub Stejskal <xstejs24>	*
 *		   			Petr Staněk <xstane34>      *
 *   Nazev souboru: 	model.h						*
 *			Datum:  14. 11. 2015				*
 *			Verze:	1.0							*
 ************************************************/
+
+/**
+ * @file model.h
+ * @brief Hlavičkový soubor obsahující třídu reprezentující model Petriho sítě, který bude simulován.
+ * @author Staněk Petr <xstane34@stud.fit.vutbr.cz>
+ * @author Stejskal Jakub <xstejs24@stud.fit.vutbr.cz>
+ */
 
 #ifndef MODEL_H
 #define MODEL_H
@@ -23,7 +30,8 @@ class Transition;
 class Token;
 
 /**
- * Třída reprezentující model Petriho sítě, který bude simulován.
+ * class Model
+ * @brief Třída reprezentující model Petriho sítě, který bude simulován.
  */
 class Model
 {
@@ -40,9 +48,9 @@ class Model
 		static void modelValidate(); // ověří syntaktickou správnou modelu
 		void printTokenCount(); // vytiskne počty tokenů v jednotlivých místech modelu
 		void printModel(); // vytiskne přehled celého modelu
-		void printStats();
 		
-	private:
+		// statistiky
+		void printAllStats(); // vytiskne statistiky
 };
 
 #endif

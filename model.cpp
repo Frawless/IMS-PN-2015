@@ -1,6 +1,6 @@
 /*************************************************
 *		  Projekt: 	Projekt do předmětu IMS     * 
-* 					Simulátor petriho sítí		*
+* 					Simulátor Petriho sítí		*
 *		   Autoři:	Jakub Stejskal <xstejs24>	*
 *		   			Petr Staněk <xstane34>      *
 *   Nazev souboru: 	model.cpp		        	*
@@ -8,12 +8,19 @@
 *			Verze:	1.0							*
 ************************************************/
 
+/**
+ * @file model.cpp
+ * @brief Soubor obsahující třídu reprezentující model Petriho sítě, který bude simulován.
+ * @author Staněk Petr <xstane34@stud.fit.vutbr.cz>
+ * @author Stejskal Jakub <xstejs24@stud.fit.vutbr.cz>
+ */
+
 #include "model.h"
 
 /**
- * Výčet konstant
+ * Výčet konstant použitých v programu
  */
-enum type
+enum constants
 {
 	DEFAULT_PLACE_CAPACITY = 0,
 	DEFAULT_TRANSITION_VALUE = 0,
@@ -25,6 +32,7 @@ enum type
  */
 Model::Model()
 { 
+
 }
 
 /**
@@ -32,6 +40,26 @@ Model::Model()
  */
 Model::~Model()
 { 
+	std::map<std::string, Place *>::iterator iterPlace; // iterátor pro průchod seznamem míst
+	std::map<std::string, Transition *>::iterator iterTransition; // iterátor pro průchod seznamem přechodů
+	std::vector <Token *>::iterator iterToken; // iterátor pro průchod polem tokenů
+	std::vector<Link *> ::iterator iterLink; // iterátor pro průchod seznamem hran
+	
+	// průchod míst
+	for(iterPlace = Place::getPlaces()->begin(); iterPlace != Place::getPlaces()->end(); iterPlace++)
+		delete(iterPlace->second);
+	
+	// průchod přechodů
+	for(iterTransition = Transition::getTransitions()->begin(); iterTransition != Transition::getTransitions()->end(); iterTransition++)
+		delete(iterTransition->second);
+
+	// průchod tokenů
+	for(iterToken = Token::getTokens()->begin(); iterToken != Token::getTokens()->end(); iterToken++)
+		delete(*iterToken);	
+			
+	// průchod hran
+	for(iterLink = Link::getLinks()->begin(); iterLink != Link::getLinks()->end(); iterLink++)
+		delete(*iterLink);
 }
 
 /**
@@ -50,14 +78,8 @@ void Model::addPlace(std::string name)
  */
 void Model::addPlace(std::string name, int capacity)
 {
-	try
-	{
-		new Place(name, capacity);
-	}
-	catch(int e)
-	{
-	}
-	// ??? statistiky
+	new Place(name, capacity);
+
 }
 
 /**
@@ -68,15 +90,7 @@ void Model::addPlace(std::string name, int capacity)
  */
 void Model::addTransition(std::string name, int value, Transition::Type type)
 {
-	try
-	{
 		new Transition(name, value, type);
-	}
-	catch(int e)
-	{
-		std::cerr<<"cau"<<std::endl; // ???
-	}
-	// ??? statistiky
 }
 
 /**
@@ -85,7 +99,7 @@ void Model::addTransition(std::string name, int value, Transition::Type type)
  */
 void Model::addTransition(std::string name)
 {
-	Model::addTransition(name, DEFAULT_TRANSITION_VALUE, Transition::PRIORITY); // nula pryč
+	Model::addTransition(name, DEFAULT_TRANSITION_VALUE, Transition::PRIORITY);
 }
 
 /**
@@ -96,15 +110,7 @@ void Model::addTransition(std::string name)
  */
 void Model::addLink(std::string inputName, std::string outputName, int capacity)
 {
-	try
-	{
-		new Link(inputName, outputName, capacity); // vytvoření hrany
-	}
-	catch(int e)
-	{
-	
-	}
-	// ??? statistiky :
+	new Link(inputName, outputName, capacity); // vytvoření hrany
 }
 
 /**
@@ -130,7 +136,6 @@ void Model::addToken(std::string placeName, int count)
 		token = new Token(place);
 		place->addToken(token);
 	}
-	// ??? statistiky
 }
 
 /**
@@ -151,7 +156,7 @@ void Model::modelValidate()
 	Transition *transition; // ukazatel na přechod
 	Link *link; // ukazatel na hranu
 	double isFirstPriorityOrDelay = false; // první v seznamu je prioritní nebo časovaný přechod
-	int stochasticValueCnt = 0; // součet pravděpodobností převděpodobnostních přechodů
+	int probabilityValueCnt = 0; // součet pravděpodobností převděpodobnostních přechodů
 	
 	// deklarace iterátorů pro místa, přechody a výstupní hrany
 	std::map<std::string, Place *>::iterator iterPlace;
@@ -207,21 +212,20 @@ void Model::modelValidate()
 		{
 			// pokud je první procházený přechod prioritní nebo časovaný (tak i všechny ostatní musí být 
 			// tohoto typu, nastaven příznak typu prvního na true)
-			if (((Transition *)((*outputLinks->begin())->getOutput()))->getTransitionType() != Transition::STOCHASTIC)
+			if (((Transition *)((*outputLinks->begin())->getOutput()))->getTransitionType() != Transition::PROBABILITY)
 				isFirstPriorityOrDelay = true;
 
 			// postupné procházení hran vedoucích z právě zpracovávaného místa
 			for(iterOutputLink = outputLinks->begin(); iterOutputLink != outputLinks->end(); iterOutputLink++ )
 			{
-				// ???std::cerr<<(Transition *)((*iterOutputLink)->getOutput())<<std::endl;
 				// právě procházená hrana
 				link = *iterOutputLink;
 				
 				// přechodu na konci procházené hrany
 				transition = ((Transition *)((*iterOutputLink)->getOutput()));
 
-				// pokud je typ právě procházeného přechodu STOCHASTIC
-				if (transition->getTransitionType() == Transition::STOCHASTIC) 
+				// pokud je typ právě procházeného přechodu PROBABILITY
+				if (transition->getTransitionType() == Transition::PROBABILITY) 
 				{
 					// pokud již byl nalezen časovaný nebo prioritní typ přechodu připojený na dané místo
 					if (isFirstPriorityOrDelay == true)
@@ -250,7 +254,7 @@ void Model::modelValidate()
 
 						}	
 					}
-					stochasticValueCnt += transition->getValue();					
+					probabilityValueCnt += transition->getValue();					
 				}
 				// pokud je typ právě procházeného přechodu TIMED_EXP, TIMED_CONST nebo PRIORITY
 				else
@@ -262,12 +266,12 @@ void Model::modelValidate()
 			}
 			
 			// pokud je součet pravděpodobnostních přechodů různých od 100 & byly zpracovávány pravděpodobnostních přechody
-			if(stochasticValueCnt != 100 && stochasticValueCnt != 0)
+			if(probabilityValueCnt != 100 && probabilityValueCnt != 0)
 				std::cerr<<"Součet pravděpodobnostních přechodů není roven 100!"<<std::endl;
 		}
 		
 		isFirstPriorityOrDelay = false;	// reset příznaku prioritního nebo časovaného přechodu
-		stochasticValueCnt = 0;	// reset součtu hodnot pravděpodobnostních přechodů
+		probabilityValueCnt = 0;	// reset součtu hodnot pravděpodobnostních přechodů
 	}
 }
 
@@ -282,7 +286,6 @@ void Model::printTokenCount()
 	std::cout<<"Počet tokenů v místech:"<<std::endl;
 	// postupné procházení seznamu všech míst modelu
 	for(it = listOfPlaces->begin(); it != listOfPlaces->end(); it++)
-		//std::cerr<<"Místo: "<<it->second->getName()<<" -> Počet tokenů: "<<it->second->getTokenCount()<<std::endl;
 		std::cout<<"| "<<it->second->getName()<<" ("<<it->second->getTokenCount()<<") ";
 	
 	std::cout<<"|"<<std::endl;
@@ -312,9 +315,9 @@ void Model::printModel()
 }
 
 /**
- * 
+ * Vytiskne souhrnné statistiky
  */
-void Model::printStats()
+void Model::printAllStats()
 {
 	// deklarace iterátorů pro průchod polí míst, přechodů a hran
 	std::map<std::string, Place *>::iterator modelPlace;
@@ -327,25 +330,23 @@ void Model::printStats()
 	// průchod míst
 	for(modelPlace = Place::getPlaces()->begin(); modelPlace != Place::getPlaces()->end(); modelPlace++)
 	{
-		modelPlace->second->printStats();		
+		modelPlace->second->printStats(); // vytisknutí statistiku procházeného místa	
 	}
 	
 	// průchod přechodů pro časované přechody
 	for(modelTransition = Transition::getTransitions()->begin(); modelTransition != Transition::getTransitions()->end(); modelTransition++)
 	{	
-		
-		
 		if(modelTransition->second->getTransitionType() == Transition::TIMED_EXP ||
-		   modelTransition->second->getTransitionType() == Transition::TIMED_EXP)
-			modelTransition->second->printTimedStats();
+		   modelTransition->second->getTransitionType() == Transition::TIMED_CONST)
+			modelTransition->second->printTimedStats(); // vytisknutí statistiku procházeného časovaného přechodu
 	}
 	
 	// průchod přechodů
 	for(modelTransition = Transition::getTransitions()->begin(); modelTransition != Transition::getTransitions()->end(); modelTransition++)
 	{
-		if(!modelTransition->second->getTransitionType() == Transition::TIMED_EXP ||
-		   !modelTransition->second->getTransitionType() == Transition::TIMED_EXP)
-			modelTransition->second->printStats();
+		if(!(modelTransition->second->getTransitionType() == Transition::TIMED_EXP ||
+		   modelTransition->second->getTransitionType() == Transition::TIMED_CONST))
+			modelTransition->second->printStats(); // vytisknutí statistiku procházeného nečasovaného přechodu
 	}	
 		
 }

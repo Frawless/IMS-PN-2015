@@ -1,21 +1,30 @@
 /*************************************************
 *		  Projekt: 	Projekt do předmětu IMS     * 
-* 					Simulátor petriho sítí		*
+* 					Simulátor Petriho sítí		*
 *		   Autoři:	Jakub Stejskal <xstejs24>	*
 *		   			Petr Staněk <xstane34>      *
 *   Nazev souboru: 	place-transition.cpp       	*
 *			Datum:  14. 11. 2015				*
 *			Verze:	1.0							*
 ************************************************/
+
+/**
+ * @file place-transition.cpp
+ * @brief Soubor obsahující třídu společné vlastnosti tříd Place a Transition a na základě 
+ * ní jsou vytvořeny třídy Place a Transition (zděděno).
+ * @author Staněk Petr <xstane34@stud.fit.vutbr.cz>
+ * @author Stejskal Jakub <xstejs24@stud.fit.vutbr.cz>
+ */
+
 #include "place-transition.h"
 #include "token.h"
 #include "calendar.h"
 
 #include <typeinfo>
 
+// ukazatelé na všechny přechody a místa modelu (pro potřeby statických metod)
 std::map<std::string, Transition *> Transition::listOfTransitions;
 std::map<std::string, Place *> Place::listOfPlaces;
-
 
 /* ########################## class PlaceTransition ###########################*/
 
@@ -46,7 +55,6 @@ void PlaceTransition::addInputLink(Link *link)
 	this->inputLinks.push_back(link);
 }
 
-
 /**
  * Přidá hranu do seznamu hran vedoucích z místa/přechodu
  * @param link ukazatel na přidávanou hranu
@@ -58,7 +66,7 @@ void PlaceTransition::addOutputLink(Link *link)
 
 /**
  * Vrátí počet hran vedoucích do místa/přechodu
- * @return 
+ * @return počet hran vedoucích do místa/přechodu
  */
 int PlaceTransition::getInputLinkCount()
 {
@@ -67,7 +75,7 @@ int PlaceTransition::getInputLinkCount()
 
 /**
  * Vrátí počet hran vedoucích z místa/přechodu
- * @return 
+ * @return počet hran vedoucích z místa/přechodu
  */
 int PlaceTransition::getOutputLinkCount()
 {
@@ -234,23 +242,24 @@ std::map<std::string, Place *>* Place::getPlaces()
 }
 
 /**
- * 
+ * Uloží statistiky k místu.
  */
 void Place::setStats()
 {
-	this->performCount++;
+	this->performCount++; // zvýšení počtu změn stavu místa
 	
-	if(this->min > this->getTokenCount())
+	if(this->min > this->getTokenCount()) // uložení minima počtu tokenů v místě
 		this->min = this->getTokenCount();
 	
-	if(this->max < this->getTokenCount())
+	if(this->max < this->getTokenCount()) // uložení maxima počtu tokenů v místě
 		this->max = this->getTokenCount();
 	
+	// výpočet průměrné hodnoty počtu tokenů v místě
 	this->average = (this->performCount * this->average + this->getTokenCount()) / (this->performCount + 1);
 }
 
 /**
- * 
+ * Vytiskne statistiky místa.
  */
 void Place::printStats()
 {
@@ -295,14 +304,14 @@ Transition::Transition(std::string name, int value, Transition::Type type)
 		std::cerr<<"Název pro přechod \""<<name<<" je již použit pro pojmenování místa."<<std::endl;
 		throw 1;
 	}
-	// pokud typ řechodu není TIMED_EXP, TIMED_CONST, STOCHASTIC nebo PRIORITY
+	// pokud typ řechodu není TIMED_EXP, TIMED_CONST, PROBABILITY nebo PRIORITY
 	else if (!(type >= Transition::TIMED_EXP && type <= Transition::PRIORITY))
 	{
 		std::cerr<<"Nelze vložit přechod \""<<name<<"\" s neexistujícím typem."<<std::endl;
 		throw 1;
 	}
 	// pokud je zadána nulová hodnota časovaného nebo pravděpodobnostního přechodu
-	else if (value == 0 && type >= Transition::TIMED_EXP && type <= Transition::STOCHASTIC)
+	else if (value == 0 && type >= Transition::TIMED_EXP && type <= Transition::PROBABILITY)
 	{
 		std::cerr<<"Nelze vložit přechod \""<<name<<"\" s nulovou hodnotou zpoždění nebo pravděpodobnosti."<<std::endl;
 		throw 1;
@@ -350,8 +359,8 @@ unsigned int Transition::getValue()
 }
 
 /**
- * 
- * @param value
+ * Nastaví vypočtenou hodnotu zpoždění přechodu.
+ * @param value vygenerovaná hodnota zpoždění přechodu pro uložení
  */
 void Transition::setGeneratedValue(double value)
 {
@@ -359,8 +368,8 @@ void Transition::setGeneratedValue(double value)
 }
 
 /**
- * 
- * @return 
+ * Vrátí hodnotu zpoždění přechodu.
+ * @return vypočtená hodnota zpoždění přechodu
  */
 double Transition::getGeneratedValue()
 {
@@ -483,7 +492,7 @@ std::map<std::string, Transition *>* Transition::getTransitions()
  */
 Transition* Transition::getTransition(std::string name)
 {
-	// deklarace iterátoru
+	// deklarace iterátoru přechodů
 	std::map<std::string, Transition *>::iterator iterTransition;
 	
 	// nalezení přechodu v poli přechodů
@@ -497,8 +506,8 @@ Transition* Transition::getTransition(std::string name)
 }
 
 /**
- * 
- * @return 
+ * Vrátí ukazatel na náhodně uspořádaný seznam všech přechodů modelu
+ * @return ukazatel na náhodně uspořádaný seznam všech přechodů modelu
  */
 std::vector<Transition*> Transition::getRandomVectorTransitions()
 {
@@ -518,7 +527,7 @@ std::vector<Transition*> Transition::getRandomVectorTransitions()
 }
 
 /**
- * 
+ * Uloží statistiky přechodu.
  */
 void Transition::setStats()
 {
@@ -534,7 +543,7 @@ void Transition::setStats()
 }
 
 /**
- * 
+ * Vytiskne statistiky časovaného přechodu.
  */
 void Transition::printTimedStats()
 {
@@ -549,7 +558,7 @@ void Transition::printTimedStats()
 }
 
 /**
- * 
+ * Vytiskne statistiky nečasovaného přechodu.
  */
 void Transition::printStats()
 {

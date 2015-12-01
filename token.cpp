@@ -1,6 +1,6 @@
 /*************************************************
 *		  Projekt: 	Projekt do předmětu IMS     * 
-* 					Simulátor petriho sítí		*
+* 					Simulátor Petriho sítí		*
 *		   Autoři:	Jakub Stejskal <xstejs24>	*
 *		   			Petr Staněk <xstane34>      *
 *   Nazev souboru: 	token	.cpp             	*
@@ -8,6 +8,12 @@
 *			Verze:	1.0							*
 ************************************************/
 
+/**
+ * @file token.cpp
+ * @brief Soubor obsahující třídu reprezentující token v místě.
+ * @author Staněk Petr <xstane34@stud.fit.vutbr.cz>
+ * @author Stejskal Jakub <xstejs24@stud.fit.vutbr.cz>
+ */
 
 #include "token.h"
 #include "place-transition.h"
@@ -81,9 +87,8 @@ bool Token::isTokenProcessedByTransition(Transition* transition)
 	return false;
 }
 
-
 /**
- * Nastaví hodnotu příznaku značícího, že je token zpracováván.
+ * Nastaví hodnotu příznaku značícího, že byl token zpracováván.
  * @param isInEvent nová hodnota příznaku
  */
 void Token::setFlag(bool isInEvent)
@@ -95,20 +100,9 @@ void Token::setFlag(bool isInEvent)
  * Vrátí hodnotu příznaku značícího, že je token zpracováván.
  * @return true - pokud je token zpracováván
  */
-
 bool Token::getFlag()
 {
 	return this->waitFlag;
-}
-
-/**
- * Získání ukazatele na seznam všech přechodů modelu.
- * @return ukazatel na seznam všech událostí
- */
-//NEPOUŽÍVÁ SE!!!
-std::vector<Transition *> *Token::getListOfEvents()
-{
-	return &(this->listOfEvents);
 }
 
 /**

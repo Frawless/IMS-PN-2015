@@ -1,6 +1,6 @@
 /*************************************************
 *		  Projekt: 	Projekt do předmětu IMS     * 
-* 					Simulátor petriho sítí		*
+* 					Simulátor Petriho sítí		*
 *		   Autoři:	Jakub Stejskal <xstejs24>	*
 *		   			Petr Staněk <xstane34>      *
 *   Nazev souboru: 	calendar.cpp             	*
@@ -8,6 +8,12 @@
 *			Verze:	1.0							*
 ************************************************/
 
+/**
+ * @file calendar.cpp
+ * @brief Soubor obsahující třídy reprezentující kalendář a záznam události v kalednáři.
+ * @author Staněk Petr <xstane34@stud.fit.vutbr.cz>
+ * @author Stejskal Jakub <xstejs24@stud.fit.vutbr.cz>
+ */
 
 #include "calendar.h"
 #include "place-transition.h"
@@ -58,7 +64,6 @@ Transition *Event::getTransition()
  */
 void Event::addTokenToEvent(Token* token)
 {
-	// ??? možná něco ke statistikám
 	listOfTokens.push_back(token);
 }
 
@@ -76,6 +81,7 @@ bool Event::isListOfTokensEmpty()
  */
 Calendar::Calendar()
 {
+	
 }
 
 /**
@@ -83,6 +89,17 @@ Calendar::Calendar()
  */
 Calendar::~Calendar()
 {
+	std::multiset<Event *>::iterator event; // iterátor pro průchod kalendářem
+	
+	// získání seznamu událostí
+	std::multiset<Event *, EventSort>*  listOfEvents = this->getEvents();
+	
+	// průchod událostí kalendáře
+	for(event = listOfEvents->begin(); event != listOfEvents->end(); event++)
+		delete(*event); // dealokace událostí
+	
+	// dealkoace seznamu událostí
+	listOfEvents->clear();
 }
 
 /**
@@ -91,7 +108,6 @@ Calendar::~Calendar()
  */
 bool Calendar::isEmpty()
 {
-	std::cerr<<"velikost kalendáře: "<<listOfEvents.size()<<std::endl;
 	return this->listOfEvents.empty();
 }
 

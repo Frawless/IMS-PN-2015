@@ -1,12 +1,19 @@
 /*************************************************
 *		  Projekt: 	Projekt do předmětu IMS     * 
-* 					Simulátor petriho sítí		*
+* 					Simulátor Petriho sítí		*
 *		   Autoři:	Jakub Stejskal <xstejs24>	*
 *		   			Petr Staněk <xstane34>      *
 *   Nazev souboru: 	simulator.cpp             	*
 *			Datum:  14. 11. 2015				*
 *			Verze:	1.0							*
 ************************************************/
+
+/**
+ * @file simulator.cpp
+ * @brief Soubor obsahující třídu reprezentující simulátor Petriho sítě.
+ * @author Staněk Petr <xstane34@stud.fit.vutbr.cz>
+ * @author Stejskal Jakub <xstejs24@stud.fit.vutbr.cz>
+ */
 
 #include "simulator.h"
 
@@ -17,19 +24,17 @@
 #include <unistd.h>
 
 using namespace std; 
-unsigned Simulator::ix = 0; // ???
 
 /**
  * Konstruktor simulátoru
  */
 Simulator::Simulator()
 {
+	srand(time(0)+time_seed());
 	this->calendar = new Calendar(); // vytvoření nové instance kalendář
 	this->model = new Model(); // vytvoření nové instance modelu
-	srand((unsigned int)(time(0)+getpid())); // definice chování funkce rand())
-	ix = rand()%UINT_MAX; // ???
 	this->simTime = 0; // inicializace simulačního času
-}
+}	
 
 /**
  * Destruktur simulátoru
@@ -50,7 +55,7 @@ void Simulator::setSimTime(double simTime)
 }
 
 /**
- * Nastaví maximální simulační čas
+ * Nastaví maximální simulační čas.
  * @param maxSimTime maximální hodnota simulačního času
  */
 void Simulator::setMaxSimTime(double maxSimTime)
@@ -79,12 +84,12 @@ void Simulator::createModel()
 	model->addTransition("p_dohral_odchazi", 0, Transition::PRIORITY);
 
 	model->addTransition("p_nemuze_hrat",0, Transition::PRIORITY);
-	model->addTransition("p_chce_cekat", 60,Transition::STOCHASTIC);
+	model->addTransition("p_chce_cekat", 60,Transition::PROBABILITY);
 	model->addTransition("p_muze_hrat", 2,Transition::PRIORITY);
 
-	model->addTransition("p_odchazi", 40, Transition::STOCHASTIC);
-	model->addTransition("p_uplne_odchazi", 80, Transition::STOCHASTIC);
-	model->addTransition("p_chce_prijit_znovu", 20,Transition::STOCHASTIC);
+	model->addTransition("p_odchazi", 40, Transition::PROBABILITY);
+	model->addTransition("p_uplne_odchazi", 80, Transition::PROBABILITY);
+	model->addTransition("p_chce_prijit_znovu", 20,Transition::PROBABILITY);
 	model->addTransition("p_znovu_prichazi", 25,Transition::TIMED_EXP);
 
 	model->addLink("p_hrac_prichazi","m_hraci",1);
@@ -165,7 +170,7 @@ void Simulator::simStart() // ??? upravit komentáře po dokončení
 			std::cerr<<"DEBUG: Hodnota simulačního času: "<<this->simTime<<std::endl;
 			// výpis konce simulace
 			std::cout<<"Konec simulace v čase: "<<this->simTime<<std::endl;
-			this->model->printStats();
+			this->model->printAllStats();
 			exit(0);
 		}
 		// std::cerr<<"DEBUG: Kalendář není prázdný2"<<std::endl;
@@ -173,7 +178,7 @@ void Simulator::simStart() // ??? upravit komentáře po dokončení
 		event = this->calendar->getEvent();
 		this->simTime = event->getTime();
 		// std::cerr<<"DEBUG: Kalendář není prázdný3"<<std::endl;
-		/**/
+
 		// vykonání časovaného přechodu dané události
 		this->performTransitionFromEvent(event);
 		// std::cerr<<"DEBUG: Kalendář není prázdný4"<<std::endl;
@@ -200,7 +205,7 @@ Calendar *Simulator::getCalendar()
 
 /**
  * Vykoná přechod z události kalendáře zadané ukazatelem.
- * @param event
+ * @param event ukazatel na přechod k vykonání
  */
 void Simulator::performTransitionFromEvent(Event *event)
 {	
@@ -248,7 +253,6 @@ void Simulator::performTransition(Transition *transition)
 			{
 				std::cerr<<"DEBUG: přesouvám token z místa: "<<place->getName()<<std::endl;
 				// std::cerr<<listOfTokens->size()<<std::endl;
-				// ??? tady možná natane problém při jednom tokenu v poli
 				
 				// postupné procházení seznamu tokenů v aktuálním místě
 				for(iterPlaceTokens = listOfTokens->begin(); iterPlaceTokens != listOfTokens->end(); iterPlaceTokens++)
@@ -287,7 +291,6 @@ void Simulator::performTransition(Transition *transition)
 		std::cout<<"Proveden přechod: "<<transition->getName()<<" v čase: "<<this->simTime<<std::endl;
 	}
 
-	
 	// získání místa na výstupu hrany
 	for(iterLink = listOfOutputLinks->begin(); iterLink != listOfOutputLinks->end(); iterLink++)
 	{
@@ -412,8 +415,8 @@ void Simulator::performTransitions()
 				//this->clearPerformedTransition(); // nastavení všech přechodů na false ???
 				checkTransitions =Transition::getRandomVectorTransitions();
 				break;
-			case Transition::STOCHASTIC:
-				// std::cerr<<"DEBUG: Stochastic"<<std::endl;
+			case Transition::PROBABILITY:
+				// std::cerr<<"DEBUG: Probability"<<std::endl;
 				
 				// získání vstupního místa
 				place = (Place*)(transition->getInputLinks()->front()->getInput());
@@ -427,7 +430,7 @@ void Simulator::performTransitions()
 				// průchod seznamem výstupních hran daného místa
 				for(iterLink = listOfOutputLinks->begin(); iterLink != listOfOutputLinks->end(); iterLink++)
 				{
-					// vybrání stochastického přechodu
+					// vybrání pravděpodobnostního přechodu
 					if(priority < random)	
 					{
 						// aktualizace přechodu jen v případě, když random hodnota je vyšší než hodnota předchozího přechodu
@@ -438,7 +441,7 @@ void Simulator::performTransitions()
 				}
 				transition = tmpTransition;
 				// std::cerr<<"DEBUG: Vybrán přechod \""<<transition->getName()<<"\" s % hodnotou: "<<transition->getValue()<<" Na základě random čísla: "<<random<<std::endl;
-				std::cerr<<"DEBUG: Hodnota přechodu \""<<transition->getName()<<"\" (STOCHASTIC) : "<<transition->getValue()<<std::endl;
+				std::cerr<<"DEBUG: Hodnota přechodu \""<<transition->getName()<<"\" (PROBABILITY) : "<<transition->getValue()<<std::endl;
 				
 				if(!this->transitionCanBePerformed(transition))
 				{
@@ -640,7 +643,7 @@ bool Simulator::transitionCanBePerformed(Transition *transition)
 		link = (*iterLink); // aktuální hrana
 		place = ((Place*)(link->getInput())); // vstupní místo aktuální linky
 		
-		// pokudj je počet tokenů >= kapacitě hrany
+		// pokud je počet tokenů >= kapacitě hrany
 		if(place->getTokenCount() >= link->getCapacity())
 			canBePerformed = true;
 		else
@@ -670,9 +673,7 @@ double Simulator::Random()
  */
 double Simulator::Exponential(double mv)
 {
-	double exp = -mv * std::log(Random());
-	// ??? _Print("Exponential(%g),%g = %g\n", mv, r, exp);
-	return exp;
+	return -mv * std::log(Random());
 }
 
 /**
@@ -692,8 +693,8 @@ int main()
 		simulator->getModel()->modelValidate();
 		std::cerr<<"Model zvalidován"<<std::endl;
 		
-		simulator->setMaxSimTime(10000);
-		simulator->simStart();
+		simulator->setMaxSimTime(10000); // nastavení maximálního simulačního času
+		simulator->simStart(); // zahájení simulace
 		
 		std::cerr<<"Vypišuji model"<<std::endl;
 		// simulator->getModel()->printModel(); // vytisknutí modelu
@@ -702,15 +703,36 @@ int main()
 	// ošetření výjimek
 	catch(int e)
 	{
-	  
-		switch(e)
-		{
-			case 1:
-				std::cerr<<"Error"<<std::endl;
-		}
+		// dealokace místa
+		simulator->getCalendar()->~Calendar();
+		simulator->getModel()->~Model();
+		delete simulator;
+		exit(EXIT_FAILURE);
 	}
 	
+	// dealokace místa
+	simulator->getCalendar()->~Calendar();
+	simulator->getModel()->~Model();
 	delete simulator;
 	exit(EXIT_SUCCESS);
   
+}
+
+/**
+ * Vratí seed pro inicializaci generátoru pseudo-náhodných čísel
+ * (použit seed generátor ze zdroje: http://www.eternallyconfuzzled.com/arts/jsw_art_rand.aspx)
+ * @return seed
+ */
+unsigned time_seed()
+{
+    time_t now = time(0);
+    unsigned char *p = (unsigned char *)&now;
+    unsigned seed = 0;
+
+    for (size_t i = 0; i < sizeof now; i++)
+    {
+        seed = seed * (UCHAR_MAX + 2U) + p[i];
+    }
+
+    return seed;
 }
