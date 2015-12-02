@@ -126,11 +126,11 @@ void Token::deleteTokenFromList(Token* token)
 	}
 }
 
-void Token::printTransitions()
-{
 
-}
-
+/**
+ * ???
+ * @return 
+ */
 Transition* Token::getTransition()
 {
 	return this->transition;

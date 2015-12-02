@@ -46,7 +46,7 @@ Model::~Model()
 	std::vector<Link *> ::iterator iterLink; // iterátor pro průchod seznamem hran
 	
 	std::vector<Token*>* listOfTokens = Token::getTokens();
-	std::cerr<<"PROVEDEN DESTRUKTORXXXXXXXXXXXX"<<std::endl;
+
 	// průchod míst
 	for(iterPlace = Place::getPlaces()->begin(); iterPlace != Place::getPlaces()->end(); iterPlace++)
 		delete(iterPlace->second);

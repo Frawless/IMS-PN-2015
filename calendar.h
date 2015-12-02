@@ -38,7 +38,6 @@ class Event
 		void addTokenToEvent(Token *token); // přidá token seznamu tokenů události
 		bool isListOfTokensEmpty(); // ověří, zda je seznam tokenů událostí prázdný
 		
-		
 		bool isTokenInEvents(Token *token);
 	
 	private:

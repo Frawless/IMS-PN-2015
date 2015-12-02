@@ -257,7 +257,6 @@ void Place::setStats()
 		this->max = this->getTokenCount();
 	
 	// výpočet průměrné hodnoty počtu tokenů v místě
-	//this->average = (this->performCount * this->average + this->getTokenCount()) / (this->performCount + 1);
 	this->average = ((this->performCount - 1) * this->average + this->getTokenCount()) / this->performCount;
 }
 
@@ -534,14 +533,16 @@ std::vector<Transition*> Transition::getRandomVectorTransitions()
  */
 void Transition::setStats()
 {
+	// zvýšení počtu provedení přechodu
 	this->performCount++;
 	
+	// výpočet nejnižší vygenerované hodnoty (poue časované)
 	if(this->min > this->generatedValue)
 		this->min = this->generatedValue;
-	
+	// výpočet nejvyšší vygenerované hodnoty (poue časované)
 	if(this->max < this->generatedValue)
 		this->max =this->generatedValue;
-	
+	// výpočet průměrné hodnoty vykonávání přechodu
 	this->average = ((this->performCount - 1) * this->average + this->generatedValue) / this->performCount;
 }
 
@@ -570,4 +571,14 @@ void Transition::printStats()
 	std::cout<<"	Celkový počet provedení: "<<this->performCount<<std::endl;
 	std::cout<<"######################"<<std::endl;
 	std::cout<<std::endl;
+}
+
+/**
+ * ???
+ * @param event
+ */
+void Transition::recomputeStatsWithDeleteEventWait(Event *event)
+{
+	// přepočítání průměrné hodnoty 
+	this->average = ((this->performCount - 1) * this->average + event->getWait()) / this->performCount;
 }

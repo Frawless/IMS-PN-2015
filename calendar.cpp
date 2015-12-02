@@ -78,7 +78,7 @@ bool Event::isListOfTokensEmpty()
 }
 
 /**
- * 
+ *  ???
  * @param token
  * @return 
  */
@@ -146,6 +146,7 @@ void Calendar::addEvent(Event *event)
 void Calendar::deleteEvent(Event *event)
 {
 	listOfEvents.erase(event);
+	delete event;
 }
 
 /**

@@ -67,7 +67,7 @@ class Simulator
 		double Exponential(double mv); // vygeneruje číslo s exponeniálním rozložením se střeem mv
 		
 		// test
-		void deleteEventByToken(Token *token);
+		void deleteEventByToken(Transition *transition);
 	
 	private:
 		Model *model; // ukazatel na model

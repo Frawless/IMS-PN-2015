@@ -30,6 +30,7 @@
 
 class Link;
 class Token;
+class Event;
 
 /**
  * @class PlaceTransition
@@ -76,7 +77,7 @@ class Place: public PlaceTransition
 		// Statistiky
 		void setStats(); // uloží statistiku místa
 		void printStats(); // vytiskne statistiku místa
-		
+	
 	private:
 		static std::map<std::string, Place *> listOfPlaces; // seznam všech míst modelu
 		int capacity; // kapacita místa
@@ -117,7 +118,10 @@ class Transition: public PlaceTransition
 		// Statistiky
 		void setStats(); // uloží statistiky přechodu
 		void printStats(); // tiskne statistiky nečasovaného přechodu
-		void printTimedStats(); // tiskne statistiky časovaného přechodu 
+		void printTimedStats(); // tiskne statistiky časovaného přechodu
+		// ??? podle emailu zakomentovat/nechat
+		void recomputeStatsWithDeleteEventWait(Event *event); // přepočítá statistiky pomocí hodnot smazaných při poruše
+				
 		
 	private:
 		static std::map<std::string, Transition *> listOfTransitions; // seznam všech přechodů modelu
