@@ -45,21 +45,27 @@ Model::~Model()
 	std::vector <Token *>::iterator iterToken; // iterátor pro průchod polem tokenů
 	std::vector<Link *> ::iterator iterLink; // iterátor pro průchod seznamem hran
 	
+	std::vector<Token*>* listOfTokens = Token::getTokens();
+	std::cerr<<"PROVEDEN DESTRUKTORXXXXXXXXXXXX"<<std::endl;
 	// průchod míst
 	for(iterPlace = Place::getPlaces()->begin(); iterPlace != Place::getPlaces()->end(); iterPlace++)
 		delete(iterPlace->second);
+	Place::getPlaces()->clear();
 	
 	// průchod přechodů
 	for(iterTransition = Transition::getTransitions()->begin(); iterTransition != Transition::getTransitions()->end(); iterTransition++)
 		delete(iterTransition->second);
+	Transition::getTransitions()->clear();
 
 	// průchod tokenů
-	for(iterToken = Token::getTokens()->begin(); iterToken != Token::getTokens()->end(); iterToken++)
-		delete(*iterToken);	
-			
-	// průchod hran
+	for(iterToken = listOfTokens->begin(); iterToken != listOfTokens->end(); iterToken++)
+		delete (*iterToken);
+	listOfTokens->clear();
+	 
+	// průchod hran		
 	for(iterLink = Link::getLinks()->begin(); iterLink != Link::getLinks()->end(); iterLink++)
 		delete(*iterLink);
+	Link::getLinks()->clear();	
 }
 
 /**
@@ -350,3 +356,4 @@ void Model::printAllStats()
 	}	
 		
 }
+

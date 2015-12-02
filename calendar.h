@@ -37,6 +37,9 @@ class Event
 		Transition *getTransition(); // vrátí ukazatel na přechod účástnící se události
 		void addTokenToEvent(Token *token); // přidá token seznamu tokenů události
 		bool isListOfTokensEmpty(); // ověří, zda je seznam tokenů událostí prázdný
+		
+		
+		bool isTokenInEvents(Token *token);
 	
 	private:
 		double time; // aktivační čas události

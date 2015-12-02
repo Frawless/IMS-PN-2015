@@ -68,56 +68,94 @@ void Simulator::setMaxSimTime(double maxSimTime)
  */
 void Simulator::createModel()
 {
-	// vymyslet jiný model ???
+	// Model ze cvičení - Herna
+	// přechody
+	model->addTransition("p_generator_hracu", 5,Transition::TIMED_EXP);
+	model->addTransition("p_generator_poruch", 300,Transition::TIMED_EXP);
+	model->addTransition("p_hraní", 100,Transition::TIMED_EXP);
+	model->addTransition("p_opravovani_zavazne_poruchy", 20,Transition::TIMED_CONST);
+	model->addTransition("p_opravovani_normalni_poruchy", 4,Transition::TIMED_CONST);
+	
+	model->addTransition("p_automat_neni_volny", 0,Transition::PRIORITY);
+	model->addTransition("p_jde_hrat", 1,Transition::PRIORITY);
+	model->addTransition("p_nelze_hrat_porucha", 5,Transition::PRIORITY);
+	model->addTransition("p_nastala_porucha_pri_hrani", 1,Transition::PRIORITY);
+	model->addTransition("p_porucha_opravena", 10,Transition::PRIORITY);
+
+	model->addTransition("p_dohral_odchazi", 0,Transition::PRIORITY);
+	model->addTransition("p_nehral_odchazi", 0,Transition::PRIORITY);
+	model->addTransition("p_porucha_opousti_system", 0,Transition::PRIORITY);
+	
+	model->addTransition("p_zavazna_porucha", 15,Transition::PROBABILITY);
+	model->addTransition("p_normalni_porucha", 85,Transition::PROBABILITY);
+	
+	// místa
+	model->addPlace("m_hrac_prisel");
+	model->addPlace("m_hraje");
 	model->addPlace("m_pocitace");
-	model->addPlace("m_hraci");
-	model->addPlace("m_hrajici");
 	model->addPlace("m_dohrali");
-	model->addPlace("m_nerozhodnuti");
-	model->addPlace("m_cekajici");
 	model->addPlace("m_odchazejici");
-	model->addPlace("m_znovu_prichozi");
-
-	model->addTransition("p_hrac_prichazi", 10,Transition::TIMED_EXP);
-	model->addTransition("p_jde_hrat", 1, Transition::PRIORITY);
-	model->addTransition("p_hraje", 100, Transition::TIMED_EXP);
-	model->addTransition("p_dohral_odchazi", 0, Transition::PRIORITY);
-
-	model->addTransition("p_nemuze_hrat",0, Transition::PRIORITY);
-	model->addTransition("p_chce_cekat", 60,Transition::PROBABILITY);
-	model->addTransition("p_muze_hrat", 2,Transition::PRIORITY);
-
-	model->addTransition("p_odchazi", 40, Transition::PROBABILITY);
-	model->addTransition("p_uplne_odchazi", 80, Transition::PROBABILITY);
-	model->addTransition("p_chce_prijit_znovu", 20,Transition::PROBABILITY);
-	model->addTransition("p_znovu_prichazi", 25,Transition::TIMED_EXP);
-
-	model->addLink("p_hrac_prichazi","m_hraci",1);
-	model->addLink("m_hraci","p_jde_hrat",1);
-	model->addLink("m_pocitace", "p_jde_hrat",1);
-	model->addLink("p_jde_hrat","m_hrajici",1);
-	model->addLink("m_hrajici","p_hraje",1);
-	model->addLink("p_hraje", "m_dohrali",1);
-	model->addLink("m_dohrali", "p_dohral_odchazi",1);
-	model->addLink("p_hraje", "m_pocitace",1);
-
-	model->addLink("m_hraci","p_nemuze_hrat",1);
-	model->addLink("p_nemuze_hrat", "m_nerozhodnuti",1);
-	model->addLink("m_nerozhodnuti", "p_chce_cekat",1);
-	model->addLink("p_chce_cekat", "m_cekajici",1);
-	model->addLink("m_cekajici", "p_muze_hrat",1);
-	model->addLink("m_pocitace", "p_muze_hrat",1);
-	model->addLink("p_muze_hrat", "m_hrajici",1);
-
-	model->addLink("m_nerozhodnuti", "p_odchazi",1);
-	model->addLink("p_odchazi", "m_odchazejici",1);
-	model->addLink("m_odchazejici", "p_uplne_odchazi",1);
-	model->addLink("m_odchazejici", "p_chce_prijit_znovu",1);
-	model->addLink("p_chce_prijit_znovu", "m_znovu_prichozi",1);
-	model->addLink("m_znovu_prichozi", "p_znovu_prichazi",1);
-	model->addLink("p_znovu_prichazi", "m_hraci", 2);
-
+	model->addPlace("m_oprava_poruchy");
+	model->addPlace("m_porucha_opousti_system");
+	model->addPlace("m_porucha_opravena");
+	model->addPlace("m_oprava_zavazne_poruchy");
+	model->addPlace("m_oprava_normalni_poruchy");
+	model->addPlace("m_indikátor_poruchy");
+	
+	// tokeny
 	model->addToken("m_pocitace",10);
+	
+	// hrany
+	model->addLink("p_generator_hracu","m_hrac_prisel",2);
+	model->addLink("m_hrac_prisel","p_automat_neni_volny",1);
+	model->addLink("p_automat_neni_volny","m_odchazejici",1);
+	model->addLink("m_odchazejici","p_nehral_odchazi",1);
+	
+	// dobry
+	model->addLink("m_hrac_prisel","p_jde_hrat",1);
+	model->addLink("p_jde_hrat","m_hraje",1);
+	model->addLink("m_hraje","p_hraní",1);
+	model->addLink("p_hraní","m_dohrali",1);
+	model->addLink("m_dohrali","p_dohral_odchazi",1);
+	
+	
+	model->addLink("m_hrac_prisel","p_nelze_hrat_porucha",1);
+	model->addLink("p_nelze_hrat_porucha","m_odchazejici",1);
+	model->addLink("m_odchazejici","p_nehral_odchazi",1);
+	
+	model->addLink("p_nelze_hrat_porucha","m_indikátor_poruchy",1);
+	model->addLink("m_indikátor_poruchy","p_nelze_hrat_porucha",1);
+	
+	model->addLink("p_generator_poruch","m_indikátor_poruchy",1);	
+	model->addLink("p_generator_poruch","m_oprava_poruchy",1);
+	model->addLink("m_oprava_poruchy","p_zavazna_porucha",1);
+	model->addLink("m_oprava_poruchy","p_normalni_porucha",1);
+	model->addLink("p_zavazna_porucha","m_oprava_zavazne_poruchy",1);
+	model->addLink("p_normalni_porucha","m_oprava_normalni_poruchy",1);
+	
+	model->addLink("m_oprava_normalni_poruchy","p_opravovani_normalni_poruchy",1);
+	model->addLink("m_oprava_zavazne_poruchy","p_opravovani_zavazne_poruchy",1);
+	
+	
+	model->addLink("p_opravovani_normalni_poruchy","m_porucha_opravena",1);
+	model->addLink("p_opravovani_zavazne_poruchy","m_porucha_opravena",1);
+	
+	// dobry
+	model->addLink("m_porucha_opravena","p_porucha_opravena",1);
+	model->addLink("p_porucha_opravena","m_porucha_opousti_system",1);
+	model->addLink("m_porucha_opousti_system","p_porucha_opousti_system",1);	
+	model->addLink("m_indikátor_poruchy","p_porucha_opravena",1);
+	
+	model->addLink("m_indikátor_poruchy","p_nastala_porucha_pri_hrani",1);
+	model->addLink("p_nastala_porucha_pri_hrani","m_indikátor_poruchy",1);
+	
+	model->addLink("m_pocitace","p_jde_hrat",1);
+	
+	model->addLink("p_hraní","m_pocitace",1);	
+	
+	model->addLink("p_nastala_porucha_pri_hrani","m_dohrali",1);
+	model->addLink("m_hraje","p_nastala_porucha_pri_hrani",1);
+	model->addLink("p_nastala_porucha_pri_hrani","m_pocitace",1);
 }
 
 /**
@@ -150,6 +188,7 @@ void Simulator::simStart() // ??? upravit komentáře po dokončení
 	// výpis začátek simulace
 	std::cout<<"Začátek provádění simulace v čase: "<<this->simTime<<std::endl;
 	std::cout<<std::endl;
+	model->printModel();
 	
 	// vykonání nečasovaných přechodů a nastavení časovaných
 	this->performTransitions();
@@ -157,11 +196,12 @@ void Simulator::simStart() // ??? upravit komentáře po dokončení
 	// pokud je kalendář neprázdný
 	while(!this->calendar->isEmpty())
 	{	
-		std::cerr<<"DEBUG: Hodnota simulačního času: ----------------->"<<this->simTime<<std::endl;
+		//std::cerr<<"DEBUG: Hodnota simulačního času: ----------------->"<<this->simTime<<std::endl;
 		//model->printTokenCount();
 		this->calendar->printCalendar();
+		std::cerr<<this->calendar->getEvents()->size()<<std::endl;
 		
-		// std::cerr<<"DEBUG: Kalendář není prázdný1"<<std::endl;
+		 std::cerr<<"DEBUG: Kalendář není prázdný1"<<std::endl;
 		
 		// vybrání události z kalendáře
 		event = this->calendar->getEvent();
@@ -170,17 +210,17 @@ void Simulator::simStart() // ??? upravit komentáře po dokončení
 		// pokud je přesažena maximální hodnota simulačního času
 		if(this->simTime > this->maxSimTime)
 		{
-			std::cerr<<"DEBUG: Konec simulace"<<std::endl;
-			std::cerr<<"DEBUG: Hodnota simulačního času: "<<this->simTime<<std::endl;
+			//std::cerr<<"DEBUG: Konec simulace"<<std::endl;
+			//std::cerr<<"DEBUG: Hodnota simulačního času: "<<this->simTime<<std::endl;
 			// výpis konce simulace
-			std::cout<<"Konec simulace v čase: "<<this->simTime<<std::endl;
+			//std::cout<<"Konec simulace v čase: "<<this->simTime<<std::endl;
 			this->model->printAllStats();
-			exit(0);
+			return;
 		}
 
 		// vykonání časovaného přechodu dané události
 		this->performTransitionFromEvent(event);
-		// std::cerr<<"DEBUG: Kalendář není prázdný4"<<std::endl;
+		// 
 		
 		// smazání provedené události z kalendáře
 		this->calendar->deleteEvent(event);
@@ -250,7 +290,7 @@ void Simulator::performTransition(Transition *transition)
 			// pokud jsou v místě nějaké tokeny
 			if(!listOfTokens->empty())
 			{
-				std::cerr<<"DEBUG: přesouvám token z místa: "<<place->getName()<<std::endl;
+				//std::cerr<<"DEBUG: přesouvám token z místa: "<<place->getName()<<std::endl;
 				// std::cerr<<listOfTokens->size()<<std::endl;
 				
 				// postupné procházení seznamu tokenů v aktuálním místě
@@ -265,14 +305,23 @@ void Simulator::performTransition(Transition *transition)
 				
 				// získání náhodného tokenu ze vstupního místa (náhodný, jelikož byl seznam zamíchán)
 				token = checkTokens.back();
-				checkTokens.pop_back(); // odstranění získaného tokenu z pomocného seznamu tokenů v aktuálním místě
+				checkTokens.pop_back(); // odstranění získaného tokenu z pomocného seznamu tokenů v aktuálním místě					
 				
+				std::cerr<<"Token v místě: "<<place->getName()<<"Zpracovává přechod: "<<transition->getName()<<std::endl;
+				std::cerr<<"V tomto místě je: "<<place->getTokenCount()<<" tokenu"<<std::endl;
 				// smazání tokenu z aktulálního vstupního místa
 				place->removeToken(token);
-				std::cerr<<"DEBUG: Počet značek v místě \""<<place->getName()<<"\" : "<<place->getTokenCount()<<std::endl;
+				//std::cerr<<"DEBUG: Počet značek v místě \""<<place->getName()<<"\" : "<<place->getTokenCount()<<std::endl;
 				
 				// Výpočet statistiky pro místo
 				place->setStats();
+				
+				//token->printTransitions();
+				if(transition != token->getTransition() && token->getTransition() != NULL)
+				{
+					std::cerr<<"Mažu událost s přechodem: "<<token->getTransition()<<std::endl;
+					this->deleteEventByToken(token);
+				}
 			}		
 			checkTokens.clear(); // vymazání pomocného seznamu tokenů v aktuálním místě
 			std::cout<<"	Přesun tokenu z místa: "<<place->getName()<<std::endl;		
@@ -394,7 +443,7 @@ void Simulator::performTransitions()
 					//std::cerr<<"Vypiš prioritu přechodu: "<<priority<<std::endl;
 				}
 				// std::cerr<<"DEBUG: Vybrán přechod \""<<transition->getName()<<"\" s prioritou: "<<transition->getValue()<<std::endl;
-				std::cerr<<"DEBUG: Hodnota přechodu \""<<transition->getName()<<"\" (PRIORITY) : "<<transition->getValue()<<std::endl;
+				//std::cerr<<"DEBUG: Hodnota přechodu \""<<transition->getName()<<"\" (PRIORITY) : "<<transition->getValue()<<std::endl;
 				//vykonání přechodu
 				if(!this->transitionCanBePerformed(transition))
 				{
@@ -432,7 +481,7 @@ void Simulator::performTransitions()
 				}
 				transition = tmpTransition;
 				// std::cerr<<"DEBUG: Vybrán přechod \""<<transition->getName()<<"\" s % hodnotou: "<<transition->getValue()<<" Na základě random čísla: "<<random<<std::endl;
-				std::cerr<<"DEBUG: Hodnota přechodu \""<<transition->getName()<<"\" (PROBABILITY) : "<<transition->getValue()<<std::endl;
+				//std::cerr<<"DEBUG: Hodnota přechodu \""<<transition->getName()<<"\" (PROBABILITY) : "<<transition->getValue()<<std::endl;
 				
 				if(!this->transitionCanBePerformed(transition))
 				{
@@ -524,12 +573,19 @@ void Simulator::planTransition(Transition *transition, double wait)
 				token = checkTokens.back();
 				
 				// ??? možná nejde // pokud token již není součástí přechodu
-				if(token->isTokenProcessedByTransition(transition))
+				/*if(token->isTokenProcessedByTransition(transition))
 				{
 					checkTokens.pop_back(); // smazání z pomocného seznamu tokenů v místě
 					continue;
 				}
 				else	
+					break;*/
+				if(token->getFlag())
+				{
+					checkTokens.pop_back(); // smazání z pomocného seznamu tokenů v místě
+					continue;
+				}
+				else
 					break;
 					
 				// pokud je seznam tokenů prázdný
@@ -544,6 +600,7 @@ void Simulator::planTransition(Transition *transition, double wait)
 			token = checkTokens.back();				
 			
 			token->tokenProcessedByTransition(transition); // nastaví, že token je zpracováván přechodem
+			std::cerr<<"DEBUG: Hotovo "<<std::endl;
 			token->setFlag(true); // nastavení příznaku k tokenu, že je zpracováván
 			event->addTokenToEvent(token); // přidání tokenu do události
 			checkTokens.pop_back(); // vymazání tokenu ze seznamu tokenů ke zpracování
@@ -552,10 +609,10 @@ void Simulator::planTransition(Transition *transition, double wait)
 	}
 	// nastavení příznaku k přechodu, že je načasován
 	transition->setIsTimed(true);
-	std::cerr<<"DEBUG: Do kalendáře vložen Event s přechodem: "<<transition->getName()<<std::endl;
+	//std::cerr<<"DEBUG: Do kalendáře vložen Event s přechodem: "<<transition->getName()<<std::endl;
 	// přidání události do kalendáře
 	this->calendar->addEvent(event);	
-	std::cerr<<"DEBUG: Provádění eventu: Start -> "<<this->simTime<<" Konec -> "<<this->simTime+wait<<std::endl;
+	//std::cerr<<"DEBUG: Provádění eventu: Start -> "<<this->simTime<<" Konec -> "<<this->simTime+wait<<std::endl;
 }
 
 /**
@@ -649,6 +706,26 @@ bool Simulator::transitionCanBePerformed(Transition *transition)
 }
 
 /**
+ * 
+ * @param token
+ */
+void Simulator::deleteEventByToken(Token* token)
+{
+	std::multiset<Event *, EventSort>::iterator iterEvents;
+	std::multiset<Event *, EventSort>* listOfEvents = this->calendar->getEvents();
+	
+	for(iterEvents = listOfEvents->begin(); iterEvents != listOfEvents->end(); iterEvents++)
+	{
+		if((*iterEvents)->isTokenInEvents(token))
+		{
+			std::cerr<<"ID eventu: "<<(*iterEvents)<<std::endl;
+			this->calendar->deleteEvent((*iterEvents));
+		}
+			//std::cerr<<"Nalezeno"<<std::endl;
+	}
+}
+
+/**
  * Vygeneruje náhodné číslo
  * @return vygenerované náhodné číslo
  */
@@ -687,7 +764,7 @@ int main()
 		simulator->setMaxSimTime(10000); // nastavení maximálního simulačního času
 		simulator->simStart(); // zahájení simulace
 		
-		std::cerr<<"Vypišuji model"<<std::endl;
+		std::cerr<<"Konec simulacel"<<std::endl;
 		// simulator->getModel()->printModel(); // vytisknutí modelu
 	}
 	
@@ -703,7 +780,9 @@ int main()
 	
 	// dealokace místa
 	simulator->getCalendar()->~Calendar();
+	std::cerr<<"Kalendář smazánl"<<std::endl;
 	simulator->getModel()->~Model();
+	std::cerr<<"Model smazán"<<std::endl;
 	delete simulator;
 	exit(EXIT_SUCCESS);
   

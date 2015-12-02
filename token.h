@@ -36,17 +36,24 @@ class Token
 		Token(Place *place); // konstruktor tokenu
 		Place* getPlace(); // vrátí ukazatel na místo, v němž je token vložen
 		static void printTokens(); // vypíše seznam všech tokenů
-		void tokenProcessedByTransition(Transition *transition); // ???
-		bool isTokenProcessedByTransition(Transition* transition); // ???
 		void setFlag(bool isInEvent); // nastaví příznak tokenu značící, že je token naplánován v přechodu
 		bool getFlag(); // získá příznak tokenu značící, že je token naplánován v přechodu
 		static std::vector <Token *>* getTokens(); // vrátí ukazatel na seznam všech tokenů modelu
+		void deleteTokenFromList(Token *token); // maže zadaný token ze seznamu všech tokenů
+		
+		void tokenProcessedByTransition(Transition *transition); // ???
+		bool isTokenProcessedByTransition(); // ???
+		Transition* getTransition();
+		
+		// test
+		void printTransitions();
 
 	private:
 		static std::vector <Token *> listOfTokens; // seznam všech tokenů z modelu
 		Place * place; // ukazatel na místo, v němž je token vložen
-		std::vector<Transition *> listOfEvents; // seznam přechodů, ve kterých se nachází
 		bool waitFlag; // příznak značící, že token čeká na přesun
+		Transition *transition;
 };
 
 #endif
+

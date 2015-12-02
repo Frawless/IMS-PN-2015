@@ -191,7 +191,9 @@ void Place::removeToken(Token *token)
 	{
 		if(*it == token)
 		{
+			token->deleteTokenFromList(token);
 			delete(token); // dealokace objektu tokenu
+			token = NULL;
 			listOfTokens->erase(it); // smazání ukazatele ze seznamu všech tokenů
 			return;
 		}
@@ -255,7 +257,8 @@ void Place::setStats()
 		this->max = this->getTokenCount();
 	
 	// výpočet průměrné hodnoty počtu tokenů v místě
-	this->average = (this->performCount * this->average + this->getTokenCount()) / (this->performCount + 1);
+	//this->average = (this->performCount * this->average + this->getTokenCount()) / (this->performCount + 1);
+	this->average = ((this->performCount - 1) * this->average + this->getTokenCount()) / this->performCount;
 }
 
 /**
@@ -539,7 +542,7 @@ void Transition::setStats()
 	if(this->max < this->generatedValue)
 		this->max =this->generatedValue;
 	
-	this->average = (this->performCount * this->average + this->generatedValue) / (this->performCount + 1);
+	this->average = ((this->performCount - 1) * this->average + this->generatedValue) / this->performCount;
 }
 
 /**

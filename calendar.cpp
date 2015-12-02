@@ -17,6 +17,7 @@
 
 #include "calendar.h"
 #include "place-transition.h"
+#include "token.h"
 
 /**
  * Konstruktur záznamu o události kalendáře záznamů o událostech.
@@ -74,6 +75,24 @@ void Event::addTokenToEvent(Token* token)
 bool Event::isListOfTokensEmpty()
 {
 	return this->listOfTokens.empty();
+}
+
+/**
+ * 
+ * @param token
+ * @return 
+ */
+bool Event::isTokenInEvents(Token* token)
+{
+	std::vector<Token*>::iterator iterTokens;
+	
+	for(iterTokens = this->listOfTokens.begin(); iterTokens != this->listOfTokens.end(); iterTokens++)
+	{
+		if((*iterTokens) == token)
+			return true;
+	}
+	
+	return false;
 }
 
 /**
@@ -159,5 +178,5 @@ void Calendar::printCalendar()
 	
 	// postupné procházení seznamem událostí
 	for(event = listOfEvents->begin(); event != listOfEvents->end(); event++)
-		std::cerr<<"Výpis kalendáře: "<<(*event)->getTransition()->getName()<<" T: "<<(*event)->getTime()<<" W: "<<(*event)->getWait()<<std::endl;
+		std::cerr<<"Výpis kalendáře: "<<(*event)->getTransition()->getName()<<" T: "<<(*event)->getTime()<<" W: "<<(*event)->getWait()<<" ID: "<<(*event)<<std::endl;
 }

@@ -29,6 +29,7 @@ Token::Token(Place * place)
 	this->place = place;
 	listOfTokens.push_back(this);
 	this->waitFlag = false;
+	this->transition = NULL;
 }
 
 /**
@@ -61,7 +62,7 @@ void Token::printTokens()
  */
 void Token::tokenProcessedByTransition(Transition *transition)
 {
-	listOfEvents.push_back(transition);
+	this->transition = transition;
 }
 
 /**
@@ -69,22 +70,12 @@ void Token::tokenProcessedByTransition(Transition *transition)
  * @param transition testovaný přechod
  * @return true - pokud přechod zpracovává token
  */
-bool Token::isTokenProcessedByTransition(Transition* transition)
+bool Token::isTokenProcessedByTransition()
 {
-	std::vector<Transition*>::iterator iterToken; // iterátor pro token
-	this->listOfEvents.clear(); // vymazání seznamu událostí
-	
-	// pokud je seznam událstí prázdný
-	if(this->listOfEvents.size() ==0)
+	if(this->getTransition() != NULL)
+		return true;
+	else
 		return false;
-	
-	// posutupné procházení tokenů
-	for(iterToken = listOfEvents.begin(); iterToken != listOfEvents.end(); iterToken++)
-	{
-		if(transition ==(*iterToken))
-			return true;
-	}
-	return false;
 }
 
 /**
@@ -113,3 +104,36 @@ std::vector <Token *>* Token::getTokens()
 {
 	return &listOfTokens;
 }
+
+/**
+ *  Smaže zadaný token ze seznamu všech tokenů.
+ * @param token ukazatel na mazaný token
+ */
+void Token::deleteTokenFromList(Token* token)
+{
+	std::vector <Token *>::iterator it; // iterátor pro průchod polem tokenů
+	std::vector<Token *> *listOfTokens = Token::getTokens(); // seznam všech tokenů modelu
+	
+	// prohledání pole tokenů
+	for(it = listOfTokens->begin(); it != listOfTokens->end(); it++)
+	{
+		if(*it == token)
+		{
+			listOfTokens->erase(it); // smazání ukazatele ze seznamu všech tokenů
+			return;
+		}
+		
+	}
+}
+
+void Token::printTransitions()
+{
+
+}
+
+Transition* Token::getTransition()
+{
+	return this->transition;
+}
+
+
