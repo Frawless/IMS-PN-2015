@@ -329,7 +329,7 @@ Transition::Transition(std::string name, int value, Transition::Type type)
 	this->value = value;
 	this->type = type;
 	this->isPlace = false;
-	this->isPerformed = false;
+	//this->isPerformed = false;
 	this->isTimed = false;
 	
 	// přidání vytvořeného přechodu do seznamu všech vytvořených přechodů
@@ -440,24 +440,6 @@ bool Transition::checkPlaceInput()
 			return false;
 	}
 	return true;
-}
-
-/**
- * Nastaví příznak přechodu, že je vykonán.
- * @param value hodnota příznaku
- */
-void Transition::setIsPerformed(bool value)
-{
-	this->isPerformed = value;
-}
-
-/**
- * Vrátí true, pokud je nastaven příznak vykonání přechodu.
- * @return true, pokud je nastaven příznak vykonání přechodu
- */
-bool Transition::getIsPerformed()
-{
-	return this->isPerformed;
 }
 
 /**
@@ -574,8 +556,8 @@ void Transition::printStats()
 }
 
 /**
- * ???
- * @param event
+ * Přepočítá průměrný čas provádění přechodu.
+ * @param event - událost, ve které se přechod nachází
  */
 void Transition::recomputeStatsWithDeleteEventWait(Event *event)
 {

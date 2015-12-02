@@ -449,7 +449,6 @@ void Simulator::performTransitions()
 				}
 				
 				this->performTransition(transition); //vykonání zadaného přechodu
-				//this->clearPerformedTransition(); // nastavení všech přechodů na false ???
 				checkTransitions =Transition::getRandomVectorTransitions();
 				break;
 			case Transition::PROBABILITY:
@@ -497,7 +496,7 @@ void Simulator::performTransitions()
 /**
  * Vymaže u všech přechodů přízank isPerformed 
  */
-void Simulator::clearPerformedTransition()
+/*void Simulator::clearPerformedTransition()
 {
 	std::map<std::string, Transition *>::iterator iterTransition; // iterátor pro průchod přechodů
 	std::map<std::string, Transition *> *listOfTransitions = Transition::getTransitions(); // získání seznamu všech přechodů modelu
@@ -505,7 +504,7 @@ void Simulator::clearPerformedTransition()
 	// postupné procházení všech přechodů
 	for(iterTransition = listOfTransitions->begin(); iterTransition != listOfTransitions->end(); iterTransition++)
 		(*iterTransition).second->setIsPerformed(false);
-}
+}*/
 
 /**
  * Naplánuje přechod zadaný ukazatelem a vloží ho do kalendáře.
@@ -542,7 +541,6 @@ void Simulator::planTransition(Transition *transition, double wait)
 		// postupné procházení seznamu všech tokenů v místě
 		for(iterPlaceTokens = listOfTokens->begin(); iterPlaceTokens != listOfTokens->end(); iterPlaceTokens++)
 		{
-			// ??? tohle bude asi trošku chybka, máme funkci "isTokenProcessedByTransition" a měla by to dělat ona, nejspíš špatně funguje nebo tak -> zkus to opravit kdybych se k tomu endostal navečer
 			// pokud je už token nastaven jinde
 			if((*iterPlaceTokens)->getFlag() == true)
 				continue;
@@ -685,7 +683,7 @@ bool Simulator::transitionCanBePerformed(Transition *transition)
 }
 
 /**
- * ???
+ * Smaže událost s kalendáře na základě spojitosti s přechodem a tokenem.
  * @param token
  */
 void Simulator::deleteEventByToken(Transition *transition)

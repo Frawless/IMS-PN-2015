@@ -128,7 +128,7 @@ void Token::deleteTokenFromList(Token* token)
 
 
 /**
- * ???
+ * Získání ukazatele na přechod, se kterým je token spojem pro vykonávání.
  * @return 
  */
 Transition* Token::getTransition()

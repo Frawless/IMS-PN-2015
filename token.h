@@ -40,10 +40,9 @@ class Token
 		bool getFlag(); // získá příznak tokenu značící, že je token naplánován v přechodu
 		static std::vector <Token *>* getTokens(); // vrátí ukazatel na seznam všech tokenů modelu
 		void deleteTokenFromList(Token *token); // maže zadaný token ze seznamu všech tokenů
-		
-		void tokenProcessedByTransition(Transition *transition); // ???
-		bool isTokenProcessedByTransition(); // ???
-		Transition* getTransition();
+		void tokenProcessedByTransition(Transition *transition); // spojí token s přechodem, ve kterém je načasován
+		bool isTokenProcessedByTransition(); // zjistí, zda je token spojen s nějakým přechodem pro provedení
+		Transition* getTransition(); // vrátí ukazatel na přechod, ve kterém je token zpracováván
 		
 		// test
 		void printTransitions();

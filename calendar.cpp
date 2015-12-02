@@ -78,14 +78,15 @@ bool Event::isListOfTokensEmpty()
 }
 
 /**
- *  ???
+ *  Ověří, zda je zadaný token nastaven u nějaké události.
  * @param token
- * @return 
+ * @return true - token je nastaven
  */
 bool Event::isTokenInEvents(Token* token)
 {
-	std::vector<Token*>::iterator iterTokens;
+	std::vector<Token*>::iterator iterTokens; // iterátor
 	
+	// procházení seznamu tokenů dané události
 	for(iterTokens = this->listOfTokens.begin(); iterTokens != this->listOfTokens.end(); iterTokens++)
 	{
 		if((*iterTokens) == token)
