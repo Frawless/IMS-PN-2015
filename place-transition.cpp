@@ -270,6 +270,7 @@ void Place::printStats()
 	std::cout<<"	Počet změn: "<<this->performCount<<std::endl;
 	std::cout<<"	Minimální počet značek: "<<this->min<<std::endl;
 	std::cout<<"	Maximální počet značek: "<<this->max<<std::endl;
+	std::cout<<"	Aktuální počet značek: "<<this->getTokenCount()<<std::endl;
 	std::cout<<"	Průměrný počet značek: "<<this->average<<std::endl;
 	std::cout<<"######################"<<std::endl;
 	std::cout<<std::endl;
@@ -340,6 +341,7 @@ Transition::Transition(std::string name, int value, Transition::Type type)
 	this->max = 0;
 	this->average = 0;
 	this->performCount = 0;
+	this->averagePerformOnly = 0;
 }
 
 /**
@@ -515,6 +517,10 @@ std::vector<Transition*> Transition::getRandomVectorTransitions()
  */
 void Transition::setStats()
 {
+	// statistika pro pravděpodobnostní přechod
+	if(this->type == Transition::PROBABILITY)
+		this->probabilisticPerformCount++;
+	
 	// zvýšení počtu provedení přechodu
 	this->performCount++;
 	
@@ -526,6 +532,9 @@ void Transition::setStats()
 		this->max =this->generatedValue;
 	// výpočet průměrné hodnoty vykonávání přechodu
 	this->average = ((this->performCount - 1) * this->average + this->generatedValue) / this->performCount;
+	
+	// výpočet průměrné hodnoty použe vykonaných přechodů
+	this->averagePerformOnly = ((this->performCount - 1) * this->averagePerformOnly + this->generatedValue) / this->performCount;
 }
 
 /**
@@ -533,14 +542,29 @@ void Transition::setStats()
  */
 void Transition::printTimedStats()
 {
-	std::cout<<"#######################"<<std::endl;
-	std::cout<<"Přechod: "<<this->getName()<<std::endl;
-	std::cout<<"	Celkový počet provedení: "<<this->performCount<<std::endl;
-	std::cout<<"	Nejkratší doba provedení: "<<this->min<<std::endl;
-	std::cout<<"	Nejdelší doba provedení: "<<this->max<<std::endl;
-	std::cout<<"	Průměrná doba provedení: "<<this->average<<std::endl;
-	std::cout<<"######################"<<std::endl;
-	std::cout<<std::endl;
+	if(this->average == this->averagePerformOnly)
+	{
+		std::cout<<"#######################"<<std::endl;
+		std::cout<<"Přechod: "<<this->getName()<<std::endl;
+		std::cout<<"	Celkový počet provedení: "<<this->performCount<<std::endl;
+		std::cout<<"	Nejkratší doba provedení: "<<this->min<<std::endl;
+		std::cout<<"	Nejdelší doba provedení: "<<this->max<<std::endl;
+		std::cout<<"	Průměrná doba provedení: "<<this->average<<std::endl;
+		std::cout<<"######################"<<std::endl;
+		std::cout<<std::endl;	
+	}
+	else
+	{
+		std::cout<<"#######################"<<std::endl;
+		std::cout<<"Přechod: "<<this->getName()<<std::endl;
+		std::cout<<"	Celkový počet provedení: "<<this->performCount<<std::endl;
+		std::cout<<"	Nejkratší doba provedení: "<<this->min<<std::endl;
+		std::cout<<"	Nejdelší doba provedení: "<<this->max<<std::endl;
+		std::cout<<"	Průměrná doba provedení: "<<this->averagePerformOnly<<std::endl;
+		std::cout<<"	Průměrná vygenerovaná doba: "<<this->average<<std::endl;
+		std::cout<<"######################"<<std::endl;
+		std::cout<<std::endl;	
+	}
 }
 
 /**
@@ -551,6 +575,31 @@ void Transition::printStats()
 	std::cout<<"######################"<<std::endl;
 	std::cout<<"Přechod: "<<this->getName()<<std::endl;
 	std::cout<<"	Celkový počet provedení: "<<this->performCount<<std::endl;
+	std::cout<<"######################"<<std::endl;
+	std::cout<<std::endl;
+}
+
+/**
+ * Vytiskne statistiky pravděpodobnostního přechodu.
+ */
+void Transition::printProbabilisticStats()
+{
+	int tmp = 0;
+	std::map<std::string, Transition *>::iterator iterTransition; //iterátor pro průchod seznamem přechodů
+
+	// postupné procházení přechodů 
+	for(iterTransition = Transition::getTransitions()->begin(); iterTransition != Transition::getTransitions()->end(); iterTransition++)
+	{
+		if((*iterTransition).second->getTransitionType() == Transition::PROBABILITY)
+			tmp += (*iterTransition).second->probabilisticPerformCount;
+	}
+	// pomocná hodnota pro procentuální hodnotu výběru přechodu
+	double value = (100.0/ (double)tmp) * (double)this->probabilisticPerformCount ;
+
+	std::cout<<"######################"<<std::endl;
+	std::cout<<"Přechod: "<<this->getName()<<std::endl;
+	std::cout<<"	Celkový počet provedení: "<<this->performCount<<std::endl;
+	std::cout<<"	Procento vybrání přechodu: "<<value<<"%"<<std::endl;
 	std::cout<<"######################"<<std::endl;
 	std::cout<<std::endl;
 }

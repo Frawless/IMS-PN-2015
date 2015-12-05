@@ -117,6 +117,7 @@ class Transition: public PlaceTransition
 		void setStats(); // uloží statistiky přechodu
 		void printStats(); // tiskne statistiky nečasovaného přechodu
 		void printTimedStats(); // tiskne statistiky časovaného přechodu
+		void printProbabilisticStats(); // tiskne statistiky pravděpodobnostních přechodů
 		// ??? podle emailu zakomentovat/nechat
 		void recomputeStatsWithDeleteEventWait(Event *event); // přepočítá statistiky pomocí hodnot smazaných při poruše
 				
@@ -132,6 +133,8 @@ class Transition: public PlaceTransition
 		double min; // maximální hodnota vygenerovaného času přechodu
 		double max; // minimální hodnota vygenerovaného času přechodu
 		double average; // průměrná hodnota vygenerovaného času přechodu
+		double averagePerformOnly; // průměrná hodnota provádění časovaných přechodů
+		int probabilisticPerformCount; // počet provedení pravděpodobnostního přechodu
 		int performCount; // počet provedených přechodů
 
 };

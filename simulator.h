@@ -65,9 +65,7 @@ class Simulator
 		bool transitionCanBePerformed(Transition *transition); // zjistí, zda může být přechod vykonán	
 		double Random(); // vyeneruje náhodné číslo
 		double Exponential(double mv); // vygeneruje číslo s exponeniálním rozložením se střeem mv
-		
-		// test
-		void deleteEventByToken(Transition *transition);
+		void deleteEventByTransition(Transition *transition); // na základě přechodu z tokenu smaže událost z kalendáře
 	
 	private:
 		Model *model; // ukazatel na model

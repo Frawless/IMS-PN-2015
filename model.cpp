@@ -346,12 +346,18 @@ void Model::printAllStats()
 		   modelTransition->second->getTransitionType() == Transition::TIMED_CONST)
 			modelTransition->second->printTimedStats(); // vytisknutí statistiku procházeného časovaného přechodu
 	}
+
+	// průchod prioritních přechodů
+	for(modelTransition = Transition::getTransitions()->begin(); modelTransition != Transition::getTransitions()->end(); modelTransition++)
+	{
+		if(modelTransition->second->getTransitionType() == Transition::PROBABILITY)
+			modelTransition->second->printProbabilisticStats(); // vytisknutí statistiku procházeného nečasovaného přechodu
+	}		
 	
 	// průchod přechodů
 	for(modelTransition = Transition::getTransitions()->begin(); modelTransition != Transition::getTransitions()->end(); modelTransition++)
 	{
-		if(!(modelTransition->second->getTransitionType() == Transition::TIMED_EXP ||
-		   modelTransition->second->getTransitionType() == Transition::TIMED_CONST))
+		if(modelTransition->second->getTransitionType() == Transition::PRIORITY)
 			modelTransition->second->printStats(); // vytisknutí statistiku procházeného nečasovaného přechodu
 	}	
 		
