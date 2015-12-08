@@ -194,9 +194,6 @@ void Model::modelValidate()
 		// získání dílčího místa
 		place = (*iterPlace).second;
 		
-		// vypsání místa
-		// std::cerr<<"DEBUG:Místo: "<<place->getName()<<std::endl;
-		
 		// pokud počet tokenů v místě přesahuje jeho kapacitu
 		if(place->getTokenCount() > place->getCapacity() && place->getCapacity() != 0)
 		{

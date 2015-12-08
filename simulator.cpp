@@ -230,13 +230,10 @@ void Simulator::simStart() // ??? upravit komentáře po dokončení
 {
 	Event *event; // událost kalendáře
 	
-	std::cerr<<"DEBUG: Začátek simulace."<<std::endl;
-	std::cerr<<"DEBUG: Hodnota simulačního času: "<<this->simTime<<std::endl;
-	
 	// výpis začátek simulace
 	std::cout<<"Začátek provádění simulace v čase: "<<this->simTime<<std::endl;
 	std::cout<<std::endl;
-	model->printModel();
+	//model->printModel();
 	
 	// vykonání nečasovaných přechodů a nastavení časovaných
 	this->performTransitions();
@@ -245,10 +242,8 @@ void Simulator::simStart() // ??? upravit komentáře po dokončení
 	while(!this->calendar->isEmpty())
 	{	
 		//model->printTokenCount();
-		this->calendar->printCalendar();
-		std::cerr<<this->calendar->getEvents()->size()<<std::endl;
-		
-		 std::cerr<<"DEBUG: Kalendář není prázdný1"<<std::endl;
+		//this->calendar->printCalendar();
+		//std::cerr<<this->calendar->getEvents()->size()<<std::endl;
 		
 		// vybrání události z kalendáře
 		event = this->calendar->getEvent();
@@ -346,8 +341,6 @@ void Simulator::performTransition(Transition *transition)
 					token = checkTokens.back();
 					checkTokens.pop_back(); // odstranění získaného tokenu z pomocného seznamu tokenů v aktuálním místě					
 
-					std::cerr<<"Token v místě: "<<place->getName()<<"Zpracovává přechod: "<<transition->getName()<<std::endl;
-					std::cerr<<"V tomto místě je: "<<place->getTokenCount()<<" tokenu"<<std::endl;
 					// smazání tokenu z aktulálního vstupního místa
 					place->removeToken(token);
 
@@ -357,8 +350,6 @@ void Simulator::performTransition(Transition *transition)
 					//token->printTransitions();
 					if(transition != token->getTransition() && token->getTransition() != NULL)
 					{
-						std::cerr<<"Mažu událost s přechodem: "<<token->getTransition()->getName()<<" Skrz token: "<<token<<std::endl;
-						std::cerr<<"Aktuální přechod: "<<transition->getName()<<" a počet v místě: "<<place->getName()<<" : "<<place->getTokenCount()<<std::endl;
 						this->deleteEventByTransition(token->getTransition());
 					}
 				}
@@ -607,7 +598,6 @@ void Simulator::planTransition(Transition *transition, double wait)
 		checkTokens.clear(); // vymazání pomocného seznamu všech tokenů v místě
 	}
 	transition->setIsTimed(true); // nastavení příznaku k přechodu, že je načasován
-	std::cerr<<"DEBUG: Do kalendáře vložen Event s přechodem: "<<transition->getName()<<std::endl;
 	this->calendar->addEvent(event); // přidání události do kalendáře
 }
 
@@ -709,17 +699,14 @@ void Simulator::deleteEventByTransition(Transition *transition)
 	{
 		if((*iterEvents)->getTransition() == transition)
 		{
-			// ??? přepočítání statistik -> jedná se o přepočet s hodnotami smazaných eventů
 			// nejspíš bude nutné pro tuto hodnotu vytvořit další proměnnou ve statistice přechodu
 			transition->recomputeStatsWithDeleteEventWait((*iterEvents));
-			std::cerr<<"ID eventu: "<<(*iterEvents)<<std::endl;
 			// smazání eventu z kalendáře
 			this->calendar->deleteEvent((*iterEvents));
 			return;
 
 		}
 	}
-	std::cerr<<"Orientační výpis velikosti kalendáře: "<<this->calendar->getEvents()->size()<<std::endl;
 }
 /**
  * Vygeneruje náhodné číslo
@@ -784,15 +771,9 @@ int main(int argc, char *argv[])
 	try
 	{
 		simulator->createModel(modelCase); // vytvoření modelu
-		std::cerr<<"Model zapsán"<<std::endl;
-		std::cerr<<"Zacinam validovat"<<std::endl;
-		simulator->getModel()->modelValidate();
-		std::cerr<<"Model zvalidován"<<std::endl;
-		
+		simulator->getModel()->modelValidate();	
 		simulator->setMaxSimTime(maxSimTime); // nastavení maximálního simulačního času
 		simulator->simStart(); // zahájení simulace
-		
-		std::cerr<<"Konec simulacel"<<std::endl;
 		// simulator->getModel()->printModel(); // vytisknutí modelu
 	}
 	
@@ -808,9 +789,7 @@ int main(int argc, char *argv[])
 	
 	// dealokace místa
 	simulator->getCalendar()->~Calendar();
-	std::cerr<<"Kalendář smazánl"<<std::endl;
 	simulator->getModel()->~Model();
-	std::cerr<<"Model smazán"<<std::endl;
 	delete simulator;
 	exit(EXIT_SUCCESS);
   
