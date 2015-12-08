@@ -593,6 +593,9 @@ void Transition::printProbabilisticStats()
 		if((*iterTransition).second->getTransitionType() == Transition::PROBABILITY)
 			tmp += (*iterTransition).second->probabilisticPerformCount;
 	}
+	// ošetření dělení nulou 
+	if(tmp == 0)
+		tmp = 1;
 	// pomocná hodnota pro procentuální hodnotu výběru přechodu
 	double value = (100.0/ (double)tmp) * (double)this->probabilisticPerformCount ;
 

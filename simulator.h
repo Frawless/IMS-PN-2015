@@ -23,6 +23,7 @@
 #include <sstream>
 #include <string>
 #include <vector>
+#include <cstring>
 
 class Link;
 class PlaceTransition;
@@ -51,7 +52,7 @@ class Simulator
 		~Simulator(); // destruktor simulátoru
 		void setSimTime(double simTime); // nastaví simulační čas
 		void setMaxSimTime(double maxSimTime); // nastaví konec simulačního času	
-		void createModel(); // vytvoří model
+		void createModel(bool modelCase); // vytvoří model
 		Model *getModel(); // získá ukazatel na model
 		void printModel(); // vytiskne model
 		void simStart(); // zahájí simulace

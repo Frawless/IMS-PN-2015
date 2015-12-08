@@ -66,92 +66,144 @@ void Simulator::setMaxSimTime(double maxSimTime)
 /**
  * Vytvoří model Petriho sítě
  */
-void Simulator::createModel()
+void Simulator::createModel(bool  modelCase)
 {
-	// Model ze cvičení - Herna
-	// přechody
-	model->addTransition("p_generator_hracu", 15,Transition::TIMED_EXP);
-	model->addTransition("p_generator_poruch", 300,Transition::TIMED_EXP);
-	model->addTransition("p_hraní", 100,Transition::TIMED_EXP);
-	model->addTransition("p_opravovani_zavazne_poruchy", 50,Transition::TIMED_CONST);
-	model->addTransition("p_opravovani_normalni_poruchy", 4,Transition::TIMED_CONST);
-	
-	model->addTransition("p_pocitac_neni_volny", 0,Transition::PRIORITY);
-	model->addTransition("p_jde_hrat", 1,Transition::PRIORITY);
-	model->addTransition("p_nelze_hrat_porucha", 5,Transition::PRIORITY);
-	model->addTransition("p_nastala_porucha_pri_hrani", 1,Transition::PRIORITY);
-	model->addTransition("p_porucha_opravena", 10,Transition::PRIORITY);
+	if(modelCase)
+	{
+		// model ze cvičení - Překladiště
+		// přechody
+		model->addTransition("p_generator_aut",60, Transition::TIMED_EXP);
+		model->addTransition("p_prijezd_auta",0, Transition::PRIORITY);
+		model->addTransition("p_vykladka",1, Transition::PRIORITY);
+		model->addTransition("p_volna_rampa",0, Transition::PRIORITY);
+		model->addTransition("p_plneni_vlaku",0, Transition::PRIORITY);
+		model->addTransition("p_obsluha_jerabu",2, Transition::TIMED_EXP);
+		model->addTransition("p_vlak_odjede",0, Transition::PRIORITY);
 
-	model->addTransition("p_dohral_odchazi", 0,Transition::PRIORITY);
-	model->addTransition("p_nehral_odchazi", 0,Transition::PRIORITY);
-	model->addTransition("p_porucha_opousti_system", 0,Transition::PRIORITY);
-	
-	model->addTransition("p_zavazna_porucha", 15,Transition::PROBABILITY);
-	model->addTransition("p_normalni_porucha", 85,Transition::PROBABILITY);
-	
-	// místa
-	model->addPlace("m_hrac_prisel");
-	model->addPlace("m_hraje");
-	model->addPlace("m_pocitace");
-	model->addPlace("m_dohrali");
-	model->addPlace("m_odchazejici");
-	model->addPlace("m_oprava_poruchy");
-	model->addPlace("m_porucha_opousti_system");
-	model->addPlace("m_porucha_opravena");
-	model->addPlace("m_oprava_zavazne_poruchy");
-	model->addPlace("m_oprava_normalni_poruchy");
-	model->addPlace("m_indikátor_poruchy");
-	
-	// tokeny
-	model->addToken("m_pocitace",10);
-	
-	// hrany
-	model->addLink("p_generator_hracu","m_hrac_prisel",1);
-	model->addLink("m_hrac_prisel","p_pocitac_neni_volny",1);
-	model->addLink("p_pocitac_neni_volny","m_odchazejici",1);
-	model->addLink("m_odchazejici","p_nehral_odchazi",1);
-	
-	model->addLink("m_hrac_prisel","p_jde_hrat",1);
-	model->addLink("p_jde_hrat","m_hraje",1);
-	model->addLink("m_hraje","p_hraní",1);
-	model->addLink("p_hraní","m_dohrali",1);
-	model->addLink("m_dohrali","p_dohral_odchazi",1);
-	
-	model->addLink("m_hrac_prisel","p_nelze_hrat_porucha",1);
-	model->addLink("p_nelze_hrat_porucha","m_odchazejici",1);
-	model->addLink("m_odchazejici","p_nehral_odchazi",1);
-	
-	model->addLink("p_nelze_hrat_porucha","m_indikátor_poruchy",1);
-	model->addLink("m_indikátor_poruchy","p_nelze_hrat_porucha",1);
-	
-	model->addLink("p_generator_poruch","m_indikátor_poruchy",1);	
-	model->addLink("p_generator_poruch","m_oprava_poruchy",1);
-	model->addLink("m_oprava_poruchy","p_zavazna_porucha",1);
-	model->addLink("m_oprava_poruchy","p_normalni_porucha",1);
-	model->addLink("p_zavazna_porucha","m_oprava_zavazne_poruchy",1);
-	model->addLink("p_normalni_porucha","m_oprava_normalni_poruchy",1);
-	
-	model->addLink("m_oprava_normalni_poruchy","p_opravovani_normalni_poruchy",1);
-	model->addLink("m_oprava_zavazne_poruchy","p_opravovani_zavazne_poruchy",1);
-	
-	model->addLink("p_opravovani_normalni_poruchy","m_porucha_opravena",1);
-	model->addLink("p_opravovani_zavazne_poruchy","m_porucha_opravena",1);
-	
-	model->addLink("m_porucha_opravena","p_porucha_opravena",1);
-	model->addLink("p_porucha_opravena","m_porucha_opousti_system",1);
-	model->addLink("m_porucha_opousti_system","p_porucha_opousti_system",1);	
-	model->addLink("m_indikátor_poruchy","p_porucha_opravena",1);
-	
-	model->addLink("m_indikátor_poruchy","p_nastala_porucha_pri_hrani",1);
-	model->addLink("p_nastala_porucha_pri_hrani","m_indikátor_poruchy",1);
-	
-	model->addLink("m_pocitace","p_jde_hrat",1);
-	
-	model->addLink("p_hraní","m_pocitace",1);	
-	
-	model->addLink("p_nastala_porucha_pri_hrani","m_dohrali",1);
-	model->addLink("m_hraje","p_nastala_porucha_pri_hrani",1);
-	model->addLink("p_nastala_porucha_pri_hrani","m_pocitace",1);
+		// místě
+		model->addPlace("m_transakce");
+		model->addPlace("m_rampa");
+		model->addPlace("m_kontejnery");
+		model->addPlace("m_jerab");
+		model->addPlace("m_kapacita_vlaku");
+		model->addPlace("m_naklad");
+		model->addPlace("m_obsluha_jerabu");
+		model->addPlace("m_pocitadlo");
+
+		// hrany
+		model->addLink("p_generator_aut","m_transakce",1);
+		model->addLink("m_transakce","p_prijezd_auta",1);
+		model->addLink("m_rampa","p_prijezd_auta",1);
+		model->addLink("p_prijezd_auta","m_kontejnery",20);
+		model->addLink("p_prijezd_auta","m_jerab",1);
+
+		model->addLink("m_jerab","p_volna_rampa",1);
+		model->addLink("m_jerab","p_vykladka",1);
+		model->addLink("p_volna_rampa","m_rampa",1);
+		model->addLink("p_vykladka","m_naklad",1);
+		model->addLink("m_naklad","p_plneni_vlaku",1);
+
+		model->addLink("m_kontejnery","p_vykladka",1);
+
+		model->addLink("p_plneni_vlaku","m_obsluha_jerabu",1);
+		model->addLink("m_obsluha_jerabu","p_obsluha_jerabu",1);
+		model->addLink("p_obsluha_jerabu","m_jerab",1);
+
+		model->addLink("p_obsluha_jerabu","m_pocitadlo",1);
+		model->addLink("m_pocitadlo","p_vlak_odjede",100);
+		model->addLink("p_vlak_odjede","m_kapacita_vlaku",100);
+		model->addLink("m_kapacita_vlaku","p_plneni_vlaku",1);
+
+		model->addToken("m_kapacita_vlaku",100);
+		model->addToken("m_rampa",1);
+	}
+	else
+	{
+		// Model ze cvičení - Herna
+		// přechody
+		model->addTransition("p_generator_hracu", 15,Transition::TIMED_EXP);
+		model->addTransition("p_generator_poruch", 300,Transition::TIMED_EXP);
+		model->addTransition("p_hraní", 100,Transition::TIMED_EXP);
+		model->addTransition("p_opravovani_zavazne_poruchy", 50,Transition::TIMED_CONST);
+		model->addTransition("p_opravovani_normalni_poruchy", 4,Transition::TIMED_CONST);
+
+		model->addTransition("p_pocitac_neni_volny", 0,Transition::PRIORITY);
+		model->addTransition("p_jde_hrat", 1,Transition::PRIORITY);
+		model->addTransition("p_nelze_hrat_porucha", 5,Transition::PRIORITY);
+		model->addTransition("p_nastala_porucha_pri_hrani", 1,Transition::PRIORITY);
+		model->addTransition("p_porucha_opravena", 10,Transition::PRIORITY);
+
+		model->addTransition("p_dohral_odchazi", 0,Transition::PRIORITY);
+		model->addTransition("p_nehral_odchazi", 0,Transition::PRIORITY);
+		model->addTransition("p_porucha_opousti_system", 0,Transition::PRIORITY);
+
+		model->addTransition("p_zavazna_porucha", 15,Transition::PROBABILITY);
+		model->addTransition("p_normalni_porucha", 85,Transition::PROBABILITY);
+
+		// místa
+		model->addPlace("m_hrac_prisel");
+		model->addPlace("m_hraje");
+		model->addPlace("m_pocitace");
+		model->addPlace("m_dohrali");
+		model->addPlace("m_odchazejici");
+		model->addPlace("m_oprava_poruchy");
+		model->addPlace("m_porucha_opousti_system");
+		model->addPlace("m_porucha_opravena");
+		model->addPlace("m_oprava_zavazne_poruchy");
+		model->addPlace("m_oprava_normalni_poruchy");
+		model->addPlace("m_indikátor_poruchy");
+
+		// tokeny
+		model->addToken("m_pocitace",10);
+
+		// hrany
+		model->addLink("p_generator_hracu","m_hrac_prisel",1);
+		model->addLink("m_hrac_prisel","p_pocitac_neni_volny",1);
+		model->addLink("p_pocitac_neni_volny","m_odchazejici",1);
+		model->addLink("m_odchazejici","p_nehral_odchazi",1);
+
+		model->addLink("m_hrac_prisel","p_jde_hrat",1);
+		model->addLink("p_jde_hrat","m_hraje",1);
+		model->addLink("m_hraje","p_hraní",1);
+		model->addLink("p_hraní","m_dohrali",1);
+		model->addLink("m_dohrali","p_dohral_odchazi",1);
+
+		model->addLink("m_hrac_prisel","p_nelze_hrat_porucha",1);
+		model->addLink("p_nelze_hrat_porucha","m_odchazejici",1);
+		model->addLink("m_odchazejici","p_nehral_odchazi",1);
+
+		model->addLink("p_nelze_hrat_porucha","m_indikátor_poruchy",1);
+		model->addLink("m_indikátor_poruchy","p_nelze_hrat_porucha",1);
+
+		model->addLink("p_generator_poruch","m_indikátor_poruchy",1);	
+		model->addLink("p_generator_poruch","m_oprava_poruchy",1);
+		model->addLink("m_oprava_poruchy","p_zavazna_porucha",1);
+		model->addLink("m_oprava_poruchy","p_normalni_porucha",1);
+		model->addLink("p_zavazna_porucha","m_oprava_zavazne_poruchy",1);
+		model->addLink("p_normalni_porucha","m_oprava_normalni_poruchy",1);
+
+		model->addLink("m_oprava_normalni_poruchy","p_opravovani_normalni_poruchy",1);
+		model->addLink("m_oprava_zavazne_poruchy","p_opravovani_zavazne_poruchy",1);
+
+		model->addLink("p_opravovani_normalni_poruchy","m_porucha_opravena",1);
+		model->addLink("p_opravovani_zavazne_poruchy","m_porucha_opravena",1);
+
+		model->addLink("m_porucha_opravena","p_porucha_opravena",1);
+		model->addLink("p_porucha_opravena","m_porucha_opousti_system",1);
+		model->addLink("m_porucha_opousti_system","p_porucha_opousti_system",1);	
+		model->addLink("m_indikátor_poruchy","p_porucha_opravena",1);
+
+		model->addLink("m_indikátor_poruchy","p_nastala_porucha_pri_hrani",1);
+		model->addLink("p_nastala_porucha_pri_hrani","m_indikátor_poruchy",1);
+
+		model->addLink("m_pocitace","p_jde_hrat",1);
+
+		model->addLink("p_hraní","m_pocitace",1);	
+
+		model->addLink("p_nastala_porucha_pri_hrani","m_dohrali",1);
+		model->addLink("m_hraje","p_nastala_porucha_pri_hrani",1);
+		model->addLink("p_nastala_porucha_pri_hrani","m_pocitace",1);
+	}
 }
 
 /**
@@ -285,27 +337,30 @@ void Simulator::performTransition(Transition *transition)
 					// vložení aktuálního tokenu v aktuálním místě do pomocného seznamu tokenů v místě
 					checkTokens.push_back((*iterPlaceTokens));
 				
-				// zamíchání prvků pomocného seznamu tokenů v aktuálním místě
-				std::random_shuffle(checkTokens.begin(), checkTokens.end());	
-				
-				// získání náhodného tokenu ze vstupního místa (náhodný, jelikož byl seznam zamíchán)
-				token = checkTokens.back();
-				checkTokens.pop_back(); // odstranění získaného tokenu z pomocného seznamu tokenů v aktuálním místě					
-				
-				std::cerr<<"Token v místě: "<<place->getName()<<"Zpracovává přechod: "<<transition->getName()<<std::endl;
-				std::cerr<<"V tomto místě je: "<<place->getTokenCount()<<" tokenu"<<std::endl;
-				// smazání tokenu z aktulálního vstupního místa
-				place->removeToken(token);
-				
-				// Výpočet statistiky pro místo
-				place->setStats();
-					
-				//token->printTransitions();
-				if(transition != token->getTransition() && token->getTransition() != NULL)
+				for(int i = 0; i < (*iterLink)->getCapacity(); i++)
 				{
-					std::cerr<<"Mažu událost s přechodem: "<<token->getTransition()->getName()<<" Skrz token: "<<token<<std::endl;
-					std::cerr<<"Aktuální přechod: "<<transition->getName()<<" a počet v místě: "<<place->getName()<<" : "<<place->getTokenCount()<<std::endl;
-					this->deleteEventByTransition(token->getTransition());
+					// zamíchání prvků pomocného seznamu tokenů v aktuálním místě
+					std::random_shuffle(checkTokens.begin(), checkTokens.end());	
+
+					// získání náhodného tokenu ze vstupního místa (náhodný, jelikož byl seznam zamíchán)
+					token = checkTokens.back();
+					checkTokens.pop_back(); // odstranění získaného tokenu z pomocného seznamu tokenů v aktuálním místě					
+
+					std::cerr<<"Token v místě: "<<place->getName()<<"Zpracovává přechod: "<<transition->getName()<<std::endl;
+					std::cerr<<"V tomto místě je: "<<place->getTokenCount()<<" tokenu"<<std::endl;
+					// smazání tokenu z aktulálního vstupního místa
+					place->removeToken(token);
+
+					// Výpočet statistiky pro místo
+					place->setStats();
+
+					//token->printTransitions();
+					if(transition != token->getTransition() && token->getTransition() != NULL)
+					{
+						std::cerr<<"Mažu událost s přechodem: "<<token->getTransition()->getName()<<" Skrz token: "<<token<<std::endl;
+						std::cerr<<"Aktuální přechod: "<<transition->getName()<<" a počet v místě: "<<place->getName()<<" : "<<place->getTokenCount()<<std::endl;
+						this->deleteEventByTransition(token->getTransition());
+					}
 				}
 			}		
 			checkTokens.clear(); // vymazání pomocného seznamu tokenů v aktuálním místě
@@ -689,20 +744,52 @@ double Simulator::Exponential(double mv)
  * Main programu
  * @return návratový kód chyby
  */
-int main()
+int main(int argc, char *argv[])
 {
+	bool modelCase = false;
+	int maxSimTime = 10000; // implicitní hodnota
+	int c;
+	char *pend;
+	
+	// zpracování argumentů
+	while((c = getopt(argc,argv, "s:p")) != -1)
+	{
+		switch(c)
+		{
+			case 'p':
+				modelCase = true;
+				break;
+			case 's':
+				maxSimTime = strtol(optarg,&pend,10);
+				if(*pend != '\0')
+				{
+					std::cerr<<"Špatně zvolná doba simulace! Zadejte celé číslo!"<<std::endl;
+					exit(0);
+				}
+				break;
+			default:
+				std::cerr<<"Špatně zadané parametry programu!"<<std::endl;
+				std::cerr<<"Dodržte prosím formát vstupních parametrů následovně:"<<std::endl;
+				std::cerr<<"	-s delka_simulace (delka_simulace je celé kladné číslo)"<<std::endl;
+				std::cerr<<"	-p (spustí simulaci modelu \"Překaldiště\")"<<std::endl;
+				std::cerr<<"Bez zadání argumentů se spustí model \"Herna\" s časem simulace \"10000\""<<std::endl;
+				exit(0);
+				break;
+		}
+	}
+	
 	// vytvoření instance simulátoru
 	Simulator *simulator = new Simulator();
 	
 	try
 	{
-		simulator->createModel(); // vytvoření modelu
+		simulator->createModel(modelCase); // vytvoření modelu
 		std::cerr<<"Model zapsán"<<std::endl;
 		std::cerr<<"Zacinam validovat"<<std::endl;
 		simulator->getModel()->modelValidate();
 		std::cerr<<"Model zvalidován"<<std::endl;
 		
-		simulator->setMaxSimTime(10000); // nastavení maximálního simulačního času
+		simulator->setMaxSimTime(maxSimTime); // nastavení maximálního simulačního času
 		simulator->simStart(); // zahájení simulace
 		
 		std::cerr<<"Konec simulacel"<<std::endl;
