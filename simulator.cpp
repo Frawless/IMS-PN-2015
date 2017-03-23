@@ -1,11 +1,11 @@
-/*************************************************
-*		  Projekt: 	Projekt do předmětu IMS     * 
-* 					Simulátor Petriho sítí		*
-*		   Autoři:	Jakub Stejskal <xstejs24>	*
-*		   			Petr Staněk <xstane34>      *
-*   Nazev souboru: 	simulator.cpp             	*
-*			Datum:  14. 11. 2015				*
-*			Verze:	1.0							*
+/************************************************
+*	 Projekt: 	Projekt do předmětu IMS		   * 
+* 					Simulátor Petriho sítí	   *
+*	Autoři:	Jakub Stejskal <xstejs24>		   *
+*		   	Petr Staněk <xstane34>		   *
+*	Nazev souboru: 	simulator.cpp			   *
+*			Datum:  7. 12. 2015			   *
+*			Verze:	1.0		                     *
 ************************************************/
 
 /**
@@ -226,7 +226,7 @@ void Simulator::printModel()
 /**
  * Zahájí simulaci modelu.
  */
-void Simulator::simStart() // ??? upravit komentáře po dokončení
+void Simulator::simStart() 
 {
 	Event *event; // událost kalendáře
 	

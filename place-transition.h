@@ -1,11 +1,11 @@
-/*************************************************
-*		  Projekt: 	Projekt do předmětu IMS     * 
-* 					Simulátor Petriho sítí		*
-*		   Autoři:	Jakub Stejskal <xstejs24>	*
-*		   			Petr Staněk <xstane34>      *
-*   Nazev souboru: 	place-transition.h       	*
-*			Datum:  14. 11. 2015				*
-*			Verze:	1.0							*
+/************************************************
+*	 Projekt: 	Projekt do předmětu IMS		   * 
+* 					Simulátor Petriho sítí	   *
+*	Autoři:	Jakub Stejskal <xstejs24>		   *
+*		   	Petr Staněk <xstane34>		   *
+*	Nazev souboru: 	place-transition.h		   *
+*			Datum:  7. 12. 2015			   *
+*			Verze:	1.0		                     *
 ************************************************/
 
 /**
@@ -118,7 +118,6 @@ class Transition: public PlaceTransition
 		void printStats(); // tiskne statistiky nečasovaného přechodu
 		void printTimedStats(); // tiskne statistiky časovaného přechodu
 		void printProbabilisticStats(); // tiskne statistiky pravděpodobnostních přechodů
-		// ??? podle emailu zakomentovat/nechat
 		void recomputeStatsWithDeleteEventWait(Event *event); // přepočítá statistiky pomocí hodnot smazaných při poruše
 				
 		

@@ -1,12 +1,12 @@
-#################################################
-#	Projekt: Projekt do předmětu IMS        #
-#		 Simulátor Petriho sítí		#
-#	 Autoři: Jakub Stejskal <xstejs24>	#
-#		 Petr Staněk <xstane34>	        #
-# Nazev souboru: Makefile		   	#
-#	  Datum: 14. 11. 2015			#		
-#	  Verze: 1.0				#
-#################################################
+################################################
+#	Projekt: Projekt do předmětu IMS				    #
+#		 Simulátor Petriho sítí				    #
+#	 Autoři: Jakub Stejskal <xstejs24>			    #
+#		 Petr Staněk <xstane34>			    #
+# Nazev souboru: Makefile				                      #
+#	  Datum: 14. 11. 2015					    #		
+#	  Verze: 1.0					    #
+################################################
 CC = g++
 CFLAGS = -std=c++98 -Wall -pedantic -ansi -W -Wextra
 LOGIN = 02_xstejs24_xstane34
