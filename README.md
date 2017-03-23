@@ -1,6 +1,6 @@
-# IMS-PN
+# IMS-PN-2015
 
-##Petri-Nets simulátor 2015
+## Petri-Nets simulátor 2015
 
 Autor: **Jakub Stejskal, Petr Staněk**
 
